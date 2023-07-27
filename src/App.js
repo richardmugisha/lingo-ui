@@ -1,23 +1,31 @@
-import logo from './logo.svg';
 import './App.css';
+import Personal from './pages/personal/Personal';
+import Network from './pages/network/Network';
 
 function App() {
+  const personal = true;
+  const network = false;
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header>
+        <nav>
+          <ul className="nav-right">
+            <li className="a">Add</li>
+            <li className="a">Quiz</li>
+            <li className="a">Learn</li>
+          </ul>
+        </nav>
       </header>
+
+      <main>
+        { personal && <Personal /> }
+        { network && <Network /> }
+      </main>
+
+      <footer>
+
+      </footer>
     </div>
   );
 }

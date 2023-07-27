@@ -1,0 +1,100 @@
+.card-add {
+    width: 40vw;
+    margin: auto;
+    background-color: #9BC5CB;
+    padding: 20px;
+}
+
+.card-add * {
+    color: #E0F5F8;
+    font-size: large;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.card-add * *, .card-add * * * {
+    background-color: #345C70;
+}
+
+.card-add > .head {
+    display: flex;
+}
+
+.card-add > .head > div:first-child {
+    text-transform: capitalize;
+    background-color: transparent;
+}
+
+.card-add > .head > div:nth-child(2), .head > div:nth-child(3) {
+    padding: 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgb(210, 231, 241);
+}
+
+.card-add > .main {
+    border-radius: 30px;
+    background-color: #6E95A8;
+    padding: 10px;
+}
+
+.card-add .top {
+    display: flex;
+    justify-content: space-between;
+    
+    background-color: transparent;
+}
+
+.card-add > .main > .top > div {
+    padding: 5px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.card-add .middle {
+    display: flex;
+    background-color: transparent;
+    max-height: 200px;
+}
+
+.card-add .arrow:hover {
+    font-size: xx-large;
+    box-shadow: 0 0 10px lightblue;
+}
+
+.card-add .content {
+    border-radius: 20px;
+    text-align: left;
+    padding: 10px;
+    overflow: hidden;
+}
+
+.card-add .arrow {
+    border: 2px solid skyblue;
+    cursor: pointer;
+    margin: auto 10px;
+}
+
+.main--bottom {
+    width: fit-content;
+    padding: 10px;
+    border-radius: 20px;
+    background-color: lightblue;
+    color: #345C70;
+    cursor: pointer;
+    margin: auto;
+}
+
+.card-add--bottom div {
+    background-color: transparent;
+}
+
+@media (max-width: 420px) {
+    .card-add  {
+        width: 95vw;
+        max-height: 80vh;
+    }
+    .card-add * {
+        font-size: medium;
+    }
+}

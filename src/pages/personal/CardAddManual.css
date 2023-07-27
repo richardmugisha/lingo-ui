@@ -1,0 +1,86 @@
+.card-add-manual {
+    background-color: #9BC5CB;
+    color: #E0F5F8;
+    font-size: large;
+    font-weight: 500;
+    padding: 10px 0;
+}
+
+.card-add-manual > .buttons {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+    margin-right: 30px;
+}
+
+.card-add-manual > .buttons > div {
+    padding: 10px;
+    margin: 0 10px;
+    text-transform: capitalize;
+    border-radius: 20px;
+    background-color: #345C70;
+    cursor: pointer;
+}
+
+.card-add-manual > form {
+    flex-grow: 1;
+    margin: 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-add-manual > form > div {
+    /* background-color: blue; */
+    height: 50px;
+    margin: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.card-add-manual > form label {
+    font-size: x-large;
+}
+.card-add-manual > form input {
+    min-width: 300px;
+    border-radius: 20px;
+    border: none;
+    padding: 0 10px;
+    background-color: #345C70;
+    color: #E0F5F8;
+    position: relative;
+    margin: 0 20px;
+}
+
+.card-add-manual > form .alertEmpty {
+    border: 2px solid red;
+}
+
+.card-add-manual > form .plus {
+    background-color: black;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    color: #9BC5CB;
+    font-size: 30px;
+    line-height: 1.5rem;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+}
+
+/* media queries */
+@media (max-width: 420px) {
+    .card-add-manual {
+        display: flex;
+        flex-direction: column;
+    }
+    .card-add-manual > form input {
+        flex-grow: 1;
+    }
+
+    .card-add-manual > form label {
+        font-size: 0;
+    }
+
+}

@@ -1,0 +1,33 @@
+.card {
+    background-color: #9BC5CB;
+    box-shadow: 0 0 3px rgb(113, 156, 196);
+    display: flex;
+    max-width: 400px;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.card > div {
+    display: flex;
+    width: 40%;
+    aspect-ratio: 5/4;
+    padding: 10px;
+    margin: 10px
+}
+
+.card div {
+    cursor: pointer;
+    border-radius: 20%;
+    font-size: 27px;
+    color: #345C70;
+    background-color: #779DAF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 3px groove #72a0b76f;
+}
+
+.card div:hover {
+    color: lightblue;
+    box-shadow: 0 0 10px rgb(210, 231, 241);
+}

@@ -1,0 +1,47 @@
+.performance {
+    padding: 20px;
+    font-size: x-large;
+    font-weight: 500;
+    background-color: #9BC5CB;
+    color: #1e2324;
+}
+
+.performance * {
+    margin: 10px;
+}
+
+.performance--body {
+    display: flex;
+}
+
+.performance--body .display {
+    width: 120px;
+    aspect-ratio: 16/12;
+    background-color: #345C70;
+    border-radius: 20px;
+}
+
+.performance--body .display i {
+    font-size: 2.5em;
+    color: greenyellow;
+}
+
+.performance--foot {
+    display: inline;
+    padding: 10px;
+    background-color: #345C70;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+@media (max-width: 420px) {
+   .performance {
+    width: 95vw;
+    font-size: large;
+   }
+   .performance--body {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+   }
+}

@@ -1,0 +1,68 @@
+.card-learn {
+    width: 40vw;
+    margin: auto;
+    background-color: #9BC5CB;
+    padding: 20px;
+    text-align: start;
+}
+
+.card-learn--deckname {
+    font-size: x-large;
+    text-transform: uppercase;
+    text-decoration: underline;
+}
+
+.card-learn--big {
+    font-size: larger;
+    text-transform: capitalize;
+    text-decoration: underline;
+}
+
+.card-learn--body {
+    display: flex;
+    gap: 10px
+}
+
+.card-learn--content {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.card-learn--content::-webkit-scrollbar {
+    width: 5px; /* Set your desired width */
+  }
+  
+  .card-learn--content::-webkit-scrollbar-thumb {
+    background-color: rgb(97, 138, 151);
+    border-radius: 6px; /* Set half of the scrollbar width to create a circular thumb */
+  }
+  
+  /* Optional: You can style the track to add some visual cues */
+  .card-learn--content::-webkit-scrollbar-track {
+    background-color: #cce1e4; /* Set your desired track color */
+  }
+
+.card-learn i {
+    display: flex;
+    margin: auto;
+    border-radius: 50%;
+    font-size: xx-large;
+    background-color: lightblue;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgb(46, 72, 82)
+}
+
+
+.card-learn--info {
+    text-align: center;
+    color: white;
+}
+
+@media (max-width: 420px) {
+    .card-learn {
+        width: 95vw;
+    }
+    /* .card-learn i {
+        width: 0;
+    } */
+}
