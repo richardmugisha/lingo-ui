@@ -1,5 +1,5 @@
 .card-learn {
-    width: 40vw;
+    width: max(40vw, 500px);
     margin: auto;
     background-color: #9BC5CB;
     padding: 20px;

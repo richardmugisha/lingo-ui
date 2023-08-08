@@ -1,6 +1,7 @@
 .App {
   text-align: center;
   height: 100vh;
+  min-width: 700px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -8,17 +9,20 @@
 
 header {
   height: 80px;
+  width: 100vw;
 }
 
 main {
   box-shadow: 0 -3px 0 #b0c3c4;
   height: 500px;
+  width: 100vw;
   background-color: #E0F5F8;
   flex-grow: 1;
 }
 
 footer {
   background-color: #C0D7DA;
+  width: 100vw;
   height: 29px;
 }
 
@@ -28,19 +32,18 @@ header > nav {
   background-color: #C0D7DA;
   display: flex;
   justify-content: flex-end;
-  padding-right: 50px;
   align-items: center;
 }
 .nav-right {
   height: 40px;
   width: 400px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
 
 .nav-right > li {
   list-style-type: none;
-  width: 120px;
+  padding: 5%;
   background-color: #86A8B8;
   color: white;
   font-size: 27px;
@@ -59,8 +62,16 @@ header > nav {
 @media (max-width: 420px) {
   header > nav {
     padding: 0;
+    justify-content: space-evenly;
   }
-  .nav-right {
-    justify-content: space-around;
+  
+  .nav-right li {
+    font-size: 1.2em;
+  }
+}
+
+@media ( max-width: 200px) {
+  .nav-right li {
+    display: none;
   }
 }

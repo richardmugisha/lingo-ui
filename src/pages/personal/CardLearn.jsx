@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import './CardLearn.css';
 import ProgressBar from "@ramonak/react-progress-bar";
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import Spinner from 'react-spinner-material';
 
 const CardLearn = ( { deck} ) => {
     const [cardIndex, setCardIndex] = useState(0);
 
     useEffect(() => {
+      console.log(deck)
       const handleKeyPress = (event) => {
         if (event.key === 'ArrowLeft')
           setCardIndex((prev) => (prev > 0 ? prev - 1 : deck.length -1 ));
@@ -22,6 +24,8 @@ const CardLearn = ( { deck} ) => {
     }, [deck.length]); 
 
   return (
+    <>
+    { deck ?
     <div className="card-learn">
         <div className="card-learn--head">
             <div className='card-learn--deckname'>{deck[cardIndex].deckName}</div> 
@@ -34,7 +38,7 @@ const CardLearn = ( { deck} ) => {
           <i className="arrow" onClick={() => setCardIndex((prev) => prev > 0 ? prev-1 : deck.length-1)}><FiChevronLeft /></i>
           <div className='card-learn--content'>
               {deck[cardIndex].meaning.map((item, index) => 
-                <div>
+                <div key={index}>
                   <div><span className='card-learn--big'>{index+1})</span> {item.meaning}</div>
                   <div>e.g: {item.example}</div>
                   <br />
@@ -55,7 +59,10 @@ const CardLearn = ( { deck} ) => {
         <br />
         <ProgressBar completed = {Math.round((cardIndex + 1) * 100 / deck.length)} bgColor = "black" /> 
         
-    </div>
+    </div>:<div style={{height: '200px', width: '200px', padding: '50px'}}><Spinner radius={100} color={"#b0b0ff"} stroke={2} visible={true} /></div> 
+      }
+
+    </>
   )
 }
 

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import ProgressBar from "@ramonak/react-progress-bar";
 import Performance from '../pages/personal/Performance';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import Spinner from 'react-spinner-material';
 import randomGen from '../utils/randomGen';
 import './CommonCard.css';
 import shuffledNumbers from '../utils/shuffleArray';
@@ -23,6 +24,10 @@ const CommonCard = ({format, deck, quizType, quizLength, order}) => {
     const [topProSize, setTopProSize ] = useState(0);
     const [btmProSize, setBtmProSize] = useState(0);
     const [cardFormat, setCardFormat] = useState(format)
+
+    useEffect(() => 
+      setCard(deck[order[cardIndex]]), 
+      [deck])
     
     useEffect(() => {
         if (!card) return
@@ -56,10 +61,13 @@ const CommonCard = ({format, deck, quizType, quizLength, order}) => {
 
         handleRandomize(deck.length, deck.length >= 4 ? 3 : deck.length-1, AlreadyPicked).then(dataArr => setIncorrectArray(shuffledNumbers([...dataArr, AlreadyPicked])))
         
-      }, [card])
+      }, [card, deck])
 
 
     useEffect(() => {
+      console.log(deck)
+      if (!deck) return
+      console.log(deck, cardFormat, card)
       cardIndex = 0;
       allocatedTime = timePerCard * deck.length // the allocated time will depend on the constant and the length of the deck
       correctAnswers = 0;
@@ -72,7 +80,7 @@ const CommonCard = ({format, deck, quizType, quizLength, order}) => {
       }, stepPeriod*1000);
 
       return () => clearInterval(interval)
-    }, [])
+    }, [deck])
 
     useEffect(() => {
       if (interval !== null && quizDone) {
@@ -104,9 +112,12 @@ const CommonCard = ({format, deck, quizType, quizLength, order}) => {
     
     return (
         <>
-          { quizDone ? <Performance givenTime={allocatedTime} duration={ topProSize * allocatedTime /100 } correctAnswers={correctAnswers} all={deck.length} /> :
+          { deck ?
+          quizDone ? <Performance givenTime={allocatedTime} duration={ topProSize * allocatedTime /100 } correctAnswers={correctAnswers} all={deck.length} /> :
+          
           <div className='common-card'>
-
+              {console.log('na')}
+              {console.log(cardFormat.label0)}
               <div className="common-head">
                   <div>{ cardFormat.label0 }</div>
                   { format.topProgressbar && <ProgressBar completed = {Math.floor(topProSize)} bgColor = "black" /> }
@@ -128,7 +139,7 @@ const CommonCard = ({format, deck, quizType, quizLength, order}) => {
                 if (['synonym', 'antonym'].includes(quizType)) return deck[index][quizType][index%4] // synonym / antonym at this almost random location
                 return deck[index]['meaning'][index%4][quizType].toLowerCase().replace(deck[index].word, '____')
               }).map((item, indexHere) => {
-                return  <div style={{backgroundColor: selectedItem && correctPos === indexHere ? 'green': (selectedItem === item) ? 'red': ''}} 
+                return  <div key={indexHere} style={{backgroundColor: selectedItem && correctPos === indexHere ? 'green': (selectedItem === item) ? 'red': ''}} 
                             onClick={() => {handleItemClick(item, indexHere)}}>{item}
                         </div>
               })}</div>}
@@ -143,6 +154,7 @@ const CommonCard = ({format, deck, quizType, quizLength, order}) => {
               { format.label4 && <div>{ format.label4 }</div> }
             </div>
           </div>
+          :<div style={{height: '200px', width: '200px', padding: '50px'}}><Spinner radius={100} color={"#b0b0ff"} stroke={2} visible={true} /></div> 
         }
         </>
         )

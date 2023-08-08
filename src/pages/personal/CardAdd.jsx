@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import ProgressBar from "@ramonak/react-progress-bar";
+import Spinner from 'react-spinner-material';
 import './CardAdd.css';
 
 const CardAdd = ({deck, setModal, setModalSelect}) => {
   const [cardIndex, setCardIndex] = useState(0);
-
+  
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.key === 'ArrowLeft')
@@ -21,7 +22,13 @@ const CardAdd = ({deck, setModal, setModalSelect}) => {
     };
   }, [deck.length]); 
   
+  
+  // console.log(deck)
+  // if (deck) console.log(deck[cardIndex].deckName)
+
   return (
+    <>
+    { deck ?
     <div className='card-add'>
       <div className="head">
         <div>{deck[cardIndex].deckName}</div>
@@ -36,8 +43,11 @@ const CardAdd = ({deck, setModal, setModalSelect}) => {
             <div className="middle">
                 <i className="arrow" onClick={() => setCardIndex((prev) => prev > 0 ? prev-1 : deck.length-1)}><FiChevronLeft /></i>
                 <div className="content">
-                  <div>{deck[cardIndex].meaning[0].meaning}</div>
-                  <div>e.g: {deck[cardIndex].meaning[0].example}</div>
+                  { deck[cardIndex].meaning[0] && <>
+                    <div>{deck[cardIndex].meaning[0].meaning}</div>
+                    <div>e.g: {deck[cardIndex].meaning[0].example}</div>
+                    </>
+                  }
                 </div>
                 <i className="arrow" onClick={() => setCardIndex((prev) => prev < deck.length - 1 ? prev + 1 : 0)}><FiChevronRight /></i>
             </div>
@@ -49,7 +59,9 @@ const CardAdd = ({deck, setModal, setModalSelect}) => {
         <div>click on &lt; or &gt; to swipe left or right</div>
         <ProgressBar completed = {Math.round((cardIndex + 1) * 100 / deck.length)} bgColor = "black" /> 
       </div>
-    </div>
+    </div> : <div style={{height: '200px', width: '200px', padding: '50px'}}><Spinner radius={100} color={"#b0b0ff"} stroke={2} visible={true} /></div> 
+      }
+    </>
   )
 }
 

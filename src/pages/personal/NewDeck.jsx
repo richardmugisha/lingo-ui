@@ -6,7 +6,6 @@ const NewDeck = ( { setDeckName, setDeckList, setModal, setModalSelect }) => {
 
   const handleSubmit = () => {
     const text = inputRef.current.value
-    setDeckList((prev) => [...prev, text])
     setDeckName(text)
   }
 
