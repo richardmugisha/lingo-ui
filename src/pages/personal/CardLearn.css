@@ -1,5 +1,5 @@
 .card-learn {
-    width: max(40vw, 500px);
+    width: 500px;
     margin: auto;
     background-color: #9BC5CB;
     padding: 20px;
@@ -60,7 +60,7 @@
 
 @media (max-width: 420px) {
     .card-learn {
-        width: 95vw;
+        max-width: 95vw;
     }
     /* .card-learn i {
         width: 0;
