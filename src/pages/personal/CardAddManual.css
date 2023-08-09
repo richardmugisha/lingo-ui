@@ -42,7 +42,7 @@
     font-size: x-large;
 }
 .card-add-manual > form input {
-    min-width: 300px;
+    width: 300px;
     border-radius: 20px;
     border: none;
     padding: 0 10px;
@@ -75,13 +75,21 @@
         max-width: 95vw;
         display: flex;
         flex-direction: column;
+        
+    }
+
+    .card-add-manual > form {
+        margin: 0 10px;
+        justify-content: start;
     }
     .card-add-manual > form input {
-        flex-grow: 1;
+        margin-left: 0;
+        margin-right: 30px;
+       
     }
 
     .card-add-manual > form label {
-        font-size: 0;
+        display: none;
     }
 
 }
