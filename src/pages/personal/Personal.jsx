@@ -37,7 +37,7 @@ const Personal = () => {
         const getDeckList = async () => {
           try {
             const response = await axios.get(`${baseUrl}/api/v1/cards`);
-            await new Promise(resolve => setTimeout(resolve, 2000)); // adding delay to test low connection
+            //await new Promise(resolve => setTimeout(resolve, 2000)); // adding delay to test low connection
             const data = await response.data;
             //console.log(data)
             //console.log(data.deckNamesList)
@@ -64,7 +64,7 @@ const Personal = () => {
         setModal(true)
         try {
           const res = await axios.get(`${baseUrl}/api/v1/cards/${deckname}`);
-          await new Promise(resolve => setTimeout(resolve, 2000)); // checking low connection
+          //await new Promise(resolve => setTimeout(resolve, 2000)); // checking low connection
           const data = await res.data.cards;
           return data;
         } catch (error) {

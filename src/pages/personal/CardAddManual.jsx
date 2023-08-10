@@ -120,18 +120,18 @@ const CardAddManual = ({setModal, deckName, setModalSelect, setDeckList}) => {
 
           <div>
               <label htmlFor="">example</label>
-              <input className={(submit || plusMeaning) && !example ? 'alertEmpty': null} type="text" placeholder="" value={example} onChange={e => setExample(e.target.value)}/>
+              <input className={(submit || plusMeaning) && !example ? 'alertEmpty': null} type="text" placeholder="example" value={example} onChange={e => setExample(e.target.value)}/>
           </div>
 
           <div>
               <label htmlFor="">synonym</label>
-              <input className={(submit || plusSynonym) && !synonym ? 'alertEmpty': null} type="text" value={synonym} placeholder="" onChange={e => setSynonym(e.target.value)}/>
+              <input className={(submit || plusSynonym) && !synonym ? 'alertEmpty': null} type="text" value={synonym} placeholder="synonym" onChange={e => setSynonym(e.target.value)}/>
               <span className='plus' onClick={() => { handlePlusClickSynonym(); if (synonym) { setFormContent((prev) => ({ ...prev, synonym: [...prev.synonym, synonym]}))}}}>+</span> 
           </div>
 
           <div>
               <label htmlFor="">antonym</label>
-              <input className={(submit || plusAntonym) && !antonym ? 'alertEmpty': null} type="text" value={antonym} placeholder="" onChange={e => setAntonym(e.target.value)}/>
+              <input className={(submit || plusAntonym) && !antonym ? 'alertEmpty': null} type="text" value={antonym} placeholder="antonym" onChange={e => setAntonym(e.target.value)}/>
               <span className='plus' onClick={() => { handlePlusClickAntonym(); if (antonym) { setFormContent((prev) => ({ ...prev, antonym: [...prev.antonym, antonym]}))}}} >+</span>  
           </div>
       </form>
