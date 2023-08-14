@@ -2,7 +2,7 @@ import React from 'react';
 import CommonCard from '../../components/CommonCard';
 import shuffledNumbers from '../../utils/shuffleArray';
 
-const QuizShortMcq = ({ quizType, deck}) => {
+const QuizShortMcq = ({ deckName, quizType, deck}) => {
     const format = {
       label0: false, // the text above the top progressbar,
       label1: false, // the first text below the progressbar,
@@ -19,7 +19,7 @@ const QuizShortMcq = ({ quizType, deck}) => {
     const order = shuffledNumbers(deck.length-1)
     
   return (
-      <CommonCard format={format} deck={deck} order={order} quizType={quizType} quizLength = "short"/>
+      <CommonCard deckName={deckName} format={format} deck={deck} order={order} quizType={quizType} quizLength = "short"/>
   )
 }
 

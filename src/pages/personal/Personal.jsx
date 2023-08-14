@@ -138,7 +138,7 @@ const Personal = () => {
           { modalSelect === 'card-learn' && <CardLearn deck={deckContent} /> }
           { modalSelect === 'quiz-long-mcq' && <QuizLongMcq deck={deckContent} quizType={quizType}/> }
           { modalSelect === 'quiz-long-guess' && <QuizLongGuess deck={deckContent} quizType={quizType}/> }
-          { modalSelect === 'quiz-short-mcq' && <QuizShortMcq deck={deckContent} quizType={quizType}/> }
+          { modalSelect === 'quiz-short-mcq' && <QuizShortMcq deckName={deckName} deck={deckContent} quizType={quizType}/> }
           { modalSelect === 'quiz-short-guess' && <QuizShortGuess deck={deckContent} quizType={quizType}/> }
           { modalSelect === 'card-quiz' && <Quiz setModalSelect={setModalSelect} setQuizType={setQuizType} deck={deckContent}/> }
         </div>

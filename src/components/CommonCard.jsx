@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ProgressBar from "@ramonak/react-progress-bar";
 import Performance from '../pages/personal/Performance';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
@@ -6,16 +6,15 @@ import Spinner from 'react-spinner-material';
 import randomGen from '../utils/randomGen';
 import './CommonCard.css';
 import shuffledNumbers from '../utils/shuffleArray';
+import axios from 'axios';
 
 var cardIndex = 0;
 let duration = 0;
-const timePerCard = 3
 let allocatedTime = 0; //seconds
-let stepPeriod = 3; // time interval of 3 seconds
 let correctAnswers = 0;
 let interval = null;
 
-const CommonCard = ({format, deck, quizType, quizLength, order}) => {
+const CommonCard = ({deckName, format, deck, quizType, quizLength, order}) => {
     const [card, setCard] = useState(deck[order[cardIndex]]);
     const [correctPos, setCorrectPos] = useState(false);
     const [selectedItem, setSelectedItem] = useState(false);
@@ -23,7 +22,40 @@ const CommonCard = ({format, deck, quizType, quizLength, order}) => {
     const [quizDone, setQuizDone] = useState(false);
     const [topProSize, setTopProSize ] = useState(0);
     const [btmProSize, setBtmProSize] = useState(0);
-    const [cardFormat, setCardFormat] = useState(format)
+    const [cardFormat, setCardFormat] = useState(format);
+    const [timePerCard, setTimePerCard] = useState(5);
+    
+    const allowApi = useRef(true)
+
+    const getMetadata = async () => {
+      const baseUrl = 'http://localhost:3500';
+      try {
+        const response =  await axios.get(`${baseUrl}/api/v1/cards/deckMetadata/${ deckName }`);
+        const data = response.data.deckMetadata;
+        return data.performance.correct; // i will use correct b/c it is 0-100
+      } catch (error) {
+        return error
+      }
+    }
+
+    useEffect(() => {
+      (allowApi.current) && ( async () => {
+        allowApi.current = false;
+        let d = await getMetadata()
+        if (d.length == 0) return;
+        d = d.filter((i) => i !== null) // bc 0 may not come
+        const count = Math.min(d.length, 3);
+        const lastNumbers = d.slice(-count)
+        const sum = lastNumbers.reduce((total, num) => total + num, 0);
+        const average = (sum / count)/10; // 0 - 10
+        console.log(lastNumbers, average)
+        const result = 10 * Math.exp(-0.1 * Math.log(10/3) * average); // max = 10, min = 3
+        console.log(result)
+        setTimePerCard(result);
+        return
+      })()
+      
+    }, [])
 
     useEffect(() => 
       setCard(deck[order[cardIndex]]), 
@@ -32,7 +64,7 @@ const CommonCard = ({format, deck, quizType, quizLength, order}) => {
     useEffect(() => {
         if (!card) return
         const AlreadyPicked = deck.indexOf(card)
-        console.log(card)
+        //console.log(card)
         const handleRandomize = async (max, howMany, alreadyUsed) => {
           try {
             const result = await randomGen(max, howMany, alreadyUsed); // Example values for max, howMany, and alreadyUsed
@@ -65,29 +97,51 @@ const CommonCard = ({format, deck, quizType, quizLength, order}) => {
 
 
     useEffect(() => {
-      console.log(deck)
+      //console.log(deck)
       if (!deck) return
-      console.log(deck, cardFormat, card)
+      //console.log(deck, cardFormat, card)
       cardIndex = 0;
       allocatedTime = timePerCard * deck.length // the allocated time will depend on the constant and the length of the deck
       correctAnswers = 0;
       interval = setInterval(() => {
-        setTopProSize(prev => { if (prev + stepPeriod*100/allocatedTime < 100) return prev + stepPeriod*100/allocatedTime
+        setTopProSize(prev => { if (prev + timePerCard*100/allocatedTime < 100) return prev + timePerCard*100/allocatedTime
                                     setQuizDone(true)
                                     return prev;
                               }
                       );
-      }, stepPeriod*1000);
+      }, timePerCard*1000);
 
       return () => clearInterval(interval)
-    }, [deck])
+    }, [deck, timePerCard])
 
     useEffect(() => {
       if (interval !== null && quizDone) {
+        console.log('done')
         clearInterval(interval);
         interval = null;
       }
     }, [quizDone])
+
+    useEffect(() => {
+      if (btmProSize == 0) return
+      let delayId
+      setQuizDone(() => {
+        if (btmProSize < 100) {
+            delayId = setTimeout(() => {
+            cardIndex += cardIndex < order.length - 1 ? 1 : 0 ; 
+            //setSelectedItem('')
+            setCard(deck[order[cardIndex]]);
+            setSelectedItem(null)
+          }, 1000);
+          return false
+        } else {
+          console.log(btmProSize)
+          return true
+        }
+      })
+      
+      return () => clearTimeout(delayId)
+    }, [btmProSize])
 
     useEffect(()=> {
         if (!incorrectArray) return
@@ -97,27 +151,18 @@ const CommonCard = ({format, deck, quizType, quizLength, order}) => {
     const handleItemClick = (item, itemIndex) => {
             if (correctPos === itemIndex) correctAnswers += 1;
             setSelectedItem(item);
-            console.log(btmProSize)
             setBtmProSize(prev => {
-              if ( prev + 100/deck.length >= 100 ) setQuizDone(true)
+              if ( prev + 100/deck.length >= 100 ) return 100
               return prev + 100/ deck.length }
             )
-            setTimeout(() => {
-              cardIndex += cardIndex < order.length - 1 ? 1 : 0 ; 
-              setSelectedItem('')
-              setCard(deck[order[cardIndex]]);
-              setSelectedItem(null)
-            }, 1000)
     };
     
     return (
         <>
           { deck ?
-          quizDone ? <Performance givenTime={allocatedTime} duration={ topProSize * allocatedTime /100 } correctAnswers={correctAnswers} all={deck.length} /> :
+          quizDone ? <Performance deckName={deckName} givenTime={allocatedTime} duration={ topProSize * allocatedTime /100 } correctAnswers={correctAnswers} all={deck.length} /> :
           
           <div className='common-card'>
-              {console.log('na')}
-              {console.log(cardFormat.label0)}
               <div className="common-head">
                   <div>{ cardFormat.label0 }</div>
                   { format.topProgressbar && <ProgressBar completed = {Math.floor(topProSize)} bgColor = "black" /> }

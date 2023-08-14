@@ -27,7 +27,7 @@
 export default function randomGen(max, howMany, alreadyUsed) {
     return new Promise((resolve, reject) => {
       const randomArray = [];
-      console.log(max)
+      //console.log(max)
   
       // Helper function to check if the item is valid and unique
       const isValidAndUnique = (item) => {
@@ -38,11 +38,11 @@ export default function randomGen(max, howMany, alreadyUsed) {
         const item = Math.floor(Math.random() * max);
   
         if (isValidAndUnique(item)) {
-            console.log(item, alreadyUsed, randomArray);
+            //console.log(item, alreadyUsed, randomArray);
             randomArray.push(item);
   
           if (randomArray.length === howMany) {
-            console.log(true, randomArray)
+            //console.log(true, randomArray)
             clearInterval(intervalId); // Stop the interval once the array is complete
             resolve(randomArray);
           }
