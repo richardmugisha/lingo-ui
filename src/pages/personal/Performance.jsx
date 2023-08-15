@@ -15,7 +15,7 @@ const Performance = ({deckName, givenTime, duration, correctAnswers, all }) => {
   const perfLabels = ['terrible', 'very bad', 'bad', 'practice more', 'fair', 'good', 'very good', 'wonderful']
   const perfRefs = [0, 20, 40, 60, 80, 95, 100]
   const perfEmojis = ['😥', '😔', '😬', '😌', '',  '🤠', '😎', '🤩']
-  const baseUrl = 'http://localhost:3500';
+  const baseUrl = "https://flashcard-api-hy23.onrender.com";
 
   const getMetadata = async (correct, speed, time) => {
     try {
