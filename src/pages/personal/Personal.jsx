@@ -16,6 +16,7 @@ import QuizLongMcq from './QuizLongMcq';
 import QuizLongGuess from './QuizLongGuess';
 import QuizShortMcq from './QuizShortMcq';
 import QuizShortGuess from './QuizShortGuess';
+import SpeechQuiz from './SpeechQuiz';
 //import deck from  '../../data/dummy'
 
 const Personal = () => {
@@ -140,6 +141,7 @@ const Personal = () => {
           { modalSelect === 'quiz-long-guess' && <QuizLongGuess deck={deckContent} quizType={quizType}/> }
           { modalSelect === 'quiz-short-mcq' && <QuizShortMcq deckName={deckName} deck={deckContent} quizType={quizType}/> }
           { modalSelect === 'quiz-short-guess' && <QuizShortGuess deck={deckContent} quizType={quizType}/> }
+          { modalSelect === 'speechQuiz' && <SpeechQuiz deck={deckContent} quizType={quizType}/> }
           { modalSelect === 'card-quiz' && <Quiz setModalSelect={setModalSelect} setQuizType={setQuizType} deck={deckContent}/> }
         </div>
       </div>
