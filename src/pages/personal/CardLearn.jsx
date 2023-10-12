@@ -38,7 +38,7 @@ const CardLearn = ( { deck} ) => {
           <i className="arrow" onClick={() => setCardIndex((prev) => prev > 0 ? prev-1 : deck.length-1)}><FiChevronLeft /></i>
           <div className='card-learn--content'>
               
-                <div><span className='card-learn--big'> : </span> {deck[cardIndex].meaning}</div>
+                <div><span className='card-learn--big'>{index+1}</span> {deck[cardIndex].meaning}</div>
                 <div>e.g: {deck[cardIndex].example}</div>
                 <br />
               
