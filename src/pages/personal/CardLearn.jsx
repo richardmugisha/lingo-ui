@@ -6,7 +6,7 @@ import Spinner from 'react-spinner-material';
 
 const CardLearn = ( { deck} ) => {
     const [cardIndex, setCardIndex] = useState(0);
-
+    console.log(deck[cardIndex])
     useEffect(() => {
       console.log(deck)
       const handleKeyPress = (event) => {
@@ -37,18 +37,16 @@ const CardLearn = ( { deck} ) => {
         <div className="card-learn--body">
           <i className="arrow" onClick={() => setCardIndex((prev) => prev > 0 ? prev-1 : deck.length-1)}><FiChevronLeft /></i>
           <div className='card-learn--content'>
-              {deck[cardIndex].meaning.map((item, index) => 
-                <div key={index}>
-                  <div><span className='card-learn--big'>{index+1})</span> {item.meaning}</div>
-                  <div>e.g: {item.example}</div>
-                  <br />
-                </div>
-              )}
+              
+                <div><span className='card-learn--big'> : </span> {deck[cardIndex].meaning}</div>
+                <div>e.g: {deck[cardIndex].example}</div>
+                <br />
+              
               <div>
-                <span className='card-learn--big'>synonyms </span>= {deck[cardIndex].synonym.map((synonym) => <span>{synonym}, </span>)}
+                <span className='card-learn--big'>synonym </span>= { deck[cardIndex].synonym }
               </div>
               <div>
-              <span className='card-learn--big'>antonyms </span>= {deck[cardIndex].antonym.map((antonym) => <span>{antonym}, </span>)}
+              <span className='card-learn--big'>antonym </span>= { deck[cardIndex].antonym }
               </div>
               <br />
           </div>

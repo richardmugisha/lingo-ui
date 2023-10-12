@@ -3,13 +3,13 @@ import axios from 'axios';
 import './CardAddAuto.css';
 import Spinner from 'react-spinner-material';
 
-const CardAddAuto = ({ deckName, setDeckList }) => {
+const CardAddAuto = ({ baseUrl, deckName, setDeckList }) => {
     const [status, setStatus] = useState('preSubmit');
     const textRef = useRef(null);
     console.log(deckName)
 
     const handleSubmit = () => {
-      const baseUrl = "https://flashcard-api-hy23.onrender.com";
+      // const baseUrl = "http://localhost:3500"//https://flashcard-api-hy23.onrender.com";
       const text = textRef.current.value;
       setStatus('submitting')
       console.log(text)

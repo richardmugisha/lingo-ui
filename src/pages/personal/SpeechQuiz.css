@@ -1,0 +1,15 @@
+.speechQuiz {
+    width: 40vw;
+    margin: auto;
+    background-color: #9BC5CB;
+    color: #E0F5F8;
+    font-size: large;
+    font-weight: 500;
+    padding: 10px;
+}
+
+.word {
+    font-size: x-large;
+    font-weight: 600;
+    text-align: center;
+}

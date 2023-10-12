@@ -28,7 +28,7 @@ const CommonCard = ({deckName, format, deck, quizType, quizLength, order}) => {
     const allowApi = useRef(true)
 
     const getMetadata = async () => {
-      const baseUrl = 'http://localhost:3500';
+      const baseUrl = "https://flashcard-api-hy23.onrender.com";
       try {
         const response =  await axios.get(`${baseUrl}/api/v1/cards/deckMetadata/${ deckName }`);
         const data = response.data.deckMetadata;

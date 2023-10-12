@@ -3,7 +3,7 @@ import './CardAddManual.css';
 import axios from 'axios';
 import Spinner from 'react-spinner-material';
 
-const CardAddManual = ({setModal, deckName, setModalSelect, setDeckList}) => {
+const CardAddManual = ({ baseUrl, setModal, deckName, setModalSelect, setDeckList}) => {
   const [status, setStatus] = useState('preSubmit');
   const [readytosubmit, setReadytosubmit] = useState(false);
   const formTemplate = {
@@ -45,7 +45,7 @@ const CardAddManual = ({setModal, deckName, setModalSelect, setDeckList}) => {
 
   const submitting = () => {
     console.log(formContent)
-    const baseUrl = "https://flashcard-api-hy23.onrender.com";
+    //const baseUrl = "https://flashcard-api-hy23.onrender.com";
     setStatus('submitting'); console.log('sub')
     postingData(`${baseUrl}/api/v1/cards/${deckName}`, { mode: 'manual', content: formContent} )
       .then((data) => {
