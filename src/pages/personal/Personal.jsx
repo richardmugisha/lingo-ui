@@ -131,12 +131,12 @@ const Personal = () => {
       <div className="modal">
         <div className="inner-modal">
           <i className='cancel' onClick={() => {setModal(false); setModalSelect('card')}}><FiXCircle /></i>
-          { modalSelect === 'card' && <Card setModal={setModal} setModalSelect={setModalSelect} /> }
-          { modalSelect === 'card-add' && <CardAdd deck={deckContent} setModal={setModal} setModalSelect={setModalSelect} /> }
-          { modalSelect === 'card-add-manual' && <CardAddManual setDeckList={setDeckList} deckName={deckName} setModal={setModal} setModalSelect={setModalSelect} /> }
-          { modalSelect === 'card-add-auto' && <CardAddAuto setDeckList={setDeckList} deckName={deckName} setModal={setModal} setModalSelect={setModalSelect} /> }
-          { modalSelect === 'new-deck' && <NewDeck setDeckName={setDeckName} setModal={setModal} setModalSelect={setModalSelect} /> }
-          { modalSelect === 'card-learn' && <CardLearn deck={deckContent} /> }
+          { modalSelect === 'card' && <Card baseUrl={baseUrl} setModal={setModal} setModalSelect={setModalSelect} /> }
+          { modalSelect === 'card-add' && <CardAdd baseUrl={baseUrl} deck={deckContent} setModal={setModal} setModalSelect={setModalSelect} /> }
+          { modalSelect === 'card-add-manual' && <CardAddManual baseUrl={baseUrl} setDeckList={setDeckList} deckName={deckName} setModal={setModal} setModalSelect={setModalSelect} /> }
+          { modalSelect === 'card-add-auto' && <CardAddAuto baseUrl={baseUrl} setDeckList={setDeckList} deckName={deckName} setModal={setModal} setModalSelect={setModalSelect} /> }
+          { modalSelect === 'new-deck' && <NewDeck baseUrl={baseUrl} setDeckName={setDeckName} setModal={setModal} setModalSelect={setModalSelect} /> }
+          { modalSelect === 'card-learn' && <CardLearn baseUrl={baseUrl} deck={deckContent} /> }
           { modalSelect === 'quiz-long-mcq' && <QuizLongMcq deck={deckContent} quizType={quizType}/> }
           { modalSelect === 'quiz-long-guess' && <QuizLongGuess deck={deckContent} quizType={quizType}/> }
           { modalSelect === 'quiz-short-mcq' && <QuizShortMcq deckName={deckName} deck={deckContent} quizType={quizType}/> }
