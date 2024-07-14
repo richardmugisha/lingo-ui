@@ -15,13 +15,20 @@ const Performance = ({deckName, givenTime, duration, correctAnswers, all }) => {
   const perfLabels = ['terrible', 'very bad', 'bad', 'practice more', 'fair', 'good', 'very good', 'wonderful']
   const perfRefs = [0, 20, 40, 60, 80, 95, 100]
   const perfEmojis = ['😥', '😔', '😬', '😌', '',  '🤠', '😎', '🤩']
+<<<<<<< HEAD:src/pages/personal/Performance.jsx
   const baseUrl = "https://flashcard-api-hy23.onrender.com";
 
+=======
+  
+  const baseUrl = import.meta.env.VITE_API_BASE_URL
+  
+>>>>>>> temp-branch:src/pages/personal/performance/Performance.jsx
   const getMetadata = async (correct, speed, time) => {
     try {
+      
       const performData =  await axios.get(`${baseUrl}/api/v1/cards/deckMetadata/${ deckName }`);
       const data = performData.data.deckMetadata
-      //console.log(data)
+      console.log(data)
       if (!data) return [true, true, false] // if no reference, we assume we are progressing
       const perf = data.performance;
       
@@ -74,7 +81,7 @@ const Performance = ({deckName, givenTime, duration, correctAnswers, all }) => {
     <>
     { ready ? 
     <div className='performance'>
-      <div className="performance--title">Performance</div>
+      <div className="performance--title">Performance</div><hr />
       <div className="performance--body">
         <div className="amount">
           <div className="label">Correct</div>

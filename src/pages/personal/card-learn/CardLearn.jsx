@@ -4,7 +4,7 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import Spinner from 'react-spinner-material';
 
-const CardLearn = ( { deck} ) => {
+const CardLearn = ( { deckName, deck} ) => {
     const [cardIndex, setCardIndex] = useState(0);
     console.log(deck[cardIndex])
     useEffect(() => {
@@ -28,15 +28,16 @@ const CardLearn = ( { deck} ) => {
     { deck ?
     <div className="card-learn">
         <div className="card-learn--head">
-            <div className='card-learn--deckname'>{deck[cardIndex].deckName}</div> 
+            <div className='card-learn--deckname'>{deckName}</div> 
             <br />
-            <span className='card-learn--big'>{deck[cardIndex].word}</span> : <span>{deck[cardIndex].type}</span>
+            <span className='card-learn--big'>{deck[cardIndex]['root word']}</span> {/*: <span>{deck[cardIndex].type}</span>*/}
         </div>
         <br />
 
         <div className="card-learn--body">
           <i className="arrow" onClick={() => setCardIndex((prev) => prev > 0 ? prev-1 : deck.length-1)}><FiChevronLeft /></i>
           <div className='card-learn--content'>
+<<<<<<< HEAD:src/pages/personal/CardLearn.jsx
               
                 <div><span className='card-learn--big'>{index+1}</span> {deck[cardIndex].meaning}</div>
                 <div>e.g: {deck[cardIndex].example}</div>
@@ -48,6 +49,38 @@ const CardLearn = ( { deck} ) => {
               <div>
               <span className='card-learn--big'>antonym </span>= { deck[cardIndex].antonym }
               </div>
+=======
+              {deck[cardIndex].variations.map((variation, index) => 
+              <section key={index}>
+                <div>
+                  <div>
+                    <span className='card-learn--big'>{index+1} </span><span>{variation.variationType}</span> : <span>{variation.variationWord}</span>
+                    <div> - {variation['language style']}</div>
+                  </div>
+                  <div><span className=''>def: </span> {variation.meaning}</div>
+                  <div>e.g: {variation.example}</div>
+                  <br />
+                </div>
+
+                <div>
+                  <span className=''>synonym </span> = <span>{variation.synonym}</span> 
+                </div>
+
+                <div>
+                  <span className=''>antonym </span>= <span>{variation.antonym}</span> 
+                </div>
+                {index < deck[cardIndex].variations.length - 1 && <><br /><hr /><br/></>}
+              </section>
+              
+              )}
+
+              {/* <div>
+                <span className='card-learn--big'>synonym </span>= {[deck[cardIndex].variations.synonym].map((synonym) => <span>{synonym}, </span>)}
+              </div>
+              <div>
+              <span className='card-learn--big'>antonyms </span>= {[deck[cardIndex].variations.antonym].map((antonym) => <span>{antonym}, </span>)}
+              </div> */}
+>>>>>>> temp-branch:src/pages/personal/card-learn/CardLearn.jsx
               <br />
           </div>
           <i className="arrow" onClick={() => setCardIndex((prev) => prev < deck.length - 1 ? prev + 1 : 0)}><FiChevronRight /></i>

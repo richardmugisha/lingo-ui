@@ -1,7 +1,8 @@
 import React from 'react';
-import CommonCard from '../../components/CommonCard';
+import CommonCard from '../../../components/CommonCard';
+import shuffledNumbers from '../../../utils/shuffleArray';
 
-const QuizLongGuess = () => {
+const QuizLongGuess = ({ deckName, quizType, deck}) => {
     const format = {
         aboveTopProgressbar: "Guess ...",
         topProgressbar: true,
@@ -14,8 +15,11 @@ const QuizLongGuess = () => {
         },
         bottomProgressbar: true,
     }
+
+    const order = shuffledNumbers(deck.length-1)
+    
   return (
-    <CommonCard format={format} />
+    <CommonCard deckName={deckName} format={format} deck={deck} order={order} quizType={quizType} quizLength = "long"/>
   )
 }
 

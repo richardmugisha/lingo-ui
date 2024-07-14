@@ -23,7 +23,7 @@ const CardAdd = ({deck, setModal, setModalSelect}) => {
   }, [deck.length]); 
   
   
-  // console.log(deck)
+  console.log(deck)
   // if (deck) console.log(deck[cardIndex].deckName)
 
   return (
@@ -37,17 +37,14 @@ const CardAdd = ({deck, setModal, setModalSelect}) => {
       </div>
       <div className="main">
             <div className="top">
-                <div>{deck[cardIndex].word}</div>
-                <div>{deck[cardIndex].type}</div>
+                <div>{deck[cardIndex].variations[0].variationWord}</div>
+                <div>{deck[cardIndex].variations[0].variationType}</div>
             </div>
             <div className="middle">
                 <i className="arrow" onClick={() => setCardIndex((prev) => prev > 0 ? prev-1 : deck.length-1)}><FiChevronLeft /></i>
                 <div className="content">
-                  { deck[cardIndex].meaning[0] && <>
-                    <div>{deck[cardIndex].meaning[0].meaning}</div>
-                    <div>e.g: {deck[cardIndex].meaning[0].example}</div>
-                    </>
-                  }
+                    <div>{deck[cardIndex].variations[0].meaning}</div>
+                    <div>e.g: {deck[cardIndex].variations[0].example}</div>  
                 </div>
                 <i className="arrow" onClick={() => setCardIndex((prev) => prev < deck.length - 1 ? prev + 1 : 0)}><FiChevronRight /></i>
             </div>

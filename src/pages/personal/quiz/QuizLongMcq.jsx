@@ -1,6 +1,6 @@
 import React from 'react';
-import CommonCard from '../../components/CommonCard';
-import shuffledNumbers from '../../utils/shuffleArray';
+import CommonCard from '../../../components/CommonCard';
+import shuffledNumbers from '../../../utils/shuffleArray';
 
 const QuizLongMcq = ({quizType, deck}) => {
     const format = {

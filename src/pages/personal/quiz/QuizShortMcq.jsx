@@ -1,6 +1,6 @@
 import React from 'react';
-import CommonCard from '../../components/CommonCard';
-import shuffledNumbers from '../../utils/shuffleArray';
+import CommonCard from '../../../components/CommonCard';
+import shuffledNumbers from '../../../utils/shuffleArray';
 
 const QuizShortMcq = ({ deckName, quizType, deck}) => {
     const format = {
@@ -17,6 +17,7 @@ const QuizShortMcq = ({ deckName, quizType, deck}) => {
     }
   
     const order = shuffledNumbers(deck.length-1)
+    console.log(order)
     
   return (
       <CommonCard deckName={deckName} format={format} deck={deck} order={order} quizType={quizType} quizLength = "short"/>
