@@ -2,21 +2,14 @@ import React, { useState } from 'react';
 import './Quiz.css'
 
 const Quiz = ({ setModalSelect, setQuizType }) => {
-  const [questionTypes, setQuestionTypes] = useState(['mcq', 'guess', 'speaking', 'storytelling'])
+  const [questionTypes, setQuestionTypes] = useState(['mcq', 'guess'])
   const [answerTypes, setAnswerTypes] = useState(['meaning', 'example', 'synonym', 'antonym']);
   const [answerLengths, setAnswerLengths] = useState(['short', 'long'])
 
   const handleSubmit = () => {
-    if (questionTypes[0] === 'speaking') {
-      setModalSelect('speechQuiz')
-    } 
-    else {
-      const route = `quiz-${answerLengths[0]}-${questionTypes[0]}`;
-      setModalSelect(route)
-    }
-    
+    const route = `quiz-${answerLengths[0]}-${questionTypes[0]}`;
     setQuizType(answerTypes[0]);
-    
+    setModalSelect(route);
   }
 
   return (

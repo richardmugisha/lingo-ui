@@ -11,20 +11,11 @@ import CardAddAuto from '../card-add-auto/CardAddAuto';
 import NewDeck from '../new-deck/NewDeck';
 import CardLearn from '../card-learn/CardLearn';
 import './Personal.css';
-<<<<<<< HEAD:src/pages/personal/Personal.jsx
-import Quiz from './Quiz';
-import QuizLongMcq from './QuizLongMcq';
-import QuizLongGuess from './QuizLongGuess';
-import QuizShortMcq from './QuizShortMcq';
-import QuizShortGuess from './QuizShortGuess';
-import SpeechQuiz from './SpeechQuiz';
-=======
 import Quiz from '../quiz/Quiz'
 import QuizLongMcq from '../quiz/QuizLongMcq';
 import QuizLongGuess from '../quiz/QuizLongGuess';
 import QuizShortMcq from '../quiz/QuizShortMcq';
 import QuizShortGuess from '../quiz/QuizShortGuess';
->>>>>>> temp-branch:src/pages/personal/personal/Personal.jsx
 //import deck from  '../../data/dummy'
 
 import Filters from '../../filters/Filters';
@@ -149,19 +140,6 @@ const Personal = () => {
       <div className="modal">
         <div className="inner-modal">
           <i className='cancel' onClick={() => {setModal(false); setModalSelect('card')}}><FiXCircle /></i>
-<<<<<<< HEAD:src/pages/personal/Personal.jsx
-          { modalSelect === 'card' && <Card baseUrl={baseUrl} setModal={setModal} setModalSelect={setModalSelect} /> }
-          { modalSelect === 'card-add' && <CardAdd baseUrl={baseUrl} deck={deckContent} setModal={setModal} setModalSelect={setModalSelect} /> }
-          { modalSelect === 'card-add-manual' && <CardAddManual baseUrl={baseUrl} setDeckList={setDeckList} deckName={deckName} setModal={setModal} setModalSelect={setModalSelect} /> }
-          { modalSelect === 'card-add-auto' && <CardAddAuto baseUrl={baseUrl} setDeckList={setDeckList} deckName={deckName} setModal={setModal} setModalSelect={setModalSelect} /> }
-          { modalSelect === 'new-deck' && <NewDeck baseUrl={baseUrl} setDeckName={setDeckName} setModal={setModal} setModalSelect={setModalSelect} /> }
-          { modalSelect === 'card-learn' && <CardLearn baseUrl={baseUrl} deck={deckContent} /> }
-          { modalSelect === 'quiz-long-mcq' && <QuizLongMcq deck={deckContent} quizType={quizType}/> }
-          { modalSelect === 'quiz-long-guess' && <QuizLongGuess deck={deckContent} quizType={quizType}/> }
-          { modalSelect === 'quiz-short-mcq' && <QuizShortMcq deckName={deckName} deck={deckContent} quizType={quizType}/> }
-          { modalSelect === 'quiz-short-guess' && <QuizShortGuess deck={deckContent} quizType={quizType}/> }
-          { modalSelect === 'speechQuiz' && <SpeechQuiz deck={deckContent} quizType={quizType}/> }
-=======
           { modalSelect === 'card' && <Card deckId={deckId} setModal={setModal} setModalSelect={setModalSelect} /> }
           { modalSelect === 'card-add' && <CardAdd deck={deckContent} setModal={setModal} setModalSelect={setModalSelect} /> }
           { modalSelect === 'card-add-manual' && <CardAddManual setDeckList={setDeckList} deckName={deckName} setModal={setModal} setModalSelect={setModalSelect} /> }
@@ -172,7 +150,6 @@ const Personal = () => {
           { modalSelect === 'quiz-long-guess' && <QuizLongGuess deck={deckContent} quizType={quizType}/> }
           { modalSelect === 'quiz-short-mcq' && <QuizShortMcq deckName={deckName} deck={deckContent} quizType={quizType}/> }
           { modalSelect === 'quiz-short-guess' && <QuizShortGuess deckName={deckName} deck={deckContent} quizType={quizType}/> }
->>>>>>> temp-branch:src/pages/personal/personal/Personal.jsx
           { modalSelect === 'card-quiz' && <Quiz setModalSelect={setModalSelect} setQuizType={setQuizType} deck={deckContent}/> }
         </div>
       </div>

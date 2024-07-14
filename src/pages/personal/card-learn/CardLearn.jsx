@@ -6,7 +6,7 @@ import Spinner from 'react-spinner-material';
 
 const CardLearn = ( { deckName, deck} ) => {
     const [cardIndex, setCardIndex] = useState(0);
-    console.log(deck[cardIndex])
+
     useEffect(() => {
       console.log(deck)
       const handleKeyPress = (event) => {
@@ -37,19 +37,6 @@ const CardLearn = ( { deckName, deck} ) => {
         <div className="card-learn--body">
           <i className="arrow" onClick={() => setCardIndex((prev) => prev > 0 ? prev-1 : deck.length-1)}><FiChevronLeft /></i>
           <div className='card-learn--content'>
-<<<<<<< HEAD:src/pages/personal/CardLearn.jsx
-              
-                <div><span className='card-learn--big'>{index+1}</span> {deck[cardIndex].meaning}</div>
-                <div>e.g: {deck[cardIndex].example}</div>
-                <br />
-              
-              <div>
-                <span className='card-learn--big'>synonym </span>= { deck[cardIndex].synonym }
-              </div>
-              <div>
-              <span className='card-learn--big'>antonym </span>= { deck[cardIndex].antonym }
-              </div>
-=======
               {deck[cardIndex].variations.map((variation, index) => 
               <section key={index}>
                 <div>
@@ -80,7 +67,6 @@ const CardLearn = ( { deckName, deck} ) => {
               <div>
               <span className='card-learn--big'>antonyms </span>= {[deck[cardIndex].variations.antonym].map((antonym) => <span>{antonym}, </span>)}
               </div> */}
->>>>>>> temp-branch:src/pages/personal/card-learn/CardLearn.jsx
               <br />
           </div>
           <i className="arrow" onClick={() => setCardIndex((prev) => prev < deck.length - 1 ? prev + 1 : 0)}><FiChevronRight /></i>
