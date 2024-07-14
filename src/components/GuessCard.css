@@ -1,0 +1,102 @@
+.guess-quiz {
+    min-width: 40vw;
+    margin: auto;
+    background-color: #9BC5CB;
+    color: #E0F5F8;
+    font-size: large;
+    font-weight: 500;
+    padding: 10px;
+    text-align: center;
+}
+
+.guess-top {
+    margin: 1em;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.dir {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    padding: 5px;
+    border-radius: 3px;
+    font-size: xx-large;
+    cursor: pointer;
+}
+
+.guess-box {
+    max-width: 300px;
+    aspect-ratio: 1;
+    margin: 1em;
+    overflow: auto;
+    margin-inline: auto;
+    scrollbar-width: none;
+    background-color: rgb(111, 158, 158)
+}
+
+.guess-container {
+    background-color: rgb(111, 158, 158);
+    width: 600px;
+    height: 300px;
+    display: flex;
+    justify-content: center; align-items: center;
+}
+
+.guess-card {
+    background-color: rgba(194, 192, 192, 0.375);
+    color: black;
+    width: 250px;
+    aspect-ratio: 1;
+    padding: 1em;
+    box-shadow: 0 0 20px black;
+    cursor: pointer;
+    display: flex; flex-direction: column;
+    justify-content: space-around; align-items: center;
+}
+
+.guess-card--footer{
+    font-size: small;
+}
+.answer-card {
+    animation: growAndChangeColor 1s forwards;
+}
+
+@keyframes growAndChangeColor {
+    0% {
+      width: 250px;
+    }
+    50% {
+      width: 270px; /* Grow by 20px */
+      background-color: rgb(165, 225, 100);
+    }
+    100% {
+      width: 250px;
+      background-color: rgba(194, 192, 192, 0.375);
+    }
+  }
+
+  @keyframes scrollAnimationFromRight {
+    0% { transform: translateX(250px); }
+    50% { transform: translateX(-30px); }
+    65% { transform: translateX(15px); }
+    80% { transform: translateX(-7px); }
+    90% { transform: translateX(5px); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes scrollAnimationFromLeft {
+    0% { transform: translateX(-250px); }
+    50% { transform: translateX(30px); }
+    65% { transform: translateX(-15px); }
+    80% { transform: translateX(7px); }
+    90% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+  }
+  
+  .card-left-to-right {
+    animation: scrollAnimationFromLeft 2s ease-out;
+  }
+  .card-right-to-left {
+    animation: scrollAnimationFromRight 2s ease-out;
+  }
+  
+  

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ProgressBar from "@ramonak/react-progress-bar";
-import Performance from '../pages/personal/Performance';
+import Performance from '../pages/personal/performance/Performance';
+import GuessCard from './GuessCard';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import Spinner from 'react-spinner-material';
 import randomGen from '../utils/randomGen';
@@ -16,9 +17,9 @@ let interval = null;
 
 const CommonCard = ({deckName, format, deck, quizType, quizLength, order}) => {
     const [card, setCard] = useState(deck[order[cardIndex]]);
-    const [correctPos, setCorrectPos] = useState(false);
+    const [correctOption, setCorrectOption] = useState(false);
     const [selectedItem, setSelectedItem] = useState(false);
-    const [incorrectArray, setIncorrectArray] = useState(false);
+    const [optionArray, setOptionArray] = useState(false);
     const [quizDone, setQuizDone] = useState(false);
     const [topProSize, setTopProSize ] = useState(0);
     const [btmProSize, setBtmProSize] = useState(0);
@@ -28,13 +29,13 @@ const CommonCard = ({deckName, format, deck, quizType, quizLength, order}) => {
     const allowApi = useRef(true)
 
     const getMetadata = async () => {
-      const baseUrl = 'http://localhost:3500';
+      const baseUrl = import.meta.env.VITE_API_BASE_URL
       try {
         const response =  await axios.get(`${baseUrl}/api/v1/cards/deckMetadata/${ deckName }`);
         const data = response.data.deckMetadata;
-        return data.performance.correct; // i will use correct b/c it is 0-100
+        return data?.performance?.correct; // i will use correct b/c it is 0-100
       } catch (error) {
-        return error
+         return
       }
     }
 
@@ -42,32 +43,27 @@ const CommonCard = ({deckName, format, deck, quizType, quizLength, order}) => {
       (allowApi.current) && ( async () => {
         allowApi.current = false;
         let d = await getMetadata()
-        if (d.length == 0) return;
+        if (!d || d.length === 0) return;
         d = d.filter((i) => i !== null) // bc 0 may not come
         const count = Math.min(d.length, 3);
         const lastNumbers = d.slice(-count)
         const sum = lastNumbers.reduce((total, num) => total + num, 0);
         const average = (sum / count)/10; // 0 - 10
-        console.log(lastNumbers, average)
         const result = 10 * Math.exp(-0.1 * Math.log(10/3) * average); // max = 10, min = 3
-        console.log(result)
         setTimePerCard(result);
         return
       })()
       
     }, [])
 
-    useEffect(() => 
-      setCard(deck[order[cardIndex]]), 
-      [deck])
+    useEffect(() => setCard(deck[order[cardIndex]]), [deck])
     
     useEffect(() => {
         if (!card) return
         const AlreadyPicked = deck.indexOf(card)
-        //console.log(card)
         const handleRandomize = async (max, howMany, alreadyUsed) => {
           try {
-            const result = await randomGen(max, howMany, alreadyUsed); // Example values for max, howMany, and alreadyUsed
+            const result = await randomGen(max, howMany, alreadyUsed); 
             return [...result];
           } catch (error) {
             console.error('Error in randomizer:', error);
@@ -75,31 +71,46 @@ const CommonCard = ({deckName, format, deck, quizType, quizLength, order}) => {
         };
 
         if (format.content.type === 'mcq') {
-          if (quizLength === 'short') {
-            if (quizType === 'synonym' || quizType === 'antonym') {
-              handleRandomize(card[quizType].length, 1, '').then(dataArr => setCardFormat((prev) => ({...prev, label0 : (card[quizType][dataArr[0]])})))
-            }
-            else{
-              handleRandomize(card.meaning.length, 1, '').then(dataArr => setCardFormat((prev) => ({...prev, label0: (card.meaning[dataArr[0]][quizType]).toLowerCase().replace(card.word, '____')})))
-            }
-            //format.label0 = label0Content //quizType === 'synonym' || quizType === 'antonym'? label0Content : card.meaning[randomGen(card.meaning.length, 1, '')[0]][quizType];
-            setCardFormat((prev) => ({...prev, label1 : quizType === 'example'? 'fill in the blanks': `is the ${quizType} of :`}))  //format.label1 = quizType === 'example'? 'fill in the blanks': `is the ${quizType} of :`
+          handleRandomize(card.variations.length, 1, '')
+            .then(dataArr => {
+              setCardFormat(prev => 
+                ({...prev, 
+                  label0 : quizLength === 'short' ? (quizType !== "example" ? card.variations[dataArr[0]][quizType] : card.variations[dataArr[0]][quizType].replace(card.variations[dataArr[0]].wordReferenceInExample, '____')) : card.variations[dataArr[0]].variationWord,
+                  label1 : quizLength === 'short' ? (quizType === 'example'? 'fill in the blanks': `is the ${quizType} of :`) : (quizType === 'example'? 'Fill in the blanks with this': `What is the ${quizType} of:`)
+                })
+              );
+              setCorrectOption(quizLength === 'short' ? card.variations[dataArr[0]].variationWord : quizType !== 'example' ? card.variations[dataArr[0]][quizType] : card.variations[dataArr[0]][quizType].toLowerCase().replace(card.variations[dataArr[0]].wordReferenceInExample.toLowerCase(), '____') )
+              handleRandomize(deck.length, deck.length >= 4 ? 3 : deck.length-1, AlreadyPicked)
+              .then(dataArrHere => 
+                setOptionArray(() => 
+                  shuffledNumbers([...dataArrHere, AlreadyPicked])
+                        .map(cardIndexHere => {
+                          const variation = deck[cardIndexHere].variations.find(variation => variation.variationType === card.variations[dataArr[0]].variationType) || deck[cardIndexHere].variations[0]
+                          return quizLength === 'long' ? {...variation, example : variation.example.toLowerCase().replace(variation.wordReferenceInExample.toLowerCase(), '____') } : variation
+                        })  
+                )
+              )
+            })
           }
-          else if (quizLength === 'long') {
-            format.label0 = quizType === 'example'? 'Fill in the blanks with this': `What is the ${quizType} of:`;
-            format.label1 = card.word
-          }
+        
+        else if (format.content.type === 'guess') {
+          handleRandomize(card.variations.length, 1, '')
+          .then(dataArr => 
+            setCardFormat(prev => 
+              ({
+              ...prev, 
+              question : quizLength === 'short' ? (quizType !== "example" ? card.variations[dataArr[0]][quizType] : card.variations[dataArr[0]][quizType].replace(card.variations[dataArr[0]].wordReferenceInExample, '____')) : card.variations[dataArr[0]].variationWord,
+              answer : quizLength === 'short' ? card.variations[dataArr[0]].variationWord : card.variations[dataArr[0]][quizType],
+              })
+            )
+          )
         }
 
-        handleRandomize(deck.length, deck.length >= 4 ? 3 : deck.length-1, AlreadyPicked).then(dataArr => setIncorrectArray(shuffledNumbers([...dataArr, AlreadyPicked])))
-        
       }, [card, deck])
 
 
     useEffect(() => {
-      //console.log(deck)
       if (!deck) return
-      //console.log(deck, cardFormat, card)
       cardIndex = 0;
       allocatedTime = timePerCard * deck.length // the allocated time will depend on the constant and the length of the deck
       correctAnswers = 0;
@@ -116,7 +127,6 @@ const CommonCard = ({deckName, format, deck, quizType, quizLength, order}) => {
 
     useEffect(() => {
       if (interval !== null && quizDone) {
-        console.log('done')
         clearInterval(interval);
         interval = null;
       }
@@ -128,11 +138,9 @@ const CommonCard = ({deckName, format, deck, quizType, quizLength, order}) => {
       setQuizDone(() => {
         if (btmProSize < 100) {
             delayId = setTimeout(() => {
-            cardIndex += cardIndex < order.length - 1 ? 1 : 0 ; 
-            //setSelectedItem('')
-            setCard(deck[order[cardIndex]]);
-            setSelectedItem(null)
-          }, 1000);
+              setCard(deck[order[Math.round(btmProSize * deck.length/100)]]);
+              setSelectedItem(null)
+            }, format.content.type === 'mcq' ? 1000: 0);
           return false
         } else {
           console.log(btmProSize)
@@ -143,18 +151,15 @@ const CommonCard = ({deckName, format, deck, quizType, quizLength, order}) => {
       return () => clearTimeout(delayId)
     }, [btmProSize])
 
-    useEffect(()=> {
-        if (!incorrectArray) return
-        setCorrectPos(incorrectArray.indexOf(deck.indexOf(card)))
-    }, [incorrectArray])
+    // useEffect(()=> {
+    //     if (!optionArray) return
+    //     setCorrectOption(optionArray.indexOf(deck.indexOf(card)))
+    // }, [optionArray])
 
-    const handleItemClick = (item, itemIndex) => {
-            if (correctPos === itemIndex) correctAnswers += 1;
+    const handleItemClick = (item, correct) => {
+            if (correct) correctAnswers += 1;
             setSelectedItem(item);
-            setBtmProSize(prev => {
-              if ( prev + 100/deck.length >= 100 ) return 100
-              return prev + 100/ deck.length }
-            )
+            setBtmProSize(prev =>  Math.round((Math.round(prev*deck.length/100) + 1) * 100/deck.length) ) 
     };
     
     return (
@@ -162,9 +167,10 @@ const CommonCard = ({deckName, format, deck, quizType, quizLength, order}) => {
           { deck ?
           quizDone ? <Performance deckName={deckName} givenTime={allocatedTime} duration={ topProSize * allocatedTime /100 } correctAnswers={correctAnswers} all={deck.length} /> :
           
+          format.content.type === 'mcq' ?
           <div className='common-card'>
               <div className="common-head">
-                  <div>{ cardFormat.label0 }</div>
+                  <div>{cardFormat.label0 }</div>
                   { format.topProgressbar && <ProgressBar completed = {Math.floor(topProSize)} bgColor = "black" /> }
                   <div>{ cardFormat.label1 }</div>
                   { format.label2 && <div>{ format.label2 }</div> }
@@ -179,13 +185,10 @@ const CommonCard = ({deckName, format, deck, quizType, quizLength, order}) => {
 
               <div className="middle">
                 { format.content.type === 'guess' && <i className="arrow"><FiChevronLeft /></i>}
-              { format.content && <div className="content">{ incorrectArray && incorrectArray.map(index => { // incorrect is the array of 4 random cards in the deck
-                if (quizLength === 'short') return deck[index].word;
-                if (['synonym', 'antonym'].includes(quizType)) return deck[index][quizType][index%4] // synonym / antonym at this almost random location
-                return deck[index]['meaning'][index%4][quizType].toLowerCase().replace(deck[index].word, '____')
-              }).map((item, indexHere) => {
-                return  <div key={indexHere} style={{backgroundColor: selectedItem && correctPos === indexHere ? 'green': (selectedItem === item) ? 'red': ''}} 
-                            onClick={() => {handleItemClick(item, indexHere)}}>{item}
+              { format.content && <div className="content">{ optionArray && optionArray.map(variation => quizLength === 'short' ? (quizType === 'example' ? variation.wordReferenceInExample : variation.variationWord) : variation[quizType]
+              ).map((item, indexHere) => {
+                return  <div key={indexHere} style={{backgroundColor: selectedItem && correctOption === item ? 'green': (selectedItem === item) ? 'red': ''}} 
+                            onClick={() => {handleItemClick(item, item === correctOption)}}>{item}
                         </div>
               })}</div>}
                 { format.content.type === 'guess' && <i className="arrow"><FiChevronRight /></i>}
@@ -198,7 +201,8 @@ const CommonCard = ({deckName, format, deck, quizType, quizLength, order}) => {
               { format.btmProgressbar && <ProgressBar completed = { Math.floor(btmProSize) } bgColor = "black" /> }
               { format.label4 && <div>{ format.label4 }</div> }
             </div>
-          </div>
+          </div>:
+          <GuessCard cardFormat={cardFormat} btmProSize={btmProSize} handleItemClick={handleItemClick} topProSize={topProSize} quizLength={quizLength} quizType={quizType}/>
           :<div style={{height: '200px', width: '200px', padding: '50px'}}><Spinner radius={100} color={"#b0b0ff"} stroke={2} visible={true} /></div> 
         }
         </>

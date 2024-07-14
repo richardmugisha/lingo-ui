@@ -1,0 +1,45 @@
+.card-add-auto {
+    background-color: #9BC5CB;
+    flex-wrap: wrap;
+    color: #E0F5F8;
+    padding: 1em;
+}
+
+.card-add-auto--top {
+    display: flex;
+    justify-content: space-between;
+}
+
+.card-add-auto > .ProgressBar {
+    margin: .5em;
+    width: 90%;
+}
+
+.card-add-auto > div .deckName, .card-add-auto > div .submit {
+    font-size: large;
+    font-weight: 500;
+    padding: 10px 20px;
+    margin: 10px;
+    height: 50px;
+}
+
+.card-add-auto > div .submit {
+    background-color: #345C70;
+    color: #E0F5F8;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+
+.card-add-auto textarea {
+    margin: 2.5em 0 0 0;
+    width: 500px;
+    height: 300px;
+    border-radius: 20px;
+    background-color: #345C70;
+    color: #E0F5F8;
+    font-size: large;
+    font-weight: 500;
+    padding: 10px;
+    overflow: hidden;
+}
