@@ -5,6 +5,7 @@ import './More.css'
 
 import Pdf from './pdf/Pdf';
 import Temp from './temporary/Temp';
+import Yapping from './yapping/Yapping';
 
 import { Link, BrowserRouter as Router, Routes, Route  } from 'react-router-dom';
 
@@ -14,6 +15,7 @@ const More = () => {
       <Routes>
         <Route path='' element={<MoreHome />} />
         <Route path='pdf' element ={<Pdf />} />
+        <Route path='story-time' element ={<Yapping />} />
         <Route path='temporary/:idType/:id' element = {<Temp />} />
         <Route path='extension' />
         <Route path='mobile' />

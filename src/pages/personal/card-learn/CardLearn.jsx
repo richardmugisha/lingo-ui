@@ -23,6 +23,8 @@ const CardLearn = ( { deckName, deck} ) => {
       };
     }, [deck.length]); 
 
+    useEffect(() => console.log(deck[cardIndex]), [cardIndex])
+
   return (
     <>
     { deck ?

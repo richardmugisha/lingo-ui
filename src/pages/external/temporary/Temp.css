@@ -4,6 +4,19 @@
     background-color: rgba(0, 0, 0, 0.05);
 }
 
+.alert {
+  position: absolute;
+  z-index: 2;
+  top: 100px;
+  width: 500px;
+  left: calc(50% - 250px);
+  padding: 1em;
+  background-color: rgb(237, 92, 39);
+  color: white;
+  display: flex;
+}
+
+
 .unprocessed {
     height: 15%;
     background-color: rgba(200, 222, 234, 0.78);

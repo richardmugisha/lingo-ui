@@ -38,14 +38,16 @@ const Personal = () => {
       const [popup, setPopup] = useState('')
       const baseUrl = import.meta.env.VITE_API_BASE_URL
       useEffect(()=> {
-        localStorage.removeItem('deckId')
+        !modal && localStorage.removeItem('deckId')
       }, [modal])
 
       useEffect(() => {
         setModal(false);
         const getDeckList = async () => {
           try {
-            const response = await axios.get(`${baseUrl}/api/v1/cards`);
+            const user = JSON.parse(localStorage.getItem('user')).userId
+            console.log(user, 'user')
+            const response = await axios.get(`${baseUrl}/api/v1/cards/${user}`);
             const data = await response.data;
             setSearching(false)
             return data
@@ -65,6 +67,8 @@ const Personal = () => {
         if (deleting) return setPersonalSelectedItem(prev => prev.includes(deckId) ? prev.filter(id => id !== deckId) : [...prev, deckId]);
         setDeckName(deckName);
         localStorage.setItem('deckId', deckId)
+        console.log(localStorage.getItem('deckId'))
+        console.log('local', deckId)
         setModal(true)
         try {
           const res = await axios.get(`${baseUrl}/api/v1/cards/${deckId}`);
@@ -140,7 +144,7 @@ const Personal = () => {
       <div className="modal">
         <div className="inner-modal">
           <i className='cancel' onClick={() => {setModal(false); setModalSelect('card')}}><FiXCircle /></i>
-          { modalSelect === 'card' && <Card deckId={deckId} setModal={setModal} setModalSelect={setModalSelect} /> }
+          { modalSelect === 'card' && <Card deck={deckContent} deckId={deckId} setModal={setModal} setModalSelect={setModalSelect} /> }
           { modalSelect === 'card-add' && <CardAdd deck={deckContent} setModal={setModal} setModalSelect={setModalSelect} /> }
           { modalSelect === 'card-add-manual' && <CardAddManual setDeckList={setDeckList} deckName={deckName} setModal={setModal} setModalSelect={setModalSelect} /> }
           { modalSelect === 'card-add-auto' && <CardAddAuto setDeckList={setDeckList} deckName={deckName} setModal={setModal} setModalSelect={setModalSelect} /> }

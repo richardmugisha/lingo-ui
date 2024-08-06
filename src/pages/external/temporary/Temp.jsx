@@ -20,7 +20,7 @@ const Temp = () => {
     const [timePerCard, setTimePerCard] = useState(2000) // milliseconds
     const [searching, setSearching] = useState(true);
 
-    useEffect(() => {if (oneTimeRef.current === 0) {oneTimeRef.current = 1; noNameYet(setSearching, setUnprocessed, setProcessed, setTempId) } }, [])
+    useEffect(() => {if (oneTimeRef.current === 0) {oneTimeRef.current = 1; console.log('request from temporary'); fetchingExtensionData(setSearching, setUnprocessed, setProcessed, setTempId) } }, [])
     
     useEffect(() => {
       let interval;
@@ -59,6 +59,7 @@ const Temp = () => {
     
   return (
     <div className='Temp'>
+      <div id='extension-div-id' className='alert'>Please open the flashcard chrome extension to sync data <button id='extension-btn-id' className='button-15'>Done</button></div>
       {searching && <Spinner />}
       {!flag && <div className="unprocessed" style={{height: unprocessed && unprocessed.length > 0 ? '15%' : '0'}}>
         { unprocessed && unprocessed.length > 0 && <>
@@ -126,7 +127,7 @@ const processing = async (setProgress, beforeProcess, setUnprocessed, setProcess
   }
 }
 
-const noNameYet = (setSearching, setUnprocessed, setProcessed, setTempId) => {
+const fetchingExtensionData = (setSearching, setUnprocessed, setProcessed, setTempId) => {
     const handleExtensionMessage = (event) => {
       if (event.data.type === 'FROM_EXTENSION') {
         const words = event.data.payload
@@ -152,9 +153,11 @@ const noNameYet = (setSearching, setUnprocessed, setProcessed, setTempId) => {
     
     const retrievingExtension = () => {
       if (document.documentElement.dataset.hasExtension) {
+        document.getElementById('extension-div-id').style.display = 'none'
+        console.log('did it')
         window.postMessage({ type: 'REQUEST_DATA_FROM_EXTENSION' }, '*');
       } else {
-        alert('Please open the Chrome extension to sync data.');
+        document.getElementById('extension-btn-id').addEventListener('click', retrievingExtension)
       }
     };
 

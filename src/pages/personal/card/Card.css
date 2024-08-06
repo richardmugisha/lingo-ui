@@ -1,30 +1,20 @@
 .card {
     background-color: #9BC5CB;
     box-shadow: 0 0 3px rgb(113, 156, 196);
-    display: flex;
-    max-width: 400px;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
+    padding: 2em;
 }
 
 .card > div {
-    display: flex;
-    width: 40%;
-    aspect-ratio: 5/4;
-    padding: 10px;
-    margin: 10px
-}
-
-.card div {
+    padding: .5em 1em;
+    margin: .5em;
     cursor: pointer;
-    border-radius: 20%;
-    font-size: 27px;
+    border-radius: .5em;
     color: #345C70;
+    font-size: x-large;
     background-color: #779DAF;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 3px groove #72a0b76f;
+    display: flex; justify-content: center; align-items: center;
+    border: 1px groove #72a0b76f;
+    box-shadow: 0 0 5em rgba(255, 255, 255, 0.3);
 }
 
 .card div:hover {
