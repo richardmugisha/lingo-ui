@@ -8,6 +8,8 @@ import { useParams } from 'react-router-dom';
 
 const Temp = () => {
     const { idType, id } = useParams();
+    const [deckLang, setDeckLang] = useState(localStorage.getItem('deck-language'))
+
     const flag = idType !== 'no-type'
     const oneTimeRef = useRef(0);
     const [unprocessed, setUnprocessed] = useState([]);
@@ -47,7 +49,7 @@ const Temp = () => {
       try {
         const baseUrl = import.meta.env.VITE_API_BASE_URL;
         const userId  = JSON.parse(localStorage.getItem('user')).userId
-        const response = await axios.post(`${baseUrl}/api/v1/cards/temporary`, {userId, idType, id, selected})
+        const response = await axios.post(`${baseUrl}/api/v1/cards/temporary`, {userId, idType, id, deckLang, selected})
         const { id:deckId } = response.data;
         console.log(deckId)
         setProcessed(prev => prev.filter(card => !selected.includes(card._id)))

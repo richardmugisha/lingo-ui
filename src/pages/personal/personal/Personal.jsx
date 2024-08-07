@@ -34,11 +34,17 @@ const Personal = () => {
       const [personalSelectedItem, setPersonalSelectedItem] = useState([]);
       const [searching, setSearching] = useState(true)
       const [error, setError] = useState('')
+
+      const [cardType, setCardType] = useState('mine');
+      const [selectedLanguage, setSelectedLanguage] = useState({label: 'all', value: 'all'});
     
       const [popup, setPopup] = useState('')
       const baseUrl = import.meta.env.VITE_API_BASE_URL
       useEffect(()=> {
-        !modal && localStorage.removeItem('deckId')
+        if(!modal) {
+          localStorage.removeItem('deckId')
+        } 
+          
       }, [modal])
 
       useEffect(() => {
@@ -46,8 +52,7 @@ const Personal = () => {
         const getDeckList = async () => {
           try {
             const user = JSON.parse(localStorage.getItem('user')).userId
-            console.log(user, 'user')
-            const response = await axios.get(`${baseUrl}/api/v1/cards/${user}`);
+            const response = await axios.get(`${baseUrl}/api/v1/cards/decks/${cardType === 'mine' ? user : 'all'}/${selectedLanguage.value}`);
             const data = await response.data;
             setSearching(false)
             return data
@@ -59,20 +64,21 @@ const Personal = () => {
         
         getDeckList().then(data => setDeckList(data)).catch(e => setError(e.message))
 
-      }, [])
+      }, [cardType, selectedLanguage])
 
       const openDeck = async (deck) => {
-        const { _id:deckId, deckName } = deck;
+        const { _id:deckId, deckName, deckLang } = deck;
         setDeckContent('') //resetting the deck in case we clicked another deck
         if (deleting) return setPersonalSelectedItem(prev => prev.includes(deckId) ? prev.filter(id => id !== deckId) : [...prev, deckId]);
         setDeckName(deckName);
-        localStorage.setItem('deckId', deckId)
-        console.log(localStorage.getItem('deckId'))
-        console.log('local', deckId)
         setModal(true)
         try {
+          console.log(deckId)
           const res = await axios.get(`${baseUrl}/api/v1/cards/${deckId}`);
           const data = await res.data.cards;
+          localStorage.setItem('deck', JSON.stringify(data));
+          localStorage.setItem('deckId', deckId);
+          localStorage.setItem('deck-language', deckLang);
           return data;
         } catch (error) {
           setError(error.message === 'network error' ? 'Network error' : 'Oops! Try again!')
@@ -121,7 +127,7 @@ const Personal = () => {
         </div>
         { !error && deckList && deckList.length ? 
           <div className='personal-filters'>
-            { !deleting && <Filters />}
+            { !deleting && <Filters cardType={cardType} selectedLanguage={selectedLanguage} setCardType={setCardType} setSelectedLanguage={setSelectedLanguage}/>}
             { personalSelectedItem.length > 0 && 
             <span style={{cursor: "pointer"}} onClick={ () => {setChecked(prev => !prev); setPersonalSelectedItem(prev => prev.length === deckList.length ? [] : deckList.map(({_id}) => _id) )}} >
               <input type='checkbox' checked={checked} onChange={() => 'nothing should happen'}/> {`${ checked?'un':''}`}select all

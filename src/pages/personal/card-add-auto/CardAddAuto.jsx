@@ -6,6 +6,7 @@ import ProgressBar from "@ramonak/react-progress-bar";
 const CardAddAuto = ({ deckName, setDeckList }) => {
   const [userId ] = useState(JSON.parse(localStorage.getItem('user')).userId)
   const [deckId, setDeckId] = useState(localStorage.getItem('deckId'))
+  const [deckLang, setDeckLang] = useState(localStorage.getItem('deck-language'))
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const [status, setStatus] = useState('preSubmit');
@@ -33,7 +34,7 @@ const CardAddAuto = ({ deckName, setDeckList }) => {
       console.log(text.split(','))
       setUnprocessed(text.split(','))
       console.log(text)
-      return postingData(`${baseUrl}/api/v1/cards/${deckName}`, { userId, deckId, mode: 'auto', content : text}).then((data) => console.log(data)).catch(e => console.log(e))
+      return postingData(`${baseUrl}/api/v1/cards/${deckName}`, { userId, deckId, deckLang, mode: 'auto', content : text}).then((data) => console.log(data)).catch(e => console.log(e))
     }
 
     useEffect(() => {

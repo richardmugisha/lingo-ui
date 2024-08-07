@@ -6,6 +6,7 @@ import Spinner from 'react-spinner-material';
 const CardAddManual = ({setModal, deckName, setModalSelect, setDeckList}) => {
   const [userId ] = useState(JSON.parse(localStorage.getItem('user')).userId)
   const [deckId, setDeckId] = useState(localStorage.getItem('deckId'))
+  const [deckLang, setDeckLang] = useState(localStorage.getItem('deck-language'))
   
   const [status, setStatus] = useState('preSubmit');
   const [readytosubmit, setReadytosubmit] = useState(false);
@@ -53,7 +54,7 @@ const CardAddManual = ({setModal, deckName, setModalSelect, setDeckList}) => {
     const baseUrl = import.meta.env.VITE_API_BASE_URL
     if (status === 'submitting') return
     setStatus('submitting'); console.log('sub')
-    postingData(`${baseUrl}/api/v1/cards/${deckName}`, { userId, deckId, mode: 'manual', content: {'root word': formContent['root word'], variations: formContent.variations}} )
+    postingData(`${baseUrl}/api/v1/cards/${deckName}`, { userId, deckId, deckLang, mode: 'manual', content: {'root word': formContent['root word'], variations: formContent.variations}} )
       .then((data) => {
         afterSubmitReset();
         console.log(data, data.deck)

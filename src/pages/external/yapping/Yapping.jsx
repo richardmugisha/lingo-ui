@@ -61,11 +61,11 @@ const Yapping = () => {
         { activity === 'reading' ? 
           <div className='titles'> {stories.map(story => <span onClick={() => {console.log(story.title, selected); setSelected(story.title)} } className={`${selected === story.title ? 'selected' : ''}`}>{story.title}</span>) } </div> :
           <div className='word-pool'>
-            { words.map((word, i) => <span onClick={() => setWords(words => words.filter((wordHere, index) => index !== i))} key={i}>{word}</span>) }
+            { words.map((word, i) => <span onClick={() => setWords(words => words.filter((w, index) => index !== i))} key={i}>{word}</span>) }
           </div>
         }
         <br />
-        <input type="submit" value={`${activity === 'reading' ? "Create your story": "Read stories"}`} className='submit' onClick={() => {setActivity(() => activity ==='creating' ? "reading" : "creating"); setTitle(''); setStory('')}}/>
+        <input type="submit" value={`${activity === 'reading' ? "Create your story": "Read stories"}`} className='submit custom-button-1' onClick={() => {setActivity(() => activity ==='creating' ? "reading" : "creating"); setTitle(''); setStory('')}}/>
       </div>
       <div className="story">
         {activity === 'creating' &&

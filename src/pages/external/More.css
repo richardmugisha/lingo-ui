@@ -1,7 +1,7 @@
 
 .more {
     height: 100%;
-    overflow-y: auto;
+    overflow-y: hidden;
     padding: 2em;
     color: #23556c;
     display: flex;

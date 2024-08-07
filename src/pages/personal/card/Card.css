@@ -3,21 +3,3 @@
     box-shadow: 0 0 3px rgb(113, 156, 196);
     padding: 2em;
 }
-
-.card > div {
-    padding: .5em 1em;
-    margin: .5em;
-    cursor: pointer;
-    border-radius: .5em;
-    color: #345C70;
-    font-size: x-large;
-    background-color: #779DAF;
-    display: flex; justify-content: center; align-items: center;
-    border: 1px groove #72a0b76f;
-    box-shadow: 0 0 5em rgba(255, 255, 255, 0.3);
-}
-
-.card div:hover {
-    color: lightblue;
-    box-shadow: 0 0 10px rgb(210, 231, 241);
-}

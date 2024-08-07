@@ -4,12 +4,10 @@ import './Filters.css'
 
 import { BsFilterLeft } from "react-icons/bs";
 
-const languages = [{value: 'english', label: 'english'}, {value: 'french', label: 'french'} , {value: 'panish', label: 'spanish'}]
+const languages = [{value: 'all', label: 'all'}, {value: 'english', label: 'english'}, {value: 'french', label: 'french'} , {value: 'spanish', label: 'spanish'}]
 
 
-const Filters = () => { //{ onTypeChange, onLanguageChange, languages }
-  const [cardType, setCardType] = useState('my-cards');
-  const [selectedLanguage, setSelectedLanguage] = useState(languages[0]);
+const Filters = ({ cardType, selectedLanguage, setCardType, setSelectedLanguage }) => { //{ onTypeChange, onLanguageChange, languages }
 
   const handleTypeChange = (event) => {
     const selectedType = event.target.value;
@@ -28,8 +26,8 @@ const Filters = () => { //{ onTypeChange, onLanguageChange, languages }
       <div className="filter">
         <label htmlFor="card type"></label>
         <select id="card-type" value={cardType} onChange={handleTypeChange} className='select'>
-          <option value="my cards">My Cards</option>
-          <option value="all cards">All Cards</option>
+          <option value="mine">My Cards</option>
+          <option value="all">All Cards</option>
         </select>
       </div>
       <div className="filter">

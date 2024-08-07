@@ -4,6 +4,12 @@
     width: 100%;
 }
 
+.words .word-pool {
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+
 h1 { font-size: x-large;}
 .words div, textarea {
     border: 1px solid ;
@@ -22,7 +28,7 @@ h1 { font-size: x-large;}
 
 textarea {
     width: 95%;
-    height: 90%;
+    height: 500px;
     border: 1px solid;
     border-radius: 1em;
 }
