@@ -1,44 +1,67 @@
 import React, { useState } from 'react';
-import './Quiz.css'
+import CommonCard from '../../../components/CommonCard';
+import quiz from './quiz';
 
-const Quiz = ({ setModalSelect, setQuizType }) => {
+import './Quiz.css';
+
+import shuffledNumbers from '../../../utils/shuffleArray';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { modalSelect } from '../../../features/system/systemSlice';
+import { setQuizType, setOrder, setQuizLength, setFormat } from '../../../features/personal/quiz/quizSlice';
+
+const Quiz = () => {
+  const dispatch = useDispatch()
+  const { cards: deck } = useSelector(state => state.deck)
+
+  const order = shuffledNumbers(deck.length-1)
+  dispatch(setOrder(order))
+
   const [questionTypes, setQuestionTypes] = useState(['mcq', 'guess'])
   const [answerTypes, setAnswerTypes] = useState(['meaning', 'example', 'synonym', 'antonym']);
   const [answerLengths, setAnswerLengths] = useState(['short', 'long'])
+  const [quizOn, setQuizOn ] = useState(false)
 
   const handleSubmit = () => {
     const route = `quiz-${answerLengths[0]}-${questionTypes[0]}`;
-    setQuizType(answerTypes[0]);
-    setModalSelect(route);
+    const format = quiz(route)
+    dispatch(setFormat(format));
+    dispatch(setQuizLength(route.split('-')[1]));
+
+    dispatch(setQuizType(answerTypes[0]));
+    setQuizOn(true)
   }
 
   return (
+       !quizOn ?
         <div className='quiz'>
-          <div className="quiz-head">Choose one everywhere</div>
+          <h1 className="quiz-head">Choose one everywhere</h1>
           <div className="quiz-body">
             <div className="quiz-question-type">
-                <div className="title">type of question</div>
+                <div className="title">Type of question</div>
                 <div className="content">
                     { questionTypes.map((item) => {
-                      return <div className='quiz-QT' key={item} onClick={(e) => setQuestionTypes([item])}>{item}</div>
+                      return <button className='quiz-QT custom-button-1' key={item} onClick={(e) => setQuestionTypes([item])}>{item}</button>
                     })}
                 </div>
             </div>
             <div className="quiz-answer-type">
-                <div className="title">type of answer</div>
-                <div className="content">{answerTypes.map((item) => {return <div className='quiz-AT' key={item}  onClick={(e) => setAnswerTypes([item])}>{item}</div>})}</div>
+                <div className="title">Type of answer</div>
+                <div className="content">{answerTypes.map((item) => {return <button className='quiz-AT custom-button-1' key={item}  onClick={(e) => setAnswerTypes([item])}>{item}</button>})}</div>
             </div>
             <div className="quiz-answer-length">
-                <div className="title">length of answer</div>
+                <div className="title">Length of answer</div>
                 <div className="content">{
                   answerLengths.map((item) => {
-                    return <div className='quiz-AL' key={item} onClick={(e) => setAnswerLengths([item])}>{item}</div>
+                    return <button className='quiz-AL custom-button-1' key={item} onClick={(e) => setAnswerLengths([item])}>{item}</button>
                   })
                 }</div>
             </div>
           </div>
-          <div className="quiz-submit" onClick={() => {handleSubmit()}}>Submit</div>
-        </div>
+          <input className="quiz-submit" onClick={() => {handleSubmit()}} type='submit' value={'submit'} />
+        </div> 
+       :
+      <CommonCard />
   )
 }
 

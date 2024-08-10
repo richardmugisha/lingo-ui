@@ -5,10 +5,12 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import Spinner from 'react-spinner-material';
 
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux'
 
 const Temp = () => {
     const { idType, id } = useParams();
-    const [deckLang, setDeckLang] = useState(localStorage.getItem('deck-language'))
+
+    const { deckLang } = useSelector(state => state.deck)
 
     const flag = idType !== 'no-type'
     const oneTimeRef = useRef(0);

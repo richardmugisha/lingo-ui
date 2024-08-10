@@ -3,7 +3,8 @@
 import React from 'react';
 import './Header.css';
 
-import {useNavigate} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom';
+import { MdMenu } from "react-icons/md";
 
 import Logo from '../home/Logo'
 
@@ -21,11 +22,11 @@ const Header = () => {
               <li className="a" onClick={() => navigate('/portal/more')}>More</li>
             </ul>
             <div className="profile">
-            <span>{user.username}</span>
-            <span></span>
-        </div>
+              <span>{user.username}</span>
+              <span></span>
+            </div>
         </nav>
-        
+        <div className='menu'><MdMenu /></div>
     </header>
   )
 }

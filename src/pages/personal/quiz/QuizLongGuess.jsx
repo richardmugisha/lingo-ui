@@ -1,8 +1,11 @@
-import React from 'react';
-import CommonCard from '../../../components/CommonCard';
-import shuffledNumbers from '../../../utils/shuffleArray';
 
-const QuizLongGuess = ({ deckName, quizType, deck}) => {
+import { useDispatch } from 'react-redux';
+import { setQuizLength, setFormat } from '../../../features/personal/quiz/quizSlice';
+
+const QuizLongGuess = () => {
+    
+    const dispatch = useDispatch()
+
     const format = {
         aboveTopProgressbar: "Guess ...",
         topProgressbar: true,
@@ -16,11 +19,9 @@ const QuizLongGuess = ({ deckName, quizType, deck}) => {
         bottomProgressbar: true,
     }
 
-    const order = shuffledNumbers(deck.length-1)
+    dispatch(setFormat(format));
+    dispatch(setQuizLength('long'));
     
-  return (
-    <CommonCard deckName={deckName} format={format} deck={deck} order={order} quizType={quizType} quizLength = "long"/>
-  )
 }
 
 export default QuizLongGuess

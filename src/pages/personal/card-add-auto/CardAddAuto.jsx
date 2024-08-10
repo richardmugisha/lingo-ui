@@ -2,11 +2,14 @@ import React, {useEffect, useRef, useState} from 'react';
 import axios from 'axios';
 import './CardAddAuto.css';
 import ProgressBar from "@ramonak/react-progress-bar";
+import { id, push} from '../../../features/personal/deck/deckSlice';
+import { useSelector, useDispatch } from 'react-redux';
 
-const CardAddAuto = ({ deckName, setDeckList }) => {
+const CardAddAuto = () => {
+  const dispatch = useDispatch();
+  const { id: deckId, deckLang, name: deckName } = useSelector(state => state.deck)
   const [userId ] = useState(JSON.parse(localStorage.getItem('user')).userId)
-  const [deckId, setDeckId] = useState(localStorage.getItem('deckId'))
-  const [deckLang, setDeckLang] = useState(localStorage.getItem('deck-language'))
+  console.log(deckLang)
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const [status, setStatus] = useState('preSubmit');
@@ -67,19 +70,21 @@ const CardAddAuto = ({ deckName, setDeckList }) => {
 
         const startTime = Date.now(); // Record start time
         const data = (await axios.post(url, requestBody) ).data;
-        setDeckId(data.deck._id)
+        dispatch(id(data.deck._id))
         const elapsedTime = Date.now() - startTime; // Calculate elapsed time
         const processCardLength = unprocessed.length//beforeProcess.length - unprocessed.length;
         axios.patch(`${baseUrl}/api/v1/cards/app`, { timePerCard : elapsedTime / processCardLength }); // Send elapsed time to server
         setStatus('submitted');
         textRef.current.value = ''
         console.log(data)
-        setDeckList((prev) => [...prev.filter(deck => deck._id !== data.deck._id), data.deck])
+        //setDeckList((prev) => [...prev.filter(deck => deck._id !== data.deck._id), data.deck])
+        dispatch(push(data.deck))
         return data;
       } catch (err) {
         const {error, deck} = err.response.data
         console.log(deck?._id)
-        setDeckId(deck?._id)
+        //setDeckId(deck?._id)
+        if (deck?.id) dispatch(id(deck.id))
         setStatus('error');
         throw new Error(`Error making POST REQUEST in auto card: ${error}`)
       }

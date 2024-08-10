@@ -3,10 +3,15 @@ import './CardAddManual.css';
 import axios from 'axios';
 import Spinner from 'react-spinner-material';
 
-const CardAddManual = ({setModal, deckName, setModalSelect, setDeckList}) => {
+import { useSelector, useDispatch } from 'react-redux';
+import { modalSelect } from '../../../features/system/systemSlice';
+import { push, id } from '../../../features/personal/deck/deckSlice';
+
+
+const CardAddManual = () => {
+  const dispatch = useDispatch()
+  const { id: deckId, deckLang, name: deckName } = useSelector(state => state.deck)
   const [userId ] = useState(JSON.parse(localStorage.getItem('user')).userId)
-  const [deckId, setDeckId] = useState(localStorage.getItem('deckId'))
-  const [deckLang, setDeckLang] = useState(localStorage.getItem('deck-language'))
   
   const [status, setStatus] = useState('preSubmit');
   const [readytosubmit, setReadytosubmit] = useState(false);
@@ -57,11 +62,15 @@ const CardAddManual = ({setModal, deckName, setModalSelect, setDeckList}) => {
     postingData(`${baseUrl}/api/v1/cards/${deckName}`, { userId, deckId, deckLang, mode: 'manual', content: {'root word': formContent['root word'], variations: formContent.variations}} )
       .then((data) => {
         afterSubmitReset();
-        console.log(data, data.deck)
         setReadytosubmit(false)
-        setDeckList((prev) => [...prev.filter(deck => deck._id !== data.deck._id), data.deck])
+        console.log(data.deck._id)
+        dispatch(push(data.deck))
+        dispatch(id(data.deck._id))
+        console.log(data.deck._id)
       })
-      .catch(e => {setStatus('error'); setErrorMsg("Oops... Couldn't submit your card! Try again")})
+      .catch(e => {
+        console.log(e.message)
+        setStatus('error'); setErrorMsg("Oops... Couldn't submit your card! Try again")})
   }
 
   const afterSubmitReset = () => {setFormContent({...formTemplate}); setReadytosubmit(false); setVariation(''); setMeaning(''); setExample(''); setWordReferenceInExample(''); setSynonym(''); setAntonym('')};
@@ -78,7 +87,7 @@ const CardAddManual = ({setModal, deckName, setModalSelect, setDeckList}) => {
       } catch (err) {
         const {error, deck} = err.response.data
         console.log(deck?._id)
-        setDeckId(deck?._id)
+        if (deck?.id) dispatch(id(deck.id))
         setStatus('error');
         throw new Error(`Error making POST REQUEST in manual card: ${error}`)
       }
@@ -133,7 +142,7 @@ const CardAddManual = ({setModal, deckName, setModalSelect, setDeckList}) => {
               { status === 'submitted' && '✅submitted'}
             </label>
             <input type="submit"/>
-            <button onClick={() => setModalSelect('card-add-auto')}>Generate with AI</button>
+            <button onClick={() => dispatch(modalSelect('card-add-auto'))}>Generate with AI</button>
           </section>
           <hr />
           <section>

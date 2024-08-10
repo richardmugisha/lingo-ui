@@ -1,9 +1,11 @@
-import React from 'react';
-import CommonCard from '../../../components/CommonCard';
-import shuffledNumbers from '../../../utils/shuffleArray';
 
-const QuizShortGuess = ({ deckName, quizType, deck}) => {
+import { useDispatch } from 'react-redux';
+import { setQuizLength, setFormat } from '../../../features/personal/quiz/quizSlice';
+
+const QuizShortGuess = () => {
     
+    const dispatch = useDispatch()
+
     const format = {
         topProgressbar: true,
         firstWordUnderTopProgressbar: 'guess the word for:',
@@ -13,10 +15,9 @@ const QuizShortGuess = ({ deckName, quizType, deck}) => {
         },
         bottomProgressbar: true,
     }
-    const order = shuffledNumbers(deck.length-1)
-  return (
-    <CommonCard deckName={deckName} format={format} deck={deck} order={order} quizType={quizType} quizLength = "short"/>
-  )
+    
+    dispatch(setFormat(format));
+    dispatch(setQuizLength('short'));
+   
 }
-
 export default QuizShortGuess

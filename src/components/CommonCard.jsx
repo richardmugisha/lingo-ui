@@ -9,13 +9,19 @@ import './CommonCard.css';
 import shuffledNumbers from '../utils/shuffleArray';
 import axios from 'axios';
 
+import { useSelector } from 'react-redux'
+
 var cardIndex = 0;
 let duration = 0;
 let allocatedTime = 0; //seconds
 let correctAnswers = 0;
 let interval = null;
 
-const CommonCard = ({deckName, format, deck, quizType, quizLength, order}) => {
+const CommonCard = () => {
+
+    const { format, quizType, quizLength, order } = useSelector(state => state.quiz)
+    const { name: deckName, cards: deck } = useSelector(state => state.deck)
+
     const [card, setCard] = useState(deck[order[cardIndex]]);
     const [correctOption, setCorrectOption] = useState(false);
     const [selectedItem, setSelectedItem] = useState(false);

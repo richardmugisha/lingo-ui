@@ -4,7 +4,12 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import Spinner from 'react-spinner-material';
 import './CardAdd.css';
 
-const CardAdd = ({deck, setModal, setModalSelect}) => {
+import { useSelector, useDispatch } from 'react-redux';
+import { modalSelect } from '../../../features/system/systemSlice';
+
+const CardAdd = () => {
+  const dispatch = useDispatch()
+  const { cards: deck } = useSelector(state => state.deck)
   const [cardIndex, setCardIndex] = useState(0);
   
   useEffect(() => {
@@ -32,8 +37,8 @@ const CardAdd = ({deck, setModal, setModalSelect}) => {
     <div className='card-add'>
       <div className="head">
         <div>{deck[cardIndex].deckName}</div>
-        <div onClick={() => setModalSelect('card-add-manual')}>manual add</div>
-        <div onClick={() => setModalSelect('card-add-auto')}>auto add</div>
+        <div onClick={() => dispatch(modalSelect('card-add-manual'))}>manual add</div>
+        <div onClick={() => dispatch(modalSelect('card-add-auto'))}>auto add</div>
       </div>
       <div className="main">
             <div className="top">

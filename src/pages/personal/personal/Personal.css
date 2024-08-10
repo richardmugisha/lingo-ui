@@ -18,8 +18,6 @@
     margin: auto;
     display: flex;
     flex-wrap: wrap;
-    /* background-color: rgb(205, 236, 246); */
-    /* border-radius: 20px; */
 }
 
 .bottom {
@@ -127,7 +125,6 @@
 }
 .personal-filters > span {
     display: inline-block;
-    font-size: x-large;
 }
 
 /* media queries */

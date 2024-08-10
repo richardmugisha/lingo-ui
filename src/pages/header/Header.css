@@ -8,6 +8,10 @@ header {
     padding: 0 30px;
 }
 
+header .menu {
+  display: none;
+}
+
 .header-logo > .Logo {
     font-size: 2em;
     font-weight: 900;
@@ -20,20 +24,18 @@ header {
     color: yellow;
 }
 
-  header > nav {
+header > nav {
     height: 100%;
+    padding: 5em;
     display: flex;
-    justify-content: flex-end;
     align-items: center;
-  }
-  .nav-right {
+}
+.nav-right {
     height: 40px;
-    width: 400px;
     display: flex;
-    justify-content: space-evenly;
-  }
+}
   
-  .nav-right > li {
+.nav-right > li {
     list-style-type: none;
     padding: 5%;
     background-color: #86A8B8;
@@ -44,6 +46,7 @@ header {
     align-items: center;
     border-radius: 5px;
     cursor: pointer;
+    margin-right: .5em;
   }
   
   .nav-right > li:hover {
@@ -53,13 +56,14 @@ header {
 
   header .profile {
     color: white;
-    display: flex;
-    align-items: center;
     font-size: x-large;
     font-weight: 500;
+    display: flex;
+    align-items: center;
   }
 
-  header .profile span:last-child {
+ 
+  header .profile  span:last-child {
     width: 50px;
     margin-left: 10px;
     aspect-ratio: 1;
@@ -68,14 +72,18 @@ header {
     background-color: white;
   }
 
-  @media (max-width: 420px) {
-    header > nav {
-      padding: 0;
-      justify-content: space-evenly;
-    }
-    
+  @media (max-width: 700px) {
+
     .nav-right li {
       font-size: 1.2em;
+    }
+  }
+  @media (max-width: 420px) {
+
+    header .menu {display: block;}
+    
+    .nav-right {
+      display: none;
     }
   }
   

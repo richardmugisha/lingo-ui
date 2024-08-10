@@ -1,8 +1,11 @@
-import React from 'react';
-import CommonCard from '../../../components/CommonCard';
-import shuffledNumbers from '../../../utils/shuffleArray';
 
-const QuizShortMcq = ({ deckName, quizType, deck}) => {
+import { useDispatch } from 'react-redux';
+import { setQuizLength, setFormat } from '../../../features/personal/quiz/quizSlice';
+
+const QuizShortMcq = () => {
+
+    const dispatch = useDispatch()
+
     const format = {
       label0: false, // the text above the top progressbar,
       label1: false, // the first text below the progressbar,
@@ -16,12 +19,9 @@ const QuizShortMcq = ({ deckName, quizType, deck}) => {
         },
     }
   
-    const order = shuffledNumbers(deck.length-1)
-    console.log(order)
-    
-  return (
-      <CommonCard deckName={deckName} format={format} deck={deck} order={order} quizType={quizType} quizLength = "short"/>
-  )
+    dispatch(setFormat(format));
+    dispatch(setQuizLength('short'));
+
 }
 
 export default QuizShortMcq

@@ -43,4 +43,8 @@
 .quiz-submit {
     cursor: pointer;
     margin: 0 20px;
+    border: none;
+    font-size: large;
+    padding: .5em 10em;
+    color: white;
 }

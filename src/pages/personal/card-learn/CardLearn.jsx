@@ -4,7 +4,13 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import Spinner from 'react-spinner-material';
 
-const CardLearn = ( { deckName, deck} ) => {
+import { useSelector } from 'react-redux';
+
+const CardLearn = () => {
+
+    const { name: deckName, cards: deck } = useSelector(state => state.deck)
+    console.log(deck)
+
     const [cardIndex, setCardIndex] = useState(0);
 
     useEffect(() => {

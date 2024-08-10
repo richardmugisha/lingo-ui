@@ -4,10 +4,13 @@ import React, {useEffect, useState} from 'react';
 import './Yapping.css'
 import axios from 'axios';
 
+import { useSelector } from 'react-redux';
+
 const Yapping = () => {
+  const { cards, id: deckId } = useSelector(state => state.deck)
   const [words, setWords] = useState(() => {
     const temp = []
-    JSON.parse(localStorage.getItem('deck')).map(card => card.variations.map(variation => temp.push(variation.variationWord) ) );
+    cards.map(card => card.variations.map(variation => temp.push(variation.variationWord) ) );
     console.log(temp)
     return temp
   })
@@ -20,7 +23,6 @@ const Yapping = () => {
   const [selected, setSelected] = useState('')
 
   const [userId ] = useState(JSON.parse(localStorage.getItem('user')).userId)
-  const [deckId ] = useState(localStorage.getItem('deckId'))
 
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
 

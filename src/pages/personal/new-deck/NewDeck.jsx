@@ -2,10 +2,15 @@ import React, { useEffect, useState } from 'react';
 import './NewDeck.css';
 import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { name, deckLang } from '../../../features/personal/deck/deckSlice';
+import { modalSelect } from '../../../features/system/systemSlice';
 
 const languages = [{value: 'english', label: 'english'}, {value: 'french', label: 'french'} , {value: 'spanish', label: 'spanish'}]
 
-const NewDeck = ( { setDeckName, setModalSelect }) => {
+const NewDeck = () => {
+  const dispatch = useDispatch();
+
   const [value, setValue] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState(languages[0]);
 
@@ -13,12 +18,14 @@ const NewDeck = ( { setDeckName, setModalSelect }) => {
 
   const handleLanguageChange = (selectedOption) => {
     setSelectedLanguage(selectedOption);
-    localStorage.setItem('deck-language', selectedOption.value)
-
-    //onLanguageChange(selectedOption);
+    dispatch(deckLang(selectedOption.value))
   };
 
-  useEffect(() =>localStorage.setItem('deck-language', selectedLanguage.value), [selectedLanguage])
+  useEffect(() =>
+    { 
+      dispatch(deckLang(selectedLanguage.value))
+    }, 
+    [selectedLanguage])
 
 
   const showAlert = () => {
@@ -30,15 +37,15 @@ const NewDeck = ( { setDeckName, setModalSelect }) => {
   }
   const handle = (from) => {
     return !value ? showAlert() : 
-            from === 'add-manual' ? setModalSelect('card-add-manual') : 
-            from === 'add-auto' ? setModalSelect('card-add-auto') :
-            navigate(`../more/temporary/deckName/${value}`)
+            from === 'add-manual' ? dispatch(modalSelect('card-add-manual')) : 
+            from === 'add-auto' ?  dispatch(modalSelect('card-add-auto')) :
+            navigate(`../more/temporary`)
   }
   
   return (
     <div className='new-deck-page'>
       <h1>Find a creative deck name</h1>
-      <input type="deck-name" placeholder='Deck name' autoFocus value={value} onChange={(e) => {setValue(e.target.value); setDeckName(e.target.value)}}/>
+      <input type="deck-name" placeholder='Deck name' autoFocus value={value} onChange={(e) => {setValue(e.target.value); dispatch(name(e.target.value))}}/>
       <div className='select-container'>
       <label htmlFor="deck language">Cards language</label>
       <Select className='select'
