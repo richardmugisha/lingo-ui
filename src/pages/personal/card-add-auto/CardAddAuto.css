@@ -3,10 +3,10 @@
     flex-wrap: wrap;
     color: #E0F5F8;
     padding: 1em;
+    min-height: 400px;
 }
 
 .card-add-auto--top {
-    display: flex;
     justify-content: space-between;
 }
 
@@ -15,31 +15,63 @@
     width: 90%;
 }
 
-.card-add-auto > div .deckName, .card-add-auto > div .submit {
-    font-size: large;
+.card-add-auto > div .deckName {
+    display: block;
+    text-align: start;
+    font-size: larger;
     font-weight: 500;
     padding: 10px 20px;
-    margin: 10px;
     height: 50px;
 }
 
-.card-add-auto > div .submit {
-    background-color: #345C70;
-    color: #E0F5F8;
-    border-radius: 20px;
-    cursor: pointer;
-}
 
 
-.card-add-auto textarea {
-    margin: 2.5em 0 0 0;
+.card-auto-search {
+    margin-top: 0em;
     width: 500px;
-    height: 300px;
+    height: 50px;
     border-radius: 20px;
-    background-color: #345C70;
-    color: #E0F5F8;
+    color: #345C70;
+    border: 2px solid #345c70bd;
     font-size: large;
     font-weight: 500;
     padding: 10px;
     overflow: hidden;
+}
+
+.card-auto--extra-words {
+    margin-bottom: 0;
+}
+
+.card-auto--extra-words > label {
+    display: flex;
+    color: #345C70;
+    font-weight: bolder;
+    margin: 1em;
+}
+.card-auto--extra-words > ul  {
+    display: flex;
+    /* color: #345C70; */
+    font-weight: bolder;
+    gap: 1em;
+}
+
+
+
+.card-auto--search-list > li {
+    display: flex;
+    justify-content: space-between;
+    color: #345C70;
+    padding: .5em;
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    border-radius: .5em;
+    margin-top: .3em;
+}
+
+
+.card-auto--search-list > .item-not-found {
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+    color: rgb(148, 19, 19);
 }

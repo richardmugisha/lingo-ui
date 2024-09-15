@@ -1,109 +1,133 @@
-import React, {useEffect, useRef, useState} from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import './CardAddAuto.css';
-import ProgressBar from "@ramonak/react-progress-bar";
-import { id, push} from '../../../features/personal/deck/deckSlice';
+
 import { useSelector, useDispatch } from 'react-redux';
+
+import { Button, Chip } from "@mui/material"
+import { Add as AddIcon, Clear as ClearIcon, Check as CheckIcon } from "@mui/icons-material"
+
+import { useSearchWords } from './utils/useSearchWords';
 
 const CardAddAuto = () => {
   const dispatch = useDispatch();
-  const { id: deckId, deckLang, name: deckName } = useSelector(state => state.deck)
+  const { _id: deckId, deckLang, deckName } = useSelector(state => state.deck.openDeck)
   const [userId ] = useState(JSON.parse(localStorage.getItem('user')).userId)
-  console.log(deckLang)
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-    const [status, setStatus] = useState('preSubmit');
-    const [progress, setProgress] = useState(0)
-    const [unprocessed, setUnprocessed] = useState([]);
-    const [timePerCard, setTimePerCard] = useState(2000) // milliseconds
-    const textRef = useRef(null);
+  const [searchValue, setSearchValue] = useState('')
+  const [debouncedSearch, searchWords, loading] = useSearchWords(searchValue, deckLang)
+  const [extraWords, setExtraWords] = useState(JSON.parse(localStorage.getItem('temporary'))?.words || [])
 
-    useEffect(() => {
-      let delay;
-      if (['submitted', 'error'].includes(status)) {
-        delay = setTimeout(() => {
-          setStatus('preSubmit')
-        }, 3000);
-      }
-      return () => clearTimeout(delay)
-    }, [status])
+  const handleDeleteExtraWord = (index) => {
+    setExtraWords((prev) => {
+      const updatedWords = [...prev];
+      updatedWords.splice(index, 1);
+      localStorage.setItem('temporary', JSON.stringify({ words: updatedWords }));
+      return updatedWords;
+    });
+  };
+  
 
-    const handleSubmit = (e) => {
-      e.preventDefault()
-      if (status === 'submitting') return
-      const baseUrl = import.meta.env.VITE_API_BASE_URL;
-      const text = textRef.current.value;
-      if (!text) return
-      console.log(text.split(','))
-      setUnprocessed(text.split(','))
-      console.log(text)
-      return postingData(`${baseUrl}/api/v1/cards/${deckName}`, { userId, deckId, deckLang, mode: 'auto', content : text}).then((data) => console.log(data)).catch(e => console.log(e))
-    }
-
-    useEffect(() => {
-      let interval;
-      if (status === 'submitting') {
-        const totalTime = unprocessed.length * timePerCard // number of milliseconds
-        console.log(totalTime)
-        const intervalDelay = 1000
-        const step = intervalDelay * 100 / totalTime
-        interval = setInterval(() => {
-          setProgress(prev => prev + step <= 100 ? prev + step : 100)
-        }, intervalDelay);
-      }
-      return () => clearInterval(interval)
-    }, [status])
-
-    const postingData = async(url, requestBody) => {
-      setProgress(0)
-      try {
-        axios.get(`${baseUrl}/api/v1/cards/app`)
-          .then(res => {
-            const {timePerCard:timesPerCard} = res.data;
-            console.log(timesPerCard);
-            const timePerCard = timesPerCard ? timesPerCard.reduce((acc, curr) => acc + curr, 0) / timesPerCard.length : null
-            console.log(timePerCard)
-            setTimePerCard((prev) => timePerCard || prev)
-            setStatus('submitting')
-          })
-          .catch(error => {console.log(error.message)})
-
-        const startTime = Date.now(); // Record start time
-        const data = (await axios.post(url, requestBody) ).data;
-        dispatch(id(data.deck._id))
-        const elapsedTime = Date.now() - startTime; // Calculate elapsed time
-        const processCardLength = unprocessed.length//beforeProcess.length - unprocessed.length;
-        axios.patch(`${baseUrl}/api/v1/cards/app`, { timePerCard : elapsedTime / processCardLength }); // Send elapsed time to server
-        setStatus('submitted');
-        textRef.current.value = ''
-        console.log(data)
-        //setDeckList((prev) => [...prev.filter(deck => deck._id !== data.deck._id), data.deck])
-        dispatch(push(data.deck))
-        return data;
-      } catch (err) {
-        const {error, deck} = err.response.data
-        console.log(deck?._id)
-        //setDeckId(deck?._id)
-        if (deck?.id) dispatch(id(deck.id))
-        setStatus('error');
-        throw new Error(`Error making POST REQUEST in auto card: ${error}`)
-      }
-  }
-
-    const placeholder = "Follow the format!!!\nWrite your words or phrases and strictly separate them with commas.\n e.g: innocent, in spite of, dedicated, although.\n This section uses GPT to generate the meanings, examples, synonyms... for you. Always cross-check !!!"
   return (
     <form action="" className='card-add-auto'>
       <div className='card-add-auto--top'>
         <label htmlFor="deck name" className="deckName">{deckName}</label>
-        <div>
-          <label htmlFor="status" style={{color: status === 'error' ? 'red' : 'green'}}>{status === 'error' ? '☹ Oops... try again!' : status === 'submitted' ? '✅submitted !': ''}</label>
-          <input type='submit' className='submit' onClick={handleSubmit} />
-        </div>
       </div>
-      {status === 'submitting' && <ProgressBar className='ProgressBar' completed={Math.floor(progress)} bgColor="black" /> }
-      <textarea name="" id="" cols="30" rows="10" autoFocus placeholder={placeholder} ref={textRef}></textarea>
+      <input type='text' className='card-auto-search' autoFocus placeholder="Search for the word you want" value={searchValue} onChange={(e) => setSearchValue(e.target.value)}/>
+      <SearchList searchWords={searchWords} searchValue={searchValue} debouncedSearch={debouncedSearch} deckId={deckId} deckName={deckName} loading={loading} deckLang={deckLang}/>
+      {
+        extraWords.length > 0 && 
+        <div className='card-auto--extra-words'> 
+          <label htmlFor="">Search these words from your reading: </label>
+          <ul >
+          {extraWords.slice(0, 5).map((word, i) => 
+                <Chip
+                  key={word + i}
+                  label={word}
+                  clickable
+                  color="secondary"
+                  onDelete={() => handleDeleteExtraWord(i)}
+                  deleteIcon={<ClearIcon />}
+                  variant="outlined"
+                />
+            )}
+        </ul>
+        </div>
+        
+      }
     </form>
   )
 }
 
 export default CardAddAuto
+
+const SearchList = ({ searchWords, searchValue, deckId, deckName, deckLang, debouncedSearch, loading }) => {
+  const fetch_Save = (word, whereTo, doWhat) => {
+    let toAdd; let words;
+    if (['load', 'load-save'].includes(doWhat)) {
+      toAdd = JSON.parse(localStorage.getItem(whereTo));
+      words = toAdd?.[deckId || deckName]?.words || []
+      if (doWhat === 'load') return words
+    }
+
+    localStorage.setItem(whereTo, JSON.stringify({...toAdd, [deckId || deckName]: {deckId, deckLang, words: [...words, word]}}));
+    setAddedWords([...addedWords, word])
+  }
+
+  // Limit the displayed words to a maximum of 10
+  const limitedSearchWords = searchWords?.slice(0, 10);
+  const [addedWords, setAddedWords] = useState([...fetch_Save('', 'toAdd', 'load'), ...fetch_Save('', 'toWish', 'load')]) //the indices
+
+  return (
+    <ul className='card-auto--search-list'>
+      {
+        loading ?  
+        <p>...loading</p>
+        :
+        (limitedSearchWords?.length ? (
+          limitedSearchWords.map((word, i) => (
+            <li key={word._id} className='search-item'>
+                <div>
+                  { word.word }
+                </div>
+                {addedWords.includes(word.word) ?
+                <CheckIcon color='success'/> :
+                <Button startIcon={<AddIcon />} variant="contained" color='primary' disableElevation onClick={() => fetch_Save(word.word, 'toAdd', 'load-save')}>Add to the deck</Button>
+              }
+            </li>
+          ))
+        ) : (
+          (!loading && debouncedSearch) &&
+          <li className='item-not-found'>
+            {
+              addedWords.includes(debouncedSearch) ?
+              <CheckIcon color='success'/> :
+              <>
+                OOps!!! The word is not yet in our evolving dictionary
+                <Button startIcon={<AddIcon />} variant="contained" color='primary' disableElevation onClick={() => fetch_Save(debouncedSearch, 'toWish', 'load-save')} >Add it to the wish list</Button>
+              </>
+            }
+          </li>
+        )
+      )
+      }
+    </ul>
+  )
+}
+
+
+// const addToDeck = (deckName, deckId, userId, deckLang, words, dispatch) => {
+//     console.log(deckName, deckId, userId, deckLang, words)
+//     axios.post(baseUrl + '/api/v1/words/add-to-deck', {deckName, deckId, userId, deckLang, words})
+//          .then(res => {
+//           const ID = res.data.deckId
+//           dispatch(openDeck({_id: ID}))
+//          })
+// }
+
+// const addToWishList = (deckName, deckId, userId, deckLang, words, dispatch) => {
+//     axios.post(baseUrl + '/api/v1/words/add-to-wish-list', {deckName, deckId, userId, deckLang, words})
+//          .then(res => {
+//           const ID = res.data.deckId
+//           dispatch(openDeck({_id: ID}))
+//          })
+// }

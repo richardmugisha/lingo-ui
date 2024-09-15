@@ -1,24 +1,26 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './Card.css';
 
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { modalSelect } from '../../../features/system/systemSlice';
+import { useSelector } from 'react-redux';
+import { Button } from "@mui/material"
+import { Add as AddIcon, School as SchoolIcon, Quiz as QuizIcon, ContentCopy, Create } from '@mui/icons-material';
 
 const Card = () => {
-  const dispatch = useDispatch()
   const navigate = useNavigate();
-  const sendOut = (to) => {navigate(to)}
 
-  const { id: deckId } = useSelector(state => state.deck)
+  const { _id: deckId, deckName } = useSelector(state => state.deck.openDeck)
   
   return (
     <div className='card'>
-        <div className='custom-button-1' onClick={() => dispatch(modalSelect('card-add'))}>Add to the deck</div>
-        <div className='custom-button-1' onClick={() => dispatch(modalSelect('card-learn'))}>Practice the deck</div>
-        <div className='custom-button-1' onClick={() => dispatch(modalSelect('card-quiz'))}>Quiz yourself</div>
-        <div className='custom-button-1' onClick={() => sendOut(`../more/story-time`)}>Story Time</div>
-        <div className='custom-button-1' onClick={() => sendOut(`../more/temporary/deckId/${deckId}`)}>Copy cards from Temporary deck</div>
+        <h3>{deckName}</h3>
+        <div>
+          <Button startIcon={<AddIcon />} variant="contained" color='primary' disableElevation onClick={() => navigate('add')} >Populate the deck</Button>
+          {/* <Button startIcon={<AddIcon />} variant="contained" disableElevation color='primary' onClick={() => navigate(`../../more/temporary/deckId/${deckId}`)}>words from your reading</Button> */}
+          <Button startIcon={<SchoolIcon />} variant="contained" disableElevation color='primary' onClick={() => navigate('learn')}>Practice the deck</Button>
+          <Button startIcon={<QuizIcon />} variant="contained" disableElevation color='primary' onClick={() => navigate('quiz')}>Quiz yourself</Button>
+          <Button startIcon={<Create />} variant="contained" disableElevation color='primary' onClick={() => navigate(`../../more/story-time`)}>Story Time</Button>
+        </div>
     </div>
   )
 }

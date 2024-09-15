@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FiTrendingUp, FiTrendingDown } from "react-icons/fi";
+import {TrendingUp as TrendingUpIcon, TrendingDown as TrendingDownIcon } from '@mui/icons-material';
 import './Performance.css'
 import axios from 'axios';
 import Spinner from 'react-spinner-material';
 
-const Performance = ({deckName, givenTime, duration, correctAnswers, all }) => {
+const Performance = ({deckName, deckId, perf, givenTime, duration, correctAnswers, all }) => {
   const [amountUp, setAmountUp] = useState(false);
   const [speedUp, setSpeedUp] = useState(false);
   const [timeUp, setTimeUp] = useState(false);
@@ -20,12 +20,11 @@ const Performance = ({deckName, givenTime, duration, correctAnswers, all }) => {
   
   const getMetadata = async (correct, speed, time) => {
     try {
-      
-      const performData =  await axios.get(`${baseUrl}/api/v1/cards/deckMetadata/${ deckName }`);
-      const data = performData.data.deckMetadata
-      console.log(data)
-      if (!data) return [true, true, false] // if no reference, we assume we are progressing
-      const perf = data.performance;
+      // const performData =  await axios.get(`${baseUrl}/api/v1/cards/deck/${ deckName }`);
+      // const data = performData.data.deckMetadata
+      // console.log(data)
+      // if (!data) return [true, true, false] // if no reference, we assume we are progressing
+      // const perf = data.performance;
       
       return { correctStatus: correct > (perf.correct[perf.correct.length-1]), speedStatus: speed > perf.performance[perf.performance.length-1], time: time > perf.time[perf.performance.length-1]}
     } catch (error) {
@@ -55,7 +54,7 @@ const Performance = ({deckName, givenTime, duration, correctAnswers, all }) => {
        uploading.current = true;
        try {
           console.log('...uploading', uploading);
-          const performData = await axios.patch(`${baseUrl}/api/v1/cards/deckMetadata/${deckName}`, { correct, performance: speed, time });
+          const performData = await axios.patch(`${baseUrl}/api/v1/cards/deck/${deckId}`, { correct, performance: speed, time });
           console.count(performData.data);
        } catch (error) {
           console.log(error);
@@ -72,6 +71,7 @@ const Performance = ({deckName, givenTime, duration, correctAnswers, all }) => {
   perfRefs.sort((a, b) => a - b)
   const conclusion = perfLabels[perfRefs.indexOf(overAllPerf)]
   const emoji = perfEmojis[perfRefs.indexOf(overAllPerf)]
+
   return (
     <>
     { ready ? 
@@ -81,17 +81,17 @@ const Performance = ({deckName, givenTime, duration, correctAnswers, all }) => {
         <div className="amount">
           <div className="label">Correct</div>
           <div className="number">{`${Math.floor(correctAnswers*100/all)}%`}</div>
-          <div className="display"><i style={{color: amountUp?'greenyellow':'red' }}>{ amountUp?<FiTrendingUp />:<FiTrendingDown />}</i></div>
+          <div className="display" style={{color: amountUp?'greenyellow':'red' }}>{ amountUp?<TrendingUpIcon />:<TrendingDownIcon />}</div>
         </div>
         <div className="speed">
           <div className="label">Performance</div>
           <div className="number">{conclusion}{emoji}</div>
-          <div className="display"><i style={{color: speedUp?'greenyellow':'red'}}>{ speedUp?<FiTrendingUp />:<FiTrendingDown /> }</i></div>
+          <div className="display" style={{color: speedUp?'greenyellow':'red'}}>{ speedUp?<TrendingUpIcon />:<TrendingDownIcon /> }</div>
         </div>
         <div className="time">
           <div className="label">Time</div>
           <div className="number">{`${Math.floor(duration)}s`}</div>
-          <div className="display"><i style={{color: timeUp?'red':'greenyellow'}}>{ timeUp?<FiTrendingUp />:<FiTrendingDown /> }</i></div>
+          <div className="display" style={{color: timeUp?'red':'greenyellow'}}>{ timeUp?<TrendingUpIcon />:<TrendingDownIcon /> }</div>
         </div>
       </div>
       <div className="performance--foot">Check results</div>

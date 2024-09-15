@@ -1,5 +1,22 @@
 .card {
     background-color: #9BC5CB;
     box-shadow: 0 0 3px rgb(113, 156, 196);
-    padding: 2em;
+    padding: 1em;
+    min-width: 20vw;
+}
+
+.card > h3 {
+    color: #1e2d64;
+    text-align: start;
+    margin: 1em;
+    margin-top: 0;
+}
+.card > div {
+}
+
+.card > div > * {
+    text-wrap: nowrap;
+    display: block;
+    width: 100%;
+    margin-block: 1em;
 }

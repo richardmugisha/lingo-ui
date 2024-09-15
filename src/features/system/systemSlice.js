@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    modal : true,
-    modalSelection: 'card',
+    modal : false,
+    modalSelection: '',
 }
 
 const systemSlice = createSlice({

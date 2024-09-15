@@ -1,90 +1,78 @@
-
-
-import React, {useEffect, useState} from 'react';
-import './Yapping.css'
-import axios from 'axios';
-
+import React, { useEffect, useState } from 'react';
+import './Yapping.css';
+import Side from './Side';
+import Story from './Story';
+import generalHook from './useGeneralHook';
 import { useSelector } from 'react-redux';
 
 const Yapping = () => {
-  const { cards, id: deckId } = useSelector(state => state.deck)
-  const [words, setWords] = useState(() => {
-    const temp = []
-    cards.map(card => card.variations.map(variation => temp.push(variation.variationWord) ) );
-    console.log(temp)
-    return temp
-  })
+  const { words: cards, _id: deckId } = useSelector((state) => state.deck.openDeck);
+  const [words, setWords] = useState(
+    cards.map((cardObj) => cardObj['related words'][Math.floor(Math.random() * cardObj['related words'].length)])
+  );
 
-  const [story, setStory] = useState('')
-  const [stories, setStories] = useState([])
-  const [title, setTitle] = useState('')
-  const [checked, setChecked] = useState(false)
-  const [activity, setActivity] = useState('reading') //reading or creating
-  const [selected, setSelected] = useState('')
+  const [story, setStory] = useState([]);
+  const [stories, setStories] = useState([]);
+  const [title, setTitle] = useState('');
+  const [checked, setChecked] = useState(false);
+  const [activity, setActivity] = useState('creating'); // reading or creating
+  const [selected, setSelected] = useState(-1); // story index
+  const [aiHelp, setAiHelp] = useState('');
+  const [aiOptionsDisplay, setAiOptionsDisplay] = useState(false);
+  const [currSentence, setCurrSentence] = useState({sentence: '', blanked: ''});
 
-  const [userId ] = useState(JSON.parse(localStorage.getItem('user')).userId)
+  const [info, setInfo] = useState({ type: '', message: '', exists: false });
 
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const { handlePartSelection, handleSubmit, handleSummarySubmit, callUponAi} = generalHook(aiHelp, setAiHelp,
+    selected, setSelected,
+    currSentence, setCurrSentence, 
+    activity, setActivity, 
+    info, setInfo,
+    deckId, 
+    checked, 
+    words, setWords,
+    story, setStory,
+    title, setTitle, 
+    stories, setStories)
 
-  const handleSubmit = () => {
-    console.log(deckId)
-    axios.post(`${baseUrl}/api/v1/cards/story-time/${deckId}`, { userId : !checked ? userId : null, story, title})
-        .then(res => {
-          const { story } = res.data;
-          console.log(story)
-        })
-        .catch(e => console.log(e.msg))
-  }
+  useEffect(() => console.log(story) , [story])
 
-  useEffect(() => {
-    axios.get(`${baseUrl}/api/v1/cards/story-time/${deckId}`)
-          .then(res => {
-            const { stories } = res.data;
-            console.log(stories)
-            if (stories && stories.length) {setStories(stories); setTitle(stories[0].title); setStory(stories[0].story); setSelected(stories[0].title)}
-            else setActivity('creating')
-          })
-          .catch(e => console.log(e.msg))
-  }, [])
-
-  useEffect(() => {
-    if (selected) {
-      const current = stories.find(story => story.title === selected)
-      setTitle(current.title); setStory(current.story)
-    }
-  }, [selected])
-  
   return (
-    
     <div className='Yapping'>
-      <div className="words">
-        <h1>Story time</h1>
-        <p>{activity === 'reading' ? 'Already existing stories' : 'Remove the word you are done using by clicking on it!'}</p> <br />
-        { activity === 'reading' ? 
-          <div className='titles'> {stories.map(story => <span onClick={() => {console.log(story.title, selected); setSelected(story.title)} } className={`${selected === story.title ? 'selected' : ''}`}>{story.title}</span>) } </div> :
-          <div className='word-pool'>
-            { words.map((word, i) => <span onClick={() => setWords(words => words.filter((w, index) => index !== i))} key={i}>{word}</span>) }
-          </div>
-        }
-        <br />
-        <input type="submit" value={`${activity === 'reading' ? "Create your story": "Read stories"}`} className='submit custom-button-1' onClick={() => {setActivity(() => activity ==='creating' ? "reading" : "creating"); setTitle(''); setStory('')}}/>
-      </div>
-      <div className="story">
-        {activity === 'creating' &&
-        <div>
-          <p>Create a story using the words / expressions </p> 
-          <div>
-            <label htmlFor="incognito" onClick={() => setChecked(prev => !prev)}><input onChange={() => {}} className='checkbox' value={checked} type="checkbox" name="incognito" id="incognito" /> incognito</label>
-            <span tooltip ='nothing'>&#9432;</span>
-            <input type="submit" value="Submit" className='submit' onClick={handleSubmit}/>
-          </div>
-        </div>}
-        
-        <input type="text" name="" id="" placeholder='Title of the story' className='title' value={title} onChange={(e) => setTitle(e.target.value)}/>
-        <textarea name="" id="" value={story} onChange={(e) => setStory(e.target.value)} onKeyDown={(e) => {if (e.key === 'Tab') { e.preventDefault() ; setStory(prev => prev + '    ')} } }></textarea>
-      </div>
+      {info.exists && (
+        <div className={`Yapping--info Yapping--info-${info.type}`} id='Yapping--info'>
+          {info.message}
+        </div>
+      )}
+      {aiHelp &&
+        <form action="" className='Yapping--summary' id='Yapping--form' onSubmit={handleSummarySubmit}>
+          <label htmlFor="">Title: <input type="text" id='Yapping--title' placeholder='optional' /></label>
+          <p>Provide a short summary of your story to guide your assistant</p>
+          <textarea name="" id="Yapping--summary"></textarea>
+          <input type="submit" value='Start' className='Yapping--button'/>
+        </form>
+      }
+      <Side 
+        stories={stories}
+        words={words} setWords={setWords} 
+        setSelected={setSelected} selected={selected}
+        setActivity={setActivity} activity={activity} 
+        setTitle={setTitle} 
+        setStory={setStory}/>
+      <Story 
+        info={info} setInfo={setInfo}
+        story={story} activity={activity} 
+        title={title} setTitle={setTitle}
+        currSentence={currSentence} setCurrSentence={setCurrSentence}
+        setAiHelp={setAiHelp} aiHelp={aiHelp} 
+        setChecked={setChecked} checked={checked}
+        setAiOptionsDisplay={setAiOptionsDisplay} aiOptionsDisplay={aiOptionsDisplay} 
+        handlePartSelection={handlePartSelection} 
+        handleSubmit={handleSubmit} 
+        callUponAi={callUponAi}
+        />
     </div>
-  )
-}
+  );
+};
 
-export default Yapping
+export default Yapping;

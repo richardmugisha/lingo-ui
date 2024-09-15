@@ -12,7 +12,6 @@
 
 .intro > .Logo > .energy {
     color: yellow;
-    position: relative;
     background: radial-gradient(ellipse at center, rgba(255, 255, 255, 1), rgba(255, 255, 255, .000001));
     border-radius: 50%;
     box-shadow: 0 0 50px white;

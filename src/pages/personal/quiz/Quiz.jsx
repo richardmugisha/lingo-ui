@@ -7,14 +7,13 @@ import './Quiz.css';
 import shuffledNumbers from '../../../utils/shuffleArray';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { modalSelect } from '../../../features/system/systemSlice';
 import { setQuizType, setOrder, setQuizLength, setFormat } from '../../../features/personal/quiz/quizSlice';
 
 const Quiz = () => {
   const dispatch = useDispatch()
-  const { cards: deck } = useSelector(state => state.deck)
+  const deck  = useSelector(state => state.deck.openDeck)
 
-  const order = shuffledNumbers(deck.length-1)
+  const order = shuffledNumbers(deck.words.length-1)
   dispatch(setOrder(order))
 
   const [questionTypes, setQuestionTypes] = useState(['mcq', 'guess'])

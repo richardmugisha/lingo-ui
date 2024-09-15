@@ -1,10 +1,10 @@
 
 
-import React from 'react';
+import React, { useState } from 'react';
 import './Header.css';
 
 import {useNavigate} from 'react-router-dom';
-import { MdMenu } from "react-icons/md";
+import { Menu, Clear as MenuCancel} from '@mui/icons-material';
 
 import Logo from '../home/Logo'
 
@@ -12,21 +12,25 @@ const Header = () => {
   const user = JSON.parse(localStorage.getItem('user'))
   const navigate = useNavigate()
 
+  const [menuShow, setMenuShow] = useState(false)
+
   return (
     <header>
         <div className='header-logo' style={{cursor: 'pointer'}} onClick={() => navigate('/portal/personal')}><Logo /></div>
         <nav>
-            <ul className="nav-right">
-              <li className="a">Quiz</li>
-              <li className="a">Add</li>
-              <li className="a" onClick={() => navigate('/portal/more')}>More</li>
+            <ul className={`nav-right ${menuShow && 'show'}`}>
+              <li>Quiz</li>
+              <li>Add</li>
+              <li onClick={() => navigate('/portal/more')}>More</li>
             </ul>
-            <div className="profile">
+            <span style={{cursor: 'pointer'}} className='menu' onClick={() => setMenuShow(!menuShow)}>{menuShow ? <MenuCancel /> :  <Menu />}</span>
+            <div className="nav-profile">
               <span>{user.username}</span>
               <span></span>
             </div>
+            
         </nav>
-        <div className='menu'><MdMenu /></div>
+        
     </header>
   )
 }

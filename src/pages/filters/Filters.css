@@ -1,6 +1,7 @@
 
 .filters-container {
     display: flex;
+    flex-direction: row;
     align-items: center;
     height: 100%;
 }

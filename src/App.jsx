@@ -33,9 +33,9 @@ const Portal = () => {
     
     <main>
       <Routes>
-        <Route path='personal' element={<Personal />} />
+        <Route path='personal/*' element={<Personal />} />
         <Route path='more/*' element={<More />} />
-        <Route path='network' element={<Network />} />
+        <Route path='network/*' element={<Network />} />
       </Routes>
     </main>
 

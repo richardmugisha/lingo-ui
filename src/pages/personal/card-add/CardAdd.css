@@ -1,20 +1,20 @@
 .card-add {
-    width: 40vw;
+    width: min(90vw, 600px);
+    min-height: 200px;
     margin: auto;
     background-color: #9BC5CB;
-    padding: 20px;
+    padding: 1.5em;
 }
 
 .card-add * {
-    color: #E0F5F8;
     font-size: large;
     font-weight: 500;
     margin-bottom: 5px;
 }
 
-.card-add * *, .card-add * * * {
+/* .card-add * *, .card-add * * * {
     background-color: #345C70;
-}
+} */
 
 .card-add > .head {
     display: flex;
@@ -25,36 +25,39 @@
     background-color: transparent;
 }
 
-.card-add > .head > div:nth-child(2), .head > div:nth-child(3) {
-    padding: 10px;
-    border-radius: 20px;
+.card-add  > .head button {
+    padding: .7em 1em;
+    border: none;
+    border-radius: .5em;
     cursor: pointer;
-    box-shadow: 0 0 10px rgb(210, 231, 241);
+    background-color: #345C70;
+    color: white;
 }
 
 .card-add > .main {
     border-radius: 30px;
     background-color: #6E95A8;
-    padding: 10px;
+    padding: 1em;
+    position: relative;
 }
 
 .card-add .top {
     display: flex;
     justify-content: space-between;
-    
-    background-color: transparent;
 }
 
 .card-add > .main > .top > div {
-    padding: 5px 10px;
+    padding: .5em 1em;
     border-radius: 20px;
     cursor: pointer;
+    text-decoration: underline;
 }
 
 .card-add .middle {
     display: flex;
     background-color: transparent;
-    max-height: 200px;
+    gap: 1em;
+    align-items: center;
 }
 
 .card-add .arrow:hover {
@@ -65,28 +68,33 @@
 .card-add .content {
     border-radius: 20px;
     text-align: left;
-    padding: 10px;
+    padding: 1em;
     overflow: hidden;
 }
 
 .card-add .arrow {
-    border: 2px solid skyblue;
+    border: 1px solid skyblue;
+    padding: 5px;
     cursor: pointer;
-    margin: auto 10px;
 }
 
 .main--bottom {
     width: fit-content;
-    padding: 10px;
+    padding: 1em;
+    border: 1px solid;
     border-radius: 20px;
     background-color: lightblue;
     color: #345C70;
     cursor: pointer;
     margin: auto;
+    position: absolute;
+    bottom: -5%;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .card-add--bottom div {
-    background-color: transparent;
+    color: #345C70;
 }
 
 @media (max-width: 420px) {

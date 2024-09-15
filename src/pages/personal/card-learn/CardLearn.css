@@ -4,17 +4,41 @@
     background-color: #9BC5CB;
     padding: 20px;
     text-align: start;
+    font-size: large;
 }
 
 .card-learn--deckname {
     font-size: x-large;
-    text-transform: uppercase;
-    text-decoration: underline;
+    color: rgba(0, 115, 255, 0.758);
 }
 
-.card-learn--big {
-    font-size: larger;
-    text-transform: capitalize;
+.card-learn--word {
+    font-size: large;
+    font-weight: bold;
+}
+.card-learn--word::first-letter {
+    text-transform: uppercase;
+}
+
+.card-learn--descr > li {
+    list-style-type: disc;
+    padding-inline: 1em;
+}
+
+.card-learn--related {
+    max-height: 100px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    column-gap: 1em;
+    padding-inline: 1em;
+}
+
+.card-learn--related > li {
+    color: rgba(0, 110, 255, 0.61);
+    cursor: pointer;
+}
+.card-learn--related > li:hover {
     text-decoration: underline;
 }
 

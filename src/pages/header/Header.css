@@ -5,7 +5,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 30px;
+    padding: 0 2em;
 }
 
 header .menu {
@@ -13,7 +13,7 @@ header .menu {
 }
 
 .header-logo > .Logo {
-    font-size: 2em;
+    font-size: calc(1.5rem + 1vw);
     font-weight: 900;
     display: flex;
     align-items: center;
@@ -26,69 +26,87 @@ header .menu {
 
 header > nav {
     height: 100%;
-    padding: 5em;
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 .nav-right {
-    height: 40px;
     display: flex;
 }
+
+.nav-right.show {
+  position: absolute;
+  border: 1px solid #86A8B8;
+  z-index: 1;
+  top: 3rem; right: 4rem;
+  padding: 1rem;
+  background-color: #C0D7DA;
+  flex-direction: column;
+}
+
   
 .nav-right > li {
     list-style-type: none;
-    padding: 5%;
+    padding: .5vw 2vw;
     background-color: #86A8B8;
     color: white;
-    font-size: 27px;
+    font-size: calc(1rem + .5vw);
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 5px;
+    border-radius: .3em;
     cursor: pointer;
-    margin-right: .5em;
-  }
-  
-  .nav-right > li:hover {
-    color: rgb(64, 44, 72);
-    box-shadow: 0 0 10px #6897a5;
-  }
+    margin-inline: 1vw;
+}
 
-  header .profile {
+/* .nav-right > li {
+  list-style-type: none;
+  padding: .5em;
+  font-size: 1.5em;
+  font-weight: 600;
+  color: #03346E
+} */
+  
+.nav-right > li:hover {
+    border: 2px solid white;
+}
+
+header .nav-profile {
     color: white;
     font-size: x-large;
     font-weight: 500;
     display: flex;
     align-items: center;
-  }
-
+    padding: 1rem 1vw;
+    margin-left: 2vw;
+}
  
-  header .profile  span:last-child {
+header .nav-profile  span:last-child {
     width: 50px;
     margin-left: 10px;
     aspect-ratio: 1;
-    border: 1px solid black;
     border-radius: 50%;
     background-color: white;
-  }
+}
+
+header .menu {position: relative; color: #2e6077; font-weight: 900;}
+
 
   @media (max-width: 700px) {
-
-    .nav-right li {
-      font-size: 1.2em;
-    }
+    .nav-profile > span:first-child { display: none}
   }
-  @media (max-width: 420px) {
+  @media (max-width: 500px) {
 
-    header .menu {display: block;}
+    header .menu {display: inline-block}
+
+    .nav-right { display: none}
     
-    .nav-right {
-      display: none;
+    .nav-right.show {
+      display: flex;
+    }
+
+    .nav-right > li {
+      margin-block: .5rem;
     }
   }
   
-  @media ( max-width: 200px) {
-    .nav-right li {
-      display: none;
-    }
-  }

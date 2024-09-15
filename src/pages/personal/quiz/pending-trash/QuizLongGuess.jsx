@@ -1,6 +1,6 @@
 
 import { useDispatch } from 'react-redux';
-import { setQuizLength, setFormat } from '../../../features/personal/quiz/quizSlice';
+import { setQuizLength, setFormat } from '../../../../features/personal/quiz/quizSlice';
 
 const QuizLongGuess = () => {
     

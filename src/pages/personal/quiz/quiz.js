@@ -1,5 +1,5 @@
 
-const quiz = (route) => {
+const quiz = (route, quizType) => {
 
     const formatQLM = {
         topProgressbar: true,
@@ -11,15 +11,12 @@ const quiz = (route) => {
           correctAnswer: "Mugisha is the lion king. he is a beast",
           body: ["Lorem ipsum dolor sit amet consectetur adipisicing elit.", "Lorem ipsum dolor sit amet consectetur adipisicing elit.","Mugisha is the lion king. he is a beast", "Lorem ipsum dolor sit amet consectetur adipisicing elit."]
         },
-        bottomProgressbar: true,
+        btmProgressbar: true,
     }
 
     const formatQSM = {
       label0: false, // the text above the top progressbar,
       label1: false, // the first text below the progressbar,
-      label2: false, // the second text below the progressbar,
-      label3: false, // the word above the bottom progressbar if there is
-      label4: false, // the word under teh btm progressbar,
       topProgressbar: true,
       btmProgressbar: true,
       content: {
@@ -37,7 +34,7 @@ const quiz = (route) => {
         type: 'guess',
         body: ["Lorem ipsum dolor sit amet consectetur adipisicing elit."]
       },
-      bottomProgressbar: true,
+      btmProgressbar: true,
     }
 
     const formatQSG = {
@@ -47,7 +44,7 @@ const quiz = (route) => {
         type: 'guess',
         body: ["Lorem ipsum dolor sit amet consectetur adipisicing elit."]
       },
-      bottomProgressbar: true,
+      btmProgressbar: true,
     }
 
     const format = route === 'quiz-long-guess' ? formatQLG :

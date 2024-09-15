@@ -9,11 +9,65 @@
     overflow-y: auto;
 }
 
+.Yapping--info {
+    position: absolute;
+    min-width: 500px;
+    z-index: 2;
+    left: 50%;
+    transform: translate(-50%, -30%);
+    padding: 1em 3em;
+    box-shadow: 0 0 1em rgba(0, 0, 0, 0.5);
+}
+
+.Yapping--summary {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1em;
+    background-color: rgb(154, 232, 232);
+    display: flex; flex-direction: column;
+    align-items: center;
+    gap: 1em;
+}
+
+.Yapping--button {
+    padding: .5em 2em;
+    background-color: #345C70;
+    border: none;
+    border-radius: 1em;
+    color: white;
+    cursor: pointer;
+}
+
+.Yapping--info-warning { background-color: rgb(245, 224, 149) }
+.Yapping--info-success { background-color: rgb(193, 246, 86) }
+.Yapping--info-info { background-color: rgb(108, 173, 244) }
+.Yapping--info-danger { background-color: rgb(250, 115, 105) }
 
 h1 { font-size: x-large;}
 .words div, textarea {
     border: 1px solid ;
     padding: 1em;
+}
+
+#text-container {
+    text-align: start;
+    margin: 1em;
+    padding: 1em;
+    margin-left: 3em;
+    background-color: beige;
+}
+
+textarea {
+    width: 90%;
+    height: 70px;
+    border-radius: 1em;
+    font-size: 1.2em;
+    font-weight: 500;
+    color: #345C70;
+    position: relative;
+    margin-top: 2em;
 }
 
 .words div {
@@ -24,13 +78,6 @@ h1 { font-size: x-large;}
     padding: .5em 1em;
     margin: 1em;
     width: 95%;
-}
-
-textarea {
-    width: 95%;
-    height: 500px;
-    border: 1px solid;
-    border-radius: 1em;
 }
 
 .words span {
@@ -55,20 +102,10 @@ textarea {
     background-color: rgb(212, 87, 42);
 }
 
-textarea {
-    font-size: 1.2em;
-    font-weight: 500;
-    color: #345C70;
-}
-
-.story div {
+.story > div {
     display: flex;
     justify-content: space-between;
     padding-inline: 3em;
-}
-
-.Yapping .submit {
-    margin-inline: 1em;
 }
 
 .Yapping .submit, .story label {
@@ -116,4 +153,45 @@ textarea {
 
 .story .checkbox:checked::before {
     transform: translateX(1rem);
+}
+
+.story > div > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 2em;
+}
+
+.story .ai-assistant {
+    font-weight: bolder;
+    display: flex;
+    cursor: pointer;
+    background: radial-gradient( white, rgb(245, 245, 172));
+    padding: .5em 1em;
+    border: 1px solid;
+    border-radius: 50%;
+    transition: border-radius 300ms ease-in-out;
+}
+.story .ai-assistant:hover {
+    border-radius: 2em 1em/ 1em 2em;
+}
+
+
+.story section section {
+    padding: .3em 1em;
+    text-align: start;
+    position: absolute;
+    max-width: 300px;
+    background-color: beige;
+    border: 1px solid #345C70;
+    margin-top: .5em;
+    transition: block 1s ease-in-out;
+}
+
+.story section .summary {
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.story section p {
+    margin-left: 1em;
 }

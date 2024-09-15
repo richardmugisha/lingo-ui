@@ -4,11 +4,12 @@ import axios from 'axios';
 import Spinner from 'react-spinner-material';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { modalSelect } from '../../../features/system/systemSlice';
-import { push, id } from '../../../features/personal/deck/deckSlice';
+import { push } from '../../../features/personal/deck/deckSlice';
+import { useNavigate } from 'react-router-dom';
 
 
 const CardAddManual = () => {
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const { id: deckId, deckLang, name: deckName } = useSelector(state => state.deck)
   const [userId ] = useState(JSON.parse(localStorage.getItem('user')).userId)
@@ -142,7 +143,7 @@ const CardAddManual = () => {
               { status === 'submitted' && '✅submitted'}
             </label>
             <input type="submit"/>
-            <button onClick={() => dispatch(modalSelect('card-add-auto'))}>Generate with AI</button>
+            <button onClick={() => navigate('../card/add/auto')}>Generate with AI</button>
           </section>
           <hr />
           <section>

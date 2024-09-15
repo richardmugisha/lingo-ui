@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './GuessCard.css';
 import ProgressBar from "@ramonak/react-progress-bar";
-import { FaQuestion } from 'react-icons/fa';
-import { FcCheckmark } from "react-icons/fc";
+import { QuestionMark, Check as CheckIcon } from '@mui/icons-material';
 
 const GuessCard = ({ cardFormat, btmProSize, handleItemClick, topProSize, quizType, quizLength }) => {
     const [checkCorrect, setCheckCorrect] = useState(false);
@@ -101,7 +100,7 @@ const GuessCard = ({ cardFormat, btmProSize, handleItemClick, topProSize, quizTy
                         className={`guess-card ${cardAnim && `card-${animDir}`} ${checkCorrect && 'answer-card'}`}
                         style={{ boxShadow: `0 0 ${checkCorrect ? boxShadowSpread : '0'}px ${checkCorrect ? color : 'white'}` }}
                     >
-                        <div>{checkCorrect ? <FcCheckmark /> : <FaQuestion />}</div>
+                        <div>{checkCorrect ? <CheckIcon /> : <QuestionMark />}</div>
                         <p>{checkCorrect ? cardFormat.answer : cardFormat.question}</p>
                         <p className='guess-card--footer'>{checkCorrect ? 'Swipe Right if you were right, and Left if you were off' : 'Tap to check the answer when ready'}</p>
                     </div>
