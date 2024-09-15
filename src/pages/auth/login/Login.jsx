@@ -2,9 +2,9 @@
 import React from 'react';
 import Auth from '../Auth';
 
-const Login = () => {
+const Login = ({ setUserAuthed}) => {
   return (
-    <Auth page={'login'}/>
+    <Auth page={'login'} setUserAuthed={setUserAuthed} />
   )
 }
 

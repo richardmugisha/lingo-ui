@@ -10,10 +10,10 @@ import {Navigate, Routes, Route,  } from 'react-router-dom';
 
 import Logo from './Logo';
 
-const Home = () => {
-  const token = localStorage.getItem('token');
-  
-  return token ? 
+const Home = ({ userAuthed, setUserAuthed}) => {
+  console.log('.....home shit')
+
+  return userAuthed ? 
     <Navigate to= "../portal/personal"/> :
     <div className='Home'>
       <div className='intro side'>
@@ -23,7 +23,7 @@ const Home = () => {
 
       <div className='auth'>
         <Routes>
-          <Route path='' element={<Login />}/>
+          <Route path='' element={<Login setUserAuthed={setUserAuthed} />}/>
           <Route path='register' element={<Register />}/>
         </Routes>
       </div>

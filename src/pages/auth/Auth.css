@@ -27,6 +27,14 @@
     color: #5b7784;
 }
 
+.submit-div {
+    padding: 1em;
+    max-height: 3em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2em;
+}
 
 .submit-div > input {
     padding: .5em 4em;
