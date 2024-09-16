@@ -39,7 +39,7 @@ const Story = (
             <p>Create a story using the words / expressions </p>
             <div>
               <section>
-                <span className='ai-assistant' onClick={() => setAiOptionsDisplay(true)}>
+                <span className='ai-assistant' onClick={() => setAiOptionsDisplay(!aiOptionsDisplay)}>
                   <AutoAwesomeIcon />
                   {aiHelp ? aiHelp : 'Ai assistant'}
                 </span>

@@ -5,7 +5,7 @@
 }
 
 .words .word-pool {
-    max-height: 50vh;
+    max-height: 70vh;
     overflow-y: auto;
 }
 
@@ -180,6 +180,7 @@ textarea {
     padding: .3em 1em;
     text-align: start;
     position: absolute;
+    z-index: 2;
     max-width: 300px;
     background-color: beige;
     border: 1px solid #345C70;

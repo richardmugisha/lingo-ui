@@ -55,7 +55,7 @@ const generalHook = (
       setInfo({exists: true, type: 'info', message: 'You can start writing the story. Hit Enter whenever you need a sentence from your assistant.'})
       return
     }
-    axios.post(baseUrl + '/api/v1/cards/story-time/' + deckId, {userId, story, title, words, aiAssistance: aiHelp, summary: textInput})
+    axios.post(baseUrl + '/api/v1/cards/story-time/' + deckId, {userId, story, title, words, aiAssistance: aiHelp, summary: summaryInput})
          .then(({ data }) => {
             const story = data.story;
             setStories((prev) => {
@@ -64,8 +64,7 @@ const generalHook = (
             });
             setAiHelp('')
           })
-  }
-, [aiHelp])
+  }, [aiHelp])
 
     const handleSubmit = () => {
         console.log(deckId);

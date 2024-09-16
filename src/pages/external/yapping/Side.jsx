@@ -1,12 +1,12 @@
 import React from 'react'
 
 const Side = ({ stories, setWords, words, setSelected, setActivity, activity, setTitle, setStory, selected }) => {
-  
+  console.log(selected, words)
   return (
     <div className="words">
         <h1>Story time</h1>
         <p>{activity === 'reading' ? 'Already existing stories' : 'Remove the word you are done using by clicking on it!'}</p> <br />
-        { !(selected >= 0) ? (
+        { (selected < 0 && stories.length) ? (
           <div className='titles'>
             {stories.map((story, i) => (
               <span

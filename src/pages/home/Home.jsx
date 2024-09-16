@@ -11,7 +11,6 @@ import {Navigate, Routes, Route,  } from 'react-router-dom';
 import Logo from './Logo';
 
 const Home = ({ userAuthed, setUserAuthed}) => {
-  console.log('.....home shit')
 
   return userAuthed ? 
     <Navigate to= "../portal/personal"/> :
