@@ -4,6 +4,7 @@ export const useExtensionWords = () => {
     const [isExtensionOpen, setIsExtensionOpen] = useState(false)
     const [extensionWords, setExtensionWords] = useState([])
     const oneTimeRef = useRef(0)
+
     useEffect(() => {
         if (oneTimeRef.current === 1) return;
         oneTimeRef.current = 1;
@@ -14,7 +15,7 @@ export const useExtensionWords = () => {
 }
 
 const fetchingExtensionData = (setExtensionWords, setIsExtensionOpen) => {
-    let interval;
+    let timeout;
     const handleExtensionMessage = (event) => {
       if (event.data.type === 'FROM_EXTENSION') {
         const words = event.data.payload
@@ -27,20 +28,21 @@ const fetchingExtensionData = (setExtensionWords, setIsExtensionOpen) => {
     };
     
     let attempt = 0;
-    const maxAttempts = 10; // or a suitable number
+    const maxAttempts = 15; // or a suitable number
     const retrievingExtension = () => {
         if (attempt >= maxAttempts) {
-            clearInterval(interval);
+            clearTimeout(timeout);
+            setIsExtensionOpen(true);
             console.log('Extension not found after multiple attempts.');
             return;
         }
         if (document.documentElement.dataset.hasExtension) {
-            clearInterval(interval);
+            clearTimeout(timeout);
             setIsExtensionOpen(true);
-            console.log('did it');
             window.postMessage({ type: 'REQUEST_DATA_FROM_EXTENSION' }, '*');
         } else {
             attempt++;
+            timeout = setTimeout(retrievingExtension, 2000);
         }
     };
 
@@ -54,7 +56,7 @@ const fetchingExtensionData = (setExtensionWords, setIsExtensionOpen) => {
 
     // Cleanup function to remove the event listener
     return () => {
-        clearInterval(interval)
+        clearTimeout(timeout)
         window.removeEventListener('message', handleExtensionMessage);
     };
   }
