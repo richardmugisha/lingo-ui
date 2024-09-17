@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './CardAddAuto.css';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -7,11 +7,14 @@ import { Button, Chip } from "@mui/material"
 import { Add as AddIcon, Clear as ClearIcon, Check as CheckIcon } from "@mui/icons-material"
 
 import { useSearchWords } from './utils/useSearchWords';
+import { useExtensionWords } from './utils/useExtensionWords';
 
 const CardAddAuto = () => {
   const dispatch = useDispatch();
   const { _id: deckId, deckLang, deckName } = useSelector(state => state.deck.openDeck)
   const [userId ] = useState(JSON.parse(localStorage.getItem('user')).userId)
+
+  const [ isExtensionOpen, extensionWords ] = useExtensionWords()
 
   const [searchValue, setSearchValue] = useState('')
   const [debouncedSearch, searchWords, loading] = useSearchWords(searchValue, deckLang)
@@ -25,6 +28,18 @@ const CardAddAuto = () => {
       return updatedWords;
     });
   };
+
+  useEffect(() => {
+    if (extensionWords.length) {
+      setExtraWords(prev => {
+        prev = prev.concat(extensionWords)
+        console.log(prev, prev.length)
+        localStorage.setItem('temporary', JSON.stringify({words: prev}))
+        return prev
+      }
+      );
+    }
+  }, [extensionWords])
   
 
   return (
@@ -35,12 +50,13 @@ const CardAddAuto = () => {
       <input type='text' className='card-auto-search' autoFocus placeholder="Search for the word you want" value={searchValue} onChange={(e) => setSearchValue(e.target.value)}/>
       <SearchList searchWords={searchWords} searchValue={searchValue} debouncedSearch={debouncedSearch} deckId={deckId} deckName={deckName} loading={loading} deckLang={deckLang}/>
       {
-        extraWords.length > 0 && 
+        extraWords?.length > 0 && 
         <div className='card-auto--extra-words'> 
           <label htmlFor="">Search these words from your reading: </label>
           <ul >
-          {extraWords.slice(0, 5).map((word, i) => 
+          {extraWords?.slice(0, 5).map((word, i) => 
                 <Chip
+                  className='extra-word'
                   key={word + i}
                   label={word}
                   clickable
@@ -50,9 +66,12 @@ const CardAddAuto = () => {
                   variant="outlined"
                 />
             )}
-        </ul>
+          </ul>
         </div>
-        
+      }
+      {
+        !isExtensionOpen && <div className='extension-opening-prompt'>Activate the flashcard extension to access words from your internet reading</div>
+
       }
     </form>
   )

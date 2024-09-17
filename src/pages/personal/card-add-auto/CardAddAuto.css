@@ -43,7 +43,7 @@
     margin-bottom: 0;
 }
 
-.card-auto--extra-words > label {
+.card-auto--extra-words > label, .extension-opening-prompt {
     display: flex;
     color: #345C70;
     font-weight: bolder;
@@ -51,12 +51,19 @@
 }
 .card-auto--extra-words > ul  {
     display: flex;
-    /* color: #345C70; */
     font-weight: bolder;
     gap: 1em;
+    flex-wrap: wrap;
 }
 
+ul > .extra-word {
+    max-width: 15em;
+}
 
+.card-auto--search-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
 
 .card-auto--search-list > li {
     display: flex;

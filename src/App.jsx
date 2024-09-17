@@ -11,18 +11,24 @@ import ProtectedRoute from './ProtectedRoute';
 import axios from 'axios';
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const token = localStorage.getItem('token');
+const user = localStorage.getItem('user')
 import { useState, useEffect } from 'react';
 
 
 function App() {
-  const [userAuthed, setUserAuthed] = useState(token ? true : false); 
-
+  const [userAuthed, setUserAuthed] = useState((token && user) ? true : false); 
   useEffect(() => {
     if (token) {
       axios.get(`${baseUrl}/api/v1/protected-route`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
-      .catch(() => {
+      .then(res => {
+        const { user } = res.data
+        if (user) localStorage.setItem('user')
+        }
+      )
+      .catch((error) => {
+        console.log(error)
         setUserAuthed(false);
         localStorage.removeItem('user')
       });
