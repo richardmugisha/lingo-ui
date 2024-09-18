@@ -20,7 +20,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from
 const Personal = () => {
   const dispatch = useDispatch();
   const { deckList: deck_list } = useSelector((state) => state.deck);
-  
+  const userId = JSON.parse(localStorage.getItem('user')).userId;
   const [checked, setChecked] = useState(false);
   const [personalSelectedItem, setPersonalSelectedItem] = useState([]);
   const [searching, setSearching] = useState(true);
@@ -49,7 +49,6 @@ const Personal = () => {
   }, [])
 
   useEffect(() => {
-    const userId = JSON.parse(localStorage.getItem('user')).userId;
     const toAdd = JSON.parse(localStorage.getItem('toAdd'))
     const toWish = JSON.parse(localStorage.getItem('toWish'))
     const requests = []
@@ -63,8 +62,7 @@ const Personal = () => {
   useEffect(() => {
     const getDeckList = async () => {
       try {
-        const user = JSON.parse(localStorage.getItem('user')).userId;
-        const response = await axios.get(`${baseUrl}/api/v1/cards/decks/${myCardsOnly ? user : 'all'}/${selectedLanguage.value || 'all'}`);
+        const response = await axios.get(`${baseUrl}/api/v1/cards/decks/${myCardsOnly ? userId : 'all'}/${selectedLanguage.value || 'all'}`);
         const data = await response.data;
         setSearching(false);
         return data;
@@ -142,7 +140,7 @@ const Personal = () => {
               label={`${checked ? 'Unselect All' : 'Select All'}`} checkedValue={checked}
               callback={() => {
                 setChecked(!checked);
-                setPersonalSelectedItem(checked ? [] : deck_list.map(({ _id }) => _id));
+                setPersonalSelectedItem(checked ? [] : deck_list.filter(deck => deck.creator === userId).map(deck => deck._id));
               }}
             />
             <Button variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={deletingDecks}> Delete </Button>
@@ -160,16 +158,23 @@ const Personal = () => {
             <div
               className="deck-card"
               style={{ backgroundColor: personalSelectedItem.includes(deck._id) ? '#2225' : '#C0D7DA' }}
-              onClick={() => {
+              onClick={() => deck.creator === userId &&
                 setPersonalSelectedItem(personalSelectedItem.includes(deck._id)
                   ? personalSelectedItem.filter((deckId) => deckId !== deck._id)
                   : [...personalSelectedItem, deck._id]
-                );
-              }}
+                )
+              }
               onDoubleClick={() => onDeckClickHandle(deck)}
               key={deck._id}
             >
+              <div className="deck--meta deck--language-and-owner">
+                <div>{deck.deckLang.slice(0, 2)}</div>{deck.creator === userId && <div>Yours</div>}
+              </div>
               {deck.deckName}
+              <div className="deck--meta deck--mastery-and-length">
+                <div>Mastery: {Math.round(deck.performance?.correct[deck.performance?.correct?.length - 1] || 0)}%</div>
+                <div>{deck.words?.length} cards</div>
+              </div>
             </div>
           ))}
         </div>

@@ -64,17 +64,15 @@
     box-shadow: 0 3px 0 rgba(11, 14, 15, 0.482);
     border-radius: 20px;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
     font-size: x-large;
-    flex-wrap: wrap;
     cursor: pointer;
     user-select: none;
   }
   
   .body .deck-card:hover {
     color: white;
-    font-size: xx-large;
     box-shadow: 0 0 12px rgba(11, 14, 15, 0.482);
   }
   
@@ -151,3 +149,18 @@
     }
   }
   
+  .deck--meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: small;
+    width: 100%;
+  }
+
+  .deck--meta > div {
+    color: #86A8B8;
+    font-weight: bold;
+  }
+
+  .deck--meta > div:first-child {
+    text-transform: uppercase;
+  }
