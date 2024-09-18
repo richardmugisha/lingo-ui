@@ -38,7 +38,7 @@ const CardAdd = () => {
     <div className='card-add'>
       <div className="head">
         <div>{deck.deckName}</div>
-        {cards.length ? <>
+        {deck._id ? <>
                           <button onClick={() => navigate('manual')}>manual add</button>
                           <button onClick={() => navigate('auto')}>auto add</button>
                         </>:
