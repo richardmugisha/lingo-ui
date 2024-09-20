@@ -1,60 +1,62 @@
 .personal {
-    height: 100%;
-  }
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+}
   
-  .head {
-    width: 95%;
-    margin: auto;
-    height: 17%;
+.head {
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
+    padding: 1em;
+}
   
-  .body {
-    height: 75%;
+.body {
     overflow-y: auto;
     width: 95%;
     margin: auto;
     display: flex;
     flex-wrap: wrap;
-  }
+    flex-grow: 1;
+}
   
-  .bottom {
+.bottom {
     height: 5%;
-  }
+    background-color: red;
+}
   
-  .shelf,
-  .new-deck {
+.shelf,
+.new-deck {
     text-transform: capitalize;
     font-size: 27px;
-  }
+}
   
-  .shelf {
+.shelf {
     color: #86A8B8;
-  }
+}
   
-  .new-deck {
+.new-deck {
     background-color: #86A8B8;
     color: #E0F5F8;
     padding: 1%;
     margin-left: 20px;
     border-radius: 5px;
     cursor: pointer;
-  }
+}
   
-  .new-deck:hover {
+.new-deck:hover {
     color: white;
     box-shadow: 0 0 15px #a7c2d0;
-  }
+}
   
-  .body > span {
+.body > span {
     display: flex;
     margin: auto;
     font-size: 30px;
-  }
+}
   
-  .body > div:is(.deck-card) {
+.body > div:is(.deck-card) {
     background-color: #C0D7DA;
     color: #345C70;
     width: 170px;
@@ -69,23 +71,24 @@
     font-size: x-large;
     cursor: pointer;
     user-select: none;
-  }
+}
   
-  .body .deck-card:hover {
+.body .deck-card:hover {
     color: white;
-    box-shadow: 0 0 12px rgba(11, 14, 15, 0.482);
-  }
+    scale: 1.01;
+    /* box-shadow: 0 0 12px rgba(11, 14, 15, 0.482); */
+}
   
-  .modal {
+.modal {
     border-radius: 2em;
     position: fixed;
     z-index: 5;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-  }
+}
   
-  .modal:before {
+.modal:before {
     content: '';
     position: absolute;
     height: 100%;
@@ -95,23 +98,33 @@
     transform: scale(20, 20);
     z-index: -1;
     background-color: #000000c1;
-  }
+}
   
-  .modal .cancel {
+.modal .cancel {
     position: absolute;
     right: 0;
     top: 0;
     font-size: xx-large;
     color: red;
     cursor: pointer;
-  }
+}
   
-  .modal .cancel:hover {
+.modal .cancel:hover {
     transform: scale(1.1);
-  }
+}
+
+.filter-btn {
+  cursor: pointer;
+  padding: .5em 1em;
+  background-color: #C0D7DA;
+}
+
+.filter-btn:hover {
+  scale: 1.02;
+}
   
-  .personal--filters,
-  .personal--deleting-panel {
+.personal--filters,
+.personal--deleting-panel {
     min-width: 200px;
     display: flex;
     align-items: center;
@@ -120,12 +133,12 @@
     margin: 1em;
     padding: 0.5em 1em;
     box-shadow: 0 10px 10px rgb(0, 0, 0, 0.2);
-  }
+}
   
-  .personal--filters > span,
-  .personal--deleting-panel > * {
+.personal--filters > span,
+.personal--deleting-panel > * {
     display: flex;
-  }
+}
   
   @media (max-width: 500px) {
     .personal--filters {

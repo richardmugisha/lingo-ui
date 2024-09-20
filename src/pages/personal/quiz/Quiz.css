@@ -3,6 +3,7 @@
     background-color: #9BC5CB;
     color: #E0F5F8;
     padding: 10px 0;
+    width: min(600px, 95vw);
 }
 
 .quiz-head {
@@ -11,12 +12,11 @@
 
 .quiz-body {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
 }
 
 .quiz-body div {
     padding: 5px;
-    text-align: left;
 }
 
 .quiz-body .content div {
@@ -42,9 +42,22 @@
 
 .quiz-submit {
     cursor: pointer;
-    margin: 0 20px;
+    margin: 0 2em;
     border: none;
     font-size: large;
-    padding: .5em 10em;
+    padding: .5em 4em;
     color: white;
 }
+
+
+@media (max-width: 500px) {
+    .quiz-body {
+        flex-direction: column;
+    }
+
+    .quiz-body .content {
+        display: flex;
+        flex-wrap: wrap;
+    }
+  }
+  

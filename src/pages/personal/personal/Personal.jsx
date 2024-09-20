@@ -17,6 +17,8 @@ import { Delete as DeleteIcon, FilterAlt as FilterIcon, Clear as Close } from '@
 import { MuiCheckbox } from '../../../components/MuiComponents';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 const Personal = () => {
   const dispatch = useDispatch();
   const { deckList: deck_list } = useSelector((state) => state.deck);
@@ -28,8 +30,7 @@ const Personal = () => {
   const [myCardsOnly, setMyCardsOnly] = useState(true);
   const [selectedLanguage, setSelectedLanguage] = useState({ label: '', value: '' });
   const [popup, setPopup] = useState('');
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
-
+  const [useFilters, setUseFilters] = useState(false)
   const batchReqRef = useRef(0)
 
   useEffect(() => {
@@ -130,10 +131,11 @@ const Personal = () => {
 
         {!personalSelectedItem.length ? (
           <div className="personal--filters">
-            <span className="filter-btn"><FilterIcon /> Filters</span>
-            <Filters myCardsOnly={myCardsOnly} selectedLanguage={selectedLanguage} setMyCardsOnly={setMyCardsOnly} setSelectedLanguage={setSelectedLanguage}
-            />
-          </div>
+            <span className="filter-btn" onClick={() => setUseFilters(!useFilters)}>{useFilters ? <Close /> : <FilterIcon />} Filters</span>
+            {useFilters &&
+              <Filters myCardsOnly={myCardsOnly} selectedLanguage={selectedLanguage} setMyCardsOnly={setMyCardsOnly} setSelectedLanguage={setSelectedLanguage} />
+            }
+            </div>
         ) : (
           <div className="personal--deleting-panel">
             <MuiCheckbox

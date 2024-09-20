@@ -1,13 +1,22 @@
 .performance {
-    padding: 20px;
+    padding: 1em;
     font-size: x-large;
     font-weight: 500;
     background-color: #9BC5CB;
     color: #1e2324;
+    height: min(600px, 95dvh);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .performance * {
-    margin: 10px;
+    margin: .5em;
+}
+
+.performance--body > div {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1em;
 }
 
 .performance--body {

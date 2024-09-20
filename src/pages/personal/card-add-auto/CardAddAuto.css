@@ -4,6 +4,10 @@
     color: #E0F5F8;
     padding: 1em;
     min-height: 400px;
+    width: min(500px, 95vw);
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
 }
 
 .card-add-auto--top {
@@ -28,15 +32,14 @@
 
 .card-auto-search {
     margin-top: 0em;
-    width: 500px;
-    height: 50px;
+    width: 100%;
+    height: 3em;
     border-radius: 20px;
     color: #345C70;
     border: 2px solid #345c70bd;
     font-size: large;
     font-weight: 500;
-    padding: 10px;
-    overflow: hidden;
+    padding: 1em;
 }
 
 .card-auto--extra-words {
@@ -65,6 +68,20 @@ ul > .extra-word {
     overflow-y: auto;
 }
 
+.card-auto--search-list::-webkit-scrollbar {
+    width: 5px; /* Set your desired width */
+  }
+  
+  .card-auto--search-list::-webkit-scrollbar-thumb {
+    background-color: rgb(97, 138, 151);
+    border-radius: 6px; /* Set half of the scrollbar width to create a circular thumb */
+  }
+  
+  /* Optional: You can style the track to add some visual cues */
+  .card-auto--search-list::-webkit-scrollbar-track {
+    background-color: #cce1e4; /* Set your desired track color */
+  }
+
 .card-auto--search-list > li {
     display: flex;
     justify-content: space-between;
@@ -76,7 +93,8 @@ ul > .extra-word {
 }
 
 
-.card-auto--search-list > .item-not-found {
+.card-add-auto .item-not-found {
+    display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1em;

@@ -96,41 +96,43 @@ const SearchList = ({ searchWords, searchValue, deckId, deckName, deckLang, debo
   const limitedSearchWords = searchWords?.slice(0, 10);
   const [addedWords, setAddedWords] = useState([...fetch_Save('', 'toAdd', 'load'), ...fetch_Save('', 'toWish', 'load')]) //the indices
 
-  return (
-    <ul className='card-auto--search-list'>
+  return <>
+      <ul className='card-auto--search-list'>
+        {
+          loading ?  
+          <p>...loading</p>
+          :
+          (
+            limitedSearchWords.map((word, i) => (
+              <li key={word._id} className='search-item'>
+                  <div>
+                    { word.word }
+                  </div>
+                  {addedWords.includes(word.word) ?
+                  <CheckIcon color='success'/> :
+                  <Button startIcon={<AddIcon />} variant="contained" color='primary' disableElevation onClick={() => fetch_Save(word.word, 'toAdd', 'load-save')}>Add to the deck</Button>
+                }
+              </li>
+            ))
+          )
+        }
+      </ul>
+
       {
-        loading ?  
-        <p>...loading</p>
-        :
-        (limitedSearchWords?.length ? (
-          limitedSearchWords.map((word, i) => (
-            <li key={word._id} className='search-item'>
-                <div>
-                  { word.word }
-                </div>
-                {addedWords.includes(word.word) ?
+        (!loading && debouncedSearch) &&
+        <div className='search-item item-not-found'>
+              {
+                addedWords.includes(debouncedSearch) ?
                 <CheckIcon color='success'/> :
-                <Button startIcon={<AddIcon />} variant="contained" color='primary' disableElevation onClick={() => fetch_Save(word.word, 'toAdd', 'load-save')}>Add to the deck</Button>
+                <>
+                 {limitedSearchWords.length ? "Can't find what you are looking for?" :`OOps!!! The word is not yet in our evolving dictionary`}
+                  <Button startIcon={<AddIcon />} variant="contained" color='primary' disableElevation onClick={() => fetch_Save(debouncedSearch, 'toWish', 'load-save')} >Add it to the wish list</Button>
+                </>
               }
-            </li>
-          ))
-        ) : (
-          (!loading && debouncedSearch) &&
-          <li className='item-not-found'>
-            {
-              addedWords.includes(debouncedSearch) ?
-              <CheckIcon color='success'/> :
-              <>
-                OOps!!! The word is not yet in our evolving dictionary
-                <Button startIcon={<AddIcon />} variant="contained" color='primary' disableElevation onClick={() => fetch_Save(debouncedSearch, 'toWish', 'load-save')} >Add it to the wish list</Button>
-              </>
-            }
-          </li>
-        )
-      )
+        </div>
       }
-    </ul>
-  )
+
+  </>
 }
 
 

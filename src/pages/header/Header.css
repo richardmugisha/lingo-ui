@@ -1,6 +1,4 @@
 header {
-    height: 80px;
-    width: 100vw;
     background-color: #C0D7DA;
     display: flex;
     justify-content: space-between;
@@ -25,7 +23,6 @@ header .menu {
 }
 
 header > nav {
-    height: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
