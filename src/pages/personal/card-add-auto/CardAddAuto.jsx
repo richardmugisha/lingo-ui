@@ -138,7 +138,7 @@ const SearchList = ({ searchWords, searchValue, deckId, deckName, deckLang, debo
 
 // const addToDeck = (deckName, deckId, userId, deckLang, words, dispatch) => {
 //     console.log(deckName, deckId, userId, deckLang, words)
-//     axios.post(baseUrl + '/api/v1/words/add-to-deck', {deckName, deckId, userId, deckLang, words})
+//     axios.post(API_BASE_URL + '/words/add-to-deck', {deckName, deckId, userId, deckLang, words})
 //          .then(res => {
 //           const ID = res.data.deckId
 //           dispatch(openDeck({_id: ID}))
@@ -146,7 +146,7 @@ const SearchList = ({ searchWords, searchValue, deckId, deckName, deckLang, debo
 // }
 
 // const addToWishList = (deckName, deckId, userId, deckLang, words, dispatch) => {
-//     axios.post(baseUrl + '/api/v1/words/add-to-wish-list', {deckName, deckId, userId, deckLang, words})
+//     axios.post(API_BASE_URL + '/words/add-to-wish-list', {deckName, deckId, userId, deckLang, words})
 //          .then(res => {
 //           const ID = res.data.deckId
 //           dispatch(openDeck({_id: ID}))

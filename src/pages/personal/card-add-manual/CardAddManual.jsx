@@ -57,10 +57,10 @@ const CardAddManual = () => {
   }, [status])
 
   const submitting = () => {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL
+    const API_BASE_URL = API_BASE_URL
     if (status === 'submitting') return
     setStatus('submitting'); console.log('sub')
-    postingData(`${baseUrl}/api/v1/cards/${deckName}`, { userId, deckId, deckLang, mode: 'manual', content: {'root word': formContent['root word'], variations: formContent.variations}} )
+    postingData(`${API_BASE_URL}/cards/${deckName}`, { userId, deckId, deckLang, mode: 'manual', content: {'root word': formContent['root word'], variations: formContent.variations}} )
       .then((data) => {
         afterSubmitReset();
         setReadytosubmit(false)

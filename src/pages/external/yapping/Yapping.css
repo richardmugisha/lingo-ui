@@ -1,12 +1,36 @@
 .Yapping {
-    display: grid;
-    grid-template-columns: auto 80%;
+    display: flex;
+    gap: 1em;
     width: 100%;
+    height: 100%;
 }
 
-.words .word-pool {
-    max-height: 70vh;
-    overflow-y: auto;
+.story {
+    flex: 1;
+}
+
+.side > div:first-child > h1 {
+    color: #345C70;
+}
+
+.side > div:first-child > p {
+    font-size: medium;
+}
+
+.side {
+    /* height: 100%; */
+    display: flex;
+    flex-direction: column;
+    width: min-content;
+}
+
+.side .word-pool {
+    width: fit-content;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
 }
 
 .Yapping--info {
@@ -46,32 +70,39 @@
 .Yapping--info-danger { background-color: rgb(250, 115, 105) }
 
 h1 { font-size: x-large;}
-.words div, textarea {
+.side .word-pool, textarea {
     border: 1px solid ;
     padding: 1em;
 }
 
+.story {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
 #text-container {
     text-align: start;
-    margin: 1em;
+    margin-block: 1em;
     padding: 1em;
-    margin-left: 3em;
-    background-color: beige;
+    /* background-color: beige; */
+    line-height: 2em;
+    font-weight: 450;
+    font-size: 1.1em;
+    overflow: auto;
+    flex: 1;
 }
 
 textarea {
     width: 90%;
     height: 70px;
-    border-radius: 1em;
+    border-radius: .5em;
     font-size: 1.2em;
     font-weight: 500;
     color: #345C70;
     position: relative;
     margin-top: 2em;
-}
-
-.words div {
-    overflow-y: auto;
 }
 
 .story .title {
@@ -80,25 +111,24 @@ textarea {
     width: 95%;
 }
 
-.words span {
-    display: inline-block;
-    margin: 0 1em 1em 0;
+.side span {
     padding: .5em 1em;
     background-color: #345C70;
     color: white;
     border-radius: 1em;
     cursor: pointer;
+    width: fit-content;
 }
 
-.words .word-pool span {
+.side .word-pool span {
     background-color: rgb(184, 49, 28);
 }
 
-.words .selected {
+.side .selected {
     background-color: orange;
 }
 
-.words span:hover {
+.side span:hover {
     background-color: rgb(212, 87, 42);
 }
 
@@ -196,3 +226,45 @@ textarea {
 .story section p {
     margin-left: 1em;
 }
+
+.word-pool::-webkit-scrollbar, textarea::-webkit-scrollbar, #text-container::-webkit-scrollbar {
+    width: 5px; /* Set your desired width */
+}
+  
+.word-pool::-webkit-scrollbar-thumb, textarea::-webkit-scrollbar-thumb, #text-container::-webkit-scrollbar-thumb {
+    background-color: rgb(97, 138, 151);
+    border-radius: 6px; /* Set half of the scrollbar width to create a circular thumb */
+}
+  
+  /* Optional: You can style the track to add some visual cues */
+.word-pool::-webkit-scrollbar-track, textarea::-webkit-scrollbar-track, #text-container::-webkit-scrollbar-track {
+    background-color: #cce1e4; /* Set your desired track color */
+}
+
+@media (max-width: 719px) {
+    .Yapping {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .story .title {
+        margin: 0;
+    }
+
+    .side > div:first-child {
+        font-size: small;
+        padding: 0;
+    }
+
+    .side .word-pool {
+        flex-direction: row;
+        max-width: 90vw;
+        overflow-x: auto;
+        padding-block: 0;
+        font-size: small;
+    }
+
+    .Yapping .story {
+        height: 75%;
+    }
+  }

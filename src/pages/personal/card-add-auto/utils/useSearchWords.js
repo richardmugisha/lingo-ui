@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
+import API_BASE_URL from '../../../../../serverConfig'
 
 export const useSearchWords = ( searchValue, deckLang, delay=1000) => {
     const [searchWords, setSearchWords] = useState([])
@@ -18,7 +19,7 @@ export const useSearchWords = ( searchValue, deckLang, delay=1000) => {
     useEffect(() => {
         if (debouncedValue)  {
             setLoading(true)
-            axios.get(`${baseUrl}/api/v1/words/search/${deckLang}/${debouncedValue}`)
+            axios.get(`${API_BASE_URL}/words/search/${deckLang}/${debouncedValue}`)
                 .then(res => {
                 console.log(res.data.searchWords)
                 setSearchWords(res.data.searchWords)

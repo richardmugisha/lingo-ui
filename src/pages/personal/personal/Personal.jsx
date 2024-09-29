@@ -17,7 +17,7 @@ import { Delete as DeleteIcon, FilterAlt as FilterIcon, Clear as Close } from '@
 import { MuiCheckbox } from '../../../components/MuiComponents';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
+import API_BASE_URL from '../../../../serverConfig'
 
 const Personal = () => {
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ const Personal = () => {
   }, [error]);
 
   const apiBatchRequest = useCallback( (requests) => {
-      axios.post(baseUrl + '/api/v1/batch-request', { requests })
+      axios.post(API_BASE_URL + '/batch-request', { requests })
           .then(res => {
             const { toAdd, toWish } = res.data.successRequests;
             console.log(toAdd, toWish)
@@ -63,7 +63,7 @@ const Personal = () => {
   useEffect(() => {
     const getDeckList = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/api/v1/cards/decks/${myCardsOnly ? userId : 'all'}/${selectedLanguage.value || 'all'}`);
+        const response = await axios.get(`${API_BASE_URL}/cards/decks/${myCardsOnly ? userId : 'all'}/${selectedLanguage.value || 'all'}`);
         const data = await response.data;
         setSearching(false);
         return data;
@@ -85,7 +85,7 @@ const Personal = () => {
     navigate('card');
 
     try {
-      const res = await axios.get(`${baseUrl}/api/v1/cards/deck/${deckId}`);
+      const res = await axios.get(`${API_BASE_URL}/cards/deck/${deckId}`);
       const deck = res.data.deck;
       dispatch(openDeck(deck));
       return deck;
@@ -97,7 +97,7 @@ const Personal = () => {
 
   const deletingDecks = async () => {
     try {
-      const res = await axios.delete(`${baseUrl}/api/v1/cards/deck/${personalSelectedItem}`);
+      const res = await axios.delete(`${API_BASE_URL}/cards/deck/${personalSelectedItem}`);
       const data = await res.data;
       dispatch(removeDecks(personalSelectedItem));
       setPersonalSelectedItem([]);

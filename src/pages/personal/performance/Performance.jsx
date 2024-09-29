@@ -16,11 +16,11 @@ const Performance = ({deckName, deckId, perf, givenTime, duration, correctAnswer
   const perfRefs = [0, 20, 40, 60, 80, 95, 100]
   const perfEmojis = ['😥', '😔', '😬', '😌', '',  '🤠', '😎', '🤩']
   
-  const baseUrl = import.meta.env.VITE_API_BASE_URL
+  const API_BASE_URL = API_BASE_URL
   
   const getMetadata = async (correct, speed, time) => {
     try {
-      // const performData =  await axios.get(`${baseUrl}/api/v1/cards/deck/${ deckName }`);
+      // const performData =  await axios.get(`${API_BASE_URL}/cards/deck/${ deckName }`);
       // const data = performData.data.deckMetadata
       // console.log(data)
       // if (!data) return [true, true, false] // if no reference, we assume we are progressing
@@ -54,7 +54,7 @@ const Performance = ({deckName, deckId, perf, givenTime, duration, correctAnswer
        uploading.current = true;
        try {
           console.log('...uploading', uploading);
-          const performData = await axios.patch(`${baseUrl}/api/v1/cards/deck/${deckId}`, { correct, performance: speed, time });
+          const performData = await axios.patch(`${API_BASE_URL}/cards/deck/${deckId}`, { correct, performance: speed, time });
           console.count(performData.data);
        } catch (error) {
           console.log(error);

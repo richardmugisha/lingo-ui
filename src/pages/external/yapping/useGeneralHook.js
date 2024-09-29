@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import axios from 'axios';
+import API_BASE_URL from '../../../../serverConfig'
 
 const generalHook = (
   aiHelp, setAiHelp,
@@ -16,13 +17,12 @@ const generalHook = (
   stories, setStories
   ) => {
 
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const [userId] = useState(JSON.parse(localStorage.getItem('user')).userId);
   const [summary, setSummary] = useState('')
 
   useEffect(() => {
     axios
-    .get(`${baseUrl}/api/v1/cards/story-time/${deckId}`)
+    .get(`${API_BASE_URL}/cards/story-time/${deckId}`)
     .then((res) => {
       const { stories } = res.data;
       setStories(() => {
@@ -55,7 +55,7 @@ const generalHook = (
       setInfo({exists: true, type: 'info', message: 'You can start writing the story. Hit Enter whenever you need a sentence from your assistant.'})
       return
     }
-    axios.post(baseUrl + '/api/v1/cards/story-time/' + deckId, {userId, story, title, words, aiAssistance: aiHelp, summary: summaryInput})
+    axios.post(API_BASE_URL + '/cards/story-time/' + deckId, {userId, story, title, words, aiAssistance: aiHelp, summary: summaryInput})
          .then(({ data }) => {
             const story = data.story;
             setStories((prev) => {
@@ -69,7 +69,7 @@ const generalHook = (
     const handleSubmit = () => {
         console.log(deckId);
         axios
-          .post(`${baseUrl}/api/v1/cards/story-time/${deckId}`, { userId: !checked ? userId : null, story, title, words })
+          .post(`${API_BASE_URL}/cards/story-time/${deckId}`, { userId: !checked ? userId : null, story, title, words })
           .then((res) => {
             const { story } = res.data;
             console.log(story);
@@ -131,7 +131,7 @@ const generalHook = (
             return setInfo({exists: true, type: 'warning', message: 'Enable your ai assistant to use it!'})
           }
           else { // the summary exists
-            axios.post(baseUrl + '/api/v1/cards/story-time/' + deckId, {userId, story: story.map(sent => sent.sentence).join(' '), title, words, aiAssistance: aiHelp, summary})
+            axios.post(API_BASE_URL + '/cards/story-time/' + deckId, {userId, story: story.map(sent => sent.sentence).join(' '), title, words, aiAssistance: aiHelp, summary})
                  .then(({data}) => {
                     const {title, aiSentence} = data.story;
                     if (title) setTitle(title)

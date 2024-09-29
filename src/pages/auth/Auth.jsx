@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import './Auth.css';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_BASE_URL from '../../../serverConfig'
+
+
 import Input from './input/Input';
 
 import Spinner from 'react-spinner-material';
@@ -18,7 +21,6 @@ const Auth = ({ page, setUserAuthed }) => {
 
   const [loading, setLoading] = useState(false)
 
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const dispatch = useDispatch()
 
   const handleSubmit = async (e) => {
@@ -26,10 +28,10 @@ const Auth = ({ page, setUserAuthed }) => {
     try {
       setLoading(true)
       if (page === 'sign-up') {
-        await axios.post(`${baseUrl}/api/v1/auth/register`, { username, email, password });
+        await axios.post(`${API_BASE_URL}/auth/register`, { username, email, password });
         navigate('..');
       } else {
-        const response = await axios.post(`${baseUrl}/api/v1/auth/login`, { email, password });
+        const response = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
         localStorage.setItem('token', response.data.token);
         dispatch(setUser(response.data.user))
         localStorage.setItem('user', JSON.stringify(response.data.user))

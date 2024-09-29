@@ -28,9 +28,10 @@ const Story = (
   }, [attempt])
 
   useEffect(() => {
-      if (currSentence.blanked)  setAttempt(currSentence.blanked)
+      console.log(currSentence)
+      if (currSentence.blanked) setAttempt(currSentence.sentence.split(' ').map((word, i) => currSentence.blanked.split(' ')[i] !== word ? '_'.repeat(word.length) : word).join(' '))
     }
-    , [currSentence])
+  ,[currSentence])
 
   return (
     <div className="story">
@@ -85,7 +86,7 @@ const Story = (
             okAttempt
           }
         </p>}
-        <p>{activity === 'creating' ? 
+        <p className='sentence'>{activity === 'creating' ? 
             currSentence.sentence && 
             currSentence.sentence.split(' ')
             .map((word, index) => 
@@ -94,13 +95,24 @@ const Story = (
                   &nbsp;
                 </label>
             ) : 
-            attempt.split('').map(
-            (char, index) => {
-              const correctCondition = currSentence.sentence[index] === char && !(currSentence.blanked[index] === char) 
-              const incorrectCondition = currSentence.sentence[index] !== char
-              return <label key={index}>
-                <span style={{color: correctCondition ? 'green' : (incorrectCondition ? 'red' : ''), textDecoration: correctCondition && 'underline'}}>{char}</span>
-              </label>
+            attempt?.split(' ').map(
+            (word, index) => {
+              if (currSentence.sentence.split(' ')[index] === word) return <label>{word} </label>
+              else return (
+                <label key={index}>
+                  {
+                    word.split('').map((char, i) => {
+                      const numOfPastWords = currSentence.sentence?.split(' ')?.slice(0, index)?.join(' ').length
+                      console.log(numOfPastWords, index)
+                      const currCharIndex = numOfPastWords
+                      const correctCondition = currSentence.sentence[currCharIndex + i + 1] === char && char !== '_'
+                      console.log(currCharIndex, char, currSentence.sentence[currCharIndex + i + 1])
+                      return <span style={{color: correctCondition ? 'green' : 'red', textDecoration: correctCondition && 'underline'}}>{char}</span>
+                    })
+                  }
+                  &nbsp;
+                </label>
+              )
               }
             )
             }
@@ -108,7 +120,7 @@ const Story = (
         { ['creating', 'practicing'].includes(activity) &&
         <textarea
           placeholder='Type your story here' name="" id="" 
-          value={activity === 'creating' ? currSentence.sentence: attempt }
+          value={activity === 'creating' ? currSentence.sentence: attempt[attempt.length - 1] === '.' ? attempt : attempt + '.' }
           onChange={(e) => {
             if (activity === 'creating') setCurrSentence((prev) => ({...prev, sentence: e.target.value}))
             else if (activity === 'practicing') setAttempt(e.target.value)

@@ -32,9 +32,9 @@ const CommonCard = () => {
     const allowApi = useRef(true)
 
     // const getMetadata = async () => {
-    //   const baseUrl = import.meta.env.VITE_API_BASE_URL
+    //   const API_BASE_URL = API_BASE_URL
     //   try {
-    //     const response =  await axios.get(`${baseUrl}/api/v1/cards/deck/${ deckId }`);
+    //     const response =  await axios.get(`${API_BASE_URL}/cards/deck/${ deckId }`);
     //     const data = response.data.deck;
     //     return data?.performance?.correct; // i will use correct b/c it is 0-100
     //   } catch (error) {
