@@ -192,24 +192,22 @@ const CommonCard = () => {
           format.content.type === 'mcq' ?
           <div className='common-card'>
               <div className="common-head">
-                  <div>{cardFormat.label0 }</div>
+                  <div className='label0'>{cardFormat.label0 }</div>
                   { format.topProgressbar && <ProgressBar completed = {Math.floor(topProSize)} bgColor = "black" /> }
-                  <div>{ cardFormat.label1 }</div>
+                  <div className='label1'>{ cardFormat.label1 }</div>
                   { format.label2 && <div>{ format.label2 }</div> }
               </div>
 
 
             <div className="common-main"> 
               <div className="top">
-                {!['guess', 'mcq'].includes(format.content.type) && card.word && <div>{card.word}</div>}
-                {!['guess', 'mcq'].includes(format.content.type) && card.type && <div>{card.type}</div>}
+                {/* {!['guess', 'mcq'].includes(format.content.type) && card.type && <div>{card.type}</div>} */}
+                {/* {!['guess', 'mcq'].includes(format.content.type) && card.type && <div>{card.type}</div>} */}
+                <div>{card.type}</div>
+                <div>{card['language style']}</div>
               </div>
 
               <div className="middle">
-                { format.content.type === 'guess' && <i className="arrow"><ArrowBack /></i>}
-                {console.log('199', optionArray)}
-              { format.content && 
-                <div className="content">
                 { optionArray && 
                   optionArray.map(variation => quizLength === 'short' ? 
                                                 (quizType !== 'example' ? {label: variation.word, value: variation.word} :
@@ -225,11 +223,8 @@ const CommonCard = () => {
                             onClick={() => {handleItemClick(item, item.value === correctOption)}}>{item.label}
                         </div>
                 })}
-                </div>}
-                { format.content.type === 'guess' && <i className="arrow"><ArrowFwd /></i>}
               </div>
             </div>
-
 
             <div className="common-foot">
               { format.label3 && <div>{ format.label3 }</div> }

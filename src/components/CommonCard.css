@@ -1,14 +1,14 @@
 .common-card {
-    width: 40vw;
-    margin: auto;
+    width: min(700px, 90vw);
+    /* margin: auto; */
     background-color: #9BC5CB;
-    color: #E0F5F8;
-    font-size: large;
-    font-weight: 500;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    padding: 10px;
+    /* color: #E0F5F8; */
+    /* font-size: large; */
+    /* font-weight: 500; */
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* justify-content: space-around; */
+    padding: 1em;
 }
 
 .common-card * {
@@ -17,12 +17,13 @@
     font-weight: 500;
 }
 
-.common-card * *, .common-card * * * {
+/* .common-card * *, .common-card * * * {
     background-color: #345C70;
-}
+} */
 
-.common-head > div:nth-child(3) {
+.common-head > div {
     color: #345C70;
+    padding: .5em 2em;
 }
 .common-head *, .common-foot * {
     background-color: transparent;
@@ -44,9 +45,10 @@
 }
 
 .common-main {
-    border-radius: 30px;
-    background-color: #6E95A8;
-    margin: 10px 0;
+    border-radius: 1em;
+    /* background-color: #6E95A8; */
+    margin-bottom: 1em;
+    padding: 1em;
 }
 
 .common-main > .top {
@@ -60,13 +62,6 @@
     padding: 5px 20px;
     border-radius: 20px;
     cursor: pointer;
-}
-
-.common-main > .middle {
-    display: flex;
-    justify-content: space-between;
-    margin: 0 10px 10px;
-    background-color: transparent;
 }
 
 .common-main .arrow {
@@ -86,26 +81,23 @@
     box-shadow: 0 0 10px lightblue;
 }
 
-.common-main > .middle > .content {
-    border-radius: 20px;
-    padding: 10px;
-    overflow-y: auto;
-    scroll-margin: 10px;
-    text-align: left;
+.common-main > .middle {
+    scroll-margin: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
 }
 
-.common-main .content > div {
-    font-size: smaller;
-    background-color: rgba(0, 0, 0, 0.186);
-    border-radius: 20px;
-    padding: 10px;
-    margin-top: 10px;
+.common-main .middle > div {
+    font-size: large;
+    border-radius: 1em;
+    padding: .5em 1em;
     cursor: pointer;
+    background-color: rgba(52, 92, 112, .8);
 }
 
-.common-main .content > div:hover {
-    box-shadow: 0 0 5px rgba(0, 128, 255, 0.958);
-    padding: 15px;
+.common-main .middle > div:hover {
+    background-color: #345C70;
 }
 
 .option-incorrect {
@@ -114,10 +106,4 @@
 
 .option-correct {
     background-color: green;
-}
-
-@media (max-width: 420px) {
-    .common-card {
-        width: 95vw;
-    }
 }

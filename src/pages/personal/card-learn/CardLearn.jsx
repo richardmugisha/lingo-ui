@@ -44,7 +44,7 @@ const CardLearn = () => {
                 <section className='card-learn--content'>
                   <div className='card-learn--word'>{cards[cardIndex].word}</div>
                   <ul className='card-learn--descr'>
-                    <li>{cards[cardIndex].type}</li>
+                    <li>-- {cards[cardIndex].type}</li>
                     <li>{cards[cardIndex]['language style']}</li>
                   </ul>
                   <br />
