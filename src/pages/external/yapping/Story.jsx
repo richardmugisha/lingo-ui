@@ -33,7 +33,9 @@ const Story = (
     }
   ,[currSentence])
 
+  console.log(activity)
   return (
+    activity &&
     <div className="story">
         {activity === 'creating' && (
           <div>
@@ -107,7 +109,7 @@ const Story = (
                       const currCharIndex = numOfPastWords
                       const correctCondition = currSentence.sentence[currCharIndex + i + 1] === char && char !== '_'
                       console.log(currCharIndex, char, currSentence.sentence[currCharIndex + i + 1])
-                      return <span style={{color: correctCondition ? 'green' : 'red', textDecoration: correctCondition && 'underline'}}>{char}</span>
+                      return <span key={char + i} style={{color: correctCondition ? 'green' : 'red', textDecoration: correctCondition && 'underline'}}>{char}</span>
                     })
                   }
                   &nbsp;

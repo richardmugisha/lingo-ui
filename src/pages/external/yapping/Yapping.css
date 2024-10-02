@@ -24,7 +24,12 @@
     width: min-content;
 }
 
-.side .word-pool {
+.side-wide {
+    width: 100vw;
+    align-items: center;
+}
+
+.side .side-pool {
     width: fit-content;
     overflow: auto;
     display: flex;
@@ -70,7 +75,7 @@
 .Yapping--info-danger { background-color: rgb(250, 115, 105) }
 
 h1 { font-size: x-large;}
-.side .word-pool, textarea {
+.side .side-pool, textarea {
     border: 1px solid ;
     padding: 1em;
 }
@@ -111,7 +116,7 @@ textarea {
     width: 95%;
 }
 
-.side span {
+.side span.story--span {
     padding: .5em 1em;
     background-color: #345C70;
     color: white;
@@ -227,17 +232,17 @@ textarea {
     margin-left: 1em;
 }
 
-.word-pool::-webkit-scrollbar, textarea::-webkit-scrollbar, #text-container::-webkit-scrollbar {
+.side-pool::-webkit-scrollbar, textarea::-webkit-scrollbar, #text-container::-webkit-scrollbar {
     width: 5px; /* Set your desired width */
 }
   
-.word-pool::-webkit-scrollbar-thumb, textarea::-webkit-scrollbar-thumb, #text-container::-webkit-scrollbar-thumb {
+.side-pool::-webkit-scrollbar-thumb, textarea::-webkit-scrollbar-thumb, #text-container::-webkit-scrollbar-thumb {
     background-color: rgb(97, 138, 151);
     border-radius: 6px; /* Set half of the scrollbar width to create a circular thumb */
 }
   
   /* Optional: You can style the track to add some visual cues */
-.word-pool::-webkit-scrollbar-track, textarea::-webkit-scrollbar-track, #text-container::-webkit-scrollbar-track {
+.side-pool::-webkit-scrollbar-track, textarea::-webkit-scrollbar-track, #text-container::-webkit-scrollbar-track {
     background-color: #cce1e4; /* Set your desired track color */
 }
 
@@ -256,7 +261,7 @@ textarea {
         padding: 0;
     }
 
-    .side .word-pool {
+    .side .side-pool {
         flex-direction: row;
         max-width: 90vw;
         overflow-x: auto;

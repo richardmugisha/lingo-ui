@@ -15,7 +15,7 @@ const Yapping = () => {
   const [stories, setStories] = useState([]);
   const [title, setTitle] = useState('');
   const [checked, setChecked] = useState(false);
-  const [activity, setActivity] = useState('creating'); // reading or creating
+  const [activity, setActivity] = useState(''); // reading or creating
   const [selected, setSelected] = useState(-1); // story index
   const [aiHelp, setAiHelp] = useState('');
   const [aiOptionsDisplay, setAiOptionsDisplay] = useState(false);

@@ -26,7 +26,7 @@ const generalHook = (
     .then((res) => {
       const { stories } = res.data;
       setStories(() => {
-          setActivity(stories.length === 0 ? 'creating': 'practicing'); 
+          // setActivity(stories.length === 0 ? 'creating': 'practicing'); 
           return stories
       })
       console.log(stories, res);
@@ -58,8 +58,11 @@ const generalHook = (
     axios.post(API_BASE_URL + '/cards/story-time/' + deckId, {userId, story, title, words, aiAssistance: aiHelp, summary: summaryInput})
          .then(({ data }) => {
             const story = data.story;
+            console.log(story)
             setStories((prev) => {
-              setActivity('practicing');
+              // setActivity('practicing');
+              setActivity('');
+              setInfo({ type: 'success', message: 'Your story was created successfully! => ' + story.title, exists: true })
               return [...prev, story]
             });
             setAiHelp('')
@@ -144,8 +147,8 @@ const generalHook = (
       
     
       useEffect(() => {
-          console.log(stories.length, selected, !selected)
-          if (stories.length && selected < 0) return setSelected(0);
+          // console.log(stories.length, selected, !selected)
+          if (stories.length && selected > -1)  setActivity('practicing'); 
           const current = stories[selected];
           if (current) {
             setTitle(current.title);
