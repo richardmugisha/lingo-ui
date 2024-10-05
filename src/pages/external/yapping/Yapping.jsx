@@ -4,6 +4,7 @@ import Side from './Side';
 import Story from './Story';
 import generalHook from './useGeneralHook';
 import { useSelector } from 'react-redux';
+import { getKeywords } from './utils/sentenceAnalyzer';
 
 const Yapping = () => {
   const { words: cards, _id: deckId } = useSelector((state) => state.deck.openDeck);
@@ -35,7 +36,7 @@ const Yapping = () => {
     title, setTitle, 
     stories, setStories)
 
-  useEffect(() => console.log(story) , [story])
+  // useEffect(() => console.log(story) , [story])
 
   return (
     <div className='Yapping'>
@@ -58,7 +59,9 @@ const Yapping = () => {
         setSelected={setSelected} selected={selected}
         setActivity={setActivity} activity={activity} 
         setTitle={setTitle} 
-        setStory={setStory}/>
+        setStory={setStory}
+        correctWordSet={getKeywords(currSentence.sentence?.split(' '), currSentence.blanked?.split(' '))}
+        />
       <Story 
         info={info} setInfo={setInfo}
         story={story} activity={activity} 

@@ -1,15 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect} from 'react';
 
 import { Button } from "@mui/material"
 import { Add as AddIcon, School as SchoolIcon, Quiz as QuizIcon, ContentCopy, Create } from '@mui/icons-material';
 
-const Side = ({ stories, setWords, words, setSelected, setActivity, activity, setTitle, setStory, selected }) => {
-  // console.log(selected, words)
+import shuffledNumbers from '../../../utils/shuffleArray';
+
+const Side = ({ stories, setWords, words, setSelected, setActivity, activity, setTitle, setStory, selected, correctWordSet }) => {
+  const [wordSetToDisplay, setWordSetToDisplay] = useState([])
+  
+  useEffect(() => {
+    if (correctWordSet.length) {
+      const wordsToDisplay = shuffledNumbers(words.length - 1).slice(0, 3).map((randIndex) => words[randIndex]).concat(correctWordSet)
+      const randomizedOrder = shuffledNumbers(wordsToDisplay.length - 1).map(randomIndex => wordsToDisplay[randomIndex])
+      setWordSetToDisplay(randomizedOrder)
+    }
+  }, [correctWordSet])
+
   return (
     <div className={`side ${activity? '': "side-wide"}`}>
         <div>
           <h1>Story time</h1>
-          <p>{activity ? 'Remove the word you are done using by clicking on it!':  'Pick a story to practice with' }</p> <br />
+          <p>{activity ? (activity === 'practicing' ? 'Use the right words from this set!' : 'Remove the word you are done using by clicking on it!')
+          : 'Pick a story to practice with' 
+          }</p> <br />
         </div>
         {/* selected < 0 && stories.length */}
         { (!activity) ? (
@@ -28,10 +41,10 @@ const Side = ({ stories, setWords, words, setSelected, setActivity, activity, se
           </div>
         ) : (
           <div className='side-pool word-pool'>
-            {words.map((word, i) => (
+            {(activity === 'practicing' ? wordSetToDisplay : words).map((word, i) => (
               <span 
                 className='story--span'
-                onClick={() => setWords(words.filter((w, index) => index !== i))} key={i}>
+                onClick={() => activity !== 'practicing' && setWords(words.filter((w, index) => index !== i))} key={i}>
                 {word}
               </span>
             ))}

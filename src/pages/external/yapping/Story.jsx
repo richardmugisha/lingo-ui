@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import { removeKeywords } from './utils/sentenceAnalyzer';
 
 const Story = (
   { info, setInfo,
@@ -29,11 +30,12 @@ const Story = (
 
   useEffect(() => {
       console.log(currSentence)
-      if (currSentence.blanked) setAttempt(currSentence.sentence.split(' ').map((word, i) => currSentence.blanked.split(' ')[i] !== word ? '_'.repeat(word.length) : word).join(' '))
-    }
+      if (currSentence.blanked) setAttempt(removeKeywords(currSentence.sentence?.split(' '), currSentence.blanked?.split(' ')))
+      }
+
   ,[currSentence])
 
-  console.log(activity)
+  // console.log(activity)
   return (
     activity &&
     <div className="story">
@@ -92,7 +94,7 @@ const Story = (
             currSentence.sentence && 
             currSentence.sentence.split(' ')
             .map((word, index) => 
-                <label key={index}>
+                <label key={word + index}>
                   <span style={{background: currSentence.blanked && !currSentence.blanked.includes(word) && 'yellow'}}>{word}</span>
                   &nbsp;
                 </label>
@@ -105,10 +107,10 @@ const Story = (
                   {
                     word.split('').map((char, i) => {
                       const numOfPastWords = currSentence.sentence?.split(' ')?.slice(0, index)?.join(' ').length
-                      console.log(numOfPastWords, index)
+                      // console.log(numOfPastWords, index)
                       const currCharIndex = numOfPastWords
                       const correctCondition = currSentence.sentence[currCharIndex + i + 1] === char && char !== '_'
-                      console.log(currCharIndex, char, currSentence.sentence[currCharIndex + i + 1])
+                      // console.log(currCharIndex, char, currSentence.sentence[currCharIndex + i + 1])
                       return <span key={char + i} style={{color: correctCondition ? 'green' : 'red', textDecoration: correctCondition && 'underline'}}>{char}</span>
                     })
                   }
@@ -122,7 +124,7 @@ const Story = (
         { ['creating', 'practicing'].includes(activity) &&
         <textarea
           placeholder='Type your story here' name="" id="" 
-          value={activity === 'creating' ? currSentence.sentence: attempt[attempt.length - 1] === '.' ? attempt : attempt + '.' }
+          value={activity === 'creating' ? currSentence.sentence: attempt[attempt?.length - 1] === '.' ? attempt : attempt + '.' }
           onChange={(e) => {
             if (activity === 'creating') setCurrSentence((prev) => ({...prev, sentence: e.target.value}))
             else if (activity === 'practicing') setAttempt(e.target.value)
