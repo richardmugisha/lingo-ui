@@ -82,7 +82,7 @@ const generalHook = (
     
       useEffect(() => {
         // console.log(activity, currSentence)
-        if (activity === 'practicing') return
+        if (activity === 'practicing' || !currSentence.sentence) return
         if ( ['.', '?', '!'].includes(currSentence.sentence[currSentence.sentence.length - 1]) ) {
           setInfo({ exists: true, type: 'warning', message: 'Select the part of this sentence that resembles one of the words in your deck',
           });

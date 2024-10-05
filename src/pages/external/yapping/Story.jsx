@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { removeKeywords } from './utils/sentenceAnalyzer';
 
+import useTextToSpeech from './utils/useTextToSpeech';
+
 const Story = (
   { info, setInfo,
     story, activity, 
@@ -13,14 +15,28 @@ const Story = (
     callUponAi
   }) => {
   
-  const [attempt, setAttempt] = useState(currSentence.blanked)
+  const [attempt, setAttempt] = useState(currSentence.blanked?.split(' '))
+  const [correctSentence, setCorrectSentence] = useState(currSentence.sentence?.split(' '))
   const [okAttempt, setOkAttempt] = useState('')
 
+  // text to speech
+  const [voice, setVoice] = useState(null);
+  const { voices, speak, pause, resume, cancel } = useTextToSpeech();
+
   useEffect(() => {
-    if (attempt && attempt === currSentence.sentence) {
-      setOkAttempt(okAttempt + ' ' + attempt);
+    setVoice(voices[1]);
+  }, [voices]);
+
+  const sayIt = (script) => speak('Please listen: ' + script, voice);
+
+  useEffect(() => {
+    console.log( attempt.join(' '), correctSentence.join(' '), '.................check this here')
+    if (attempt && attempt.join(' ') === correctSentence.join(' ')) {
+      setOkAttempt(okAttempt + ' ' + attempt.join(' '));
+      sayIt(attempt)
       const index = currSentence.index
       if (index === story.length - 1) {
+        sayIt(okAttempt)
         setInfo({exists: true, type: 'success', message: 'Congratulations! You have successfully filled all the blanks in the story.'})
         return
       }
@@ -29,10 +45,13 @@ const Story = (
   }, [attempt])
 
   useEffect(() => {
-      console.log(currSentence)
-      if (currSentence.blanked) setAttempt(removeKeywords(currSentence.sentence?.split(' '), currSentence.blanked?.split(' ')))
+      const [sentenceWithoutKeywords, sentenceWithKeywords] = removeKeywords(currSentence.sentence?.split(' '), currSentence.blanked?.split(' '), currSentence)
+      console.log(sentenceWithKeywords, sentenceWithoutKeywords)
+      if (currSentence.blanked) {
+        setAttempt(sentenceWithoutKeywords)
+        setCorrectSentence(sentenceWithKeywords)
       }
-
+    }
   ,[currSentence])
 
   // console.log(activity)
@@ -78,10 +97,13 @@ const Story = (
           </div>
         )}
 
+        {activity === 'practicing' ? 
+        <h3>{title}</h3>
+        :
         <input
           type="text" name="" id="" placeholder='Title of the story' className='title' value={title}
           onChange={(e) => setTitle(e.target.value)}
-        />
+        />}
         {story.length > 0 &&
         <p id='text-container'>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -99,18 +121,16 @@ const Story = (
                   &nbsp;
                 </label>
             ) : 
-            attempt?.split(' ').map(
+            attempt?.map(
             (word, index) => {
-              if (currSentence.sentence.split(' ')[index] === word) return <label>{word} </label>
+              if (correctSentence[index] === word) return <label key={word + index}>{word} </label>
               else return (
-                <label key={index}>
+                <label key={word + index}>
                   {
                     word.split('').map((char, i) => {
-                      const numOfPastWords = currSentence.sentence?.split(' ')?.slice(0, index)?.join(' ').length
+                      const numOfPastWords = correctSentence?.slice(0, index)?.join(' ').length
                       // console.log(numOfPastWords, index)
-                      const currCharIndex = numOfPastWords
-                      const correctCondition = currSentence.sentence[currCharIndex + i + 1] === char && char !== '_'
-                      // console.log(currCharIndex, char, currSentence.sentence[currCharIndex + i + 1])
+                      const correctCondition = correctSentence.join(' ')[numOfPastWords + i + 1] === char && char !== '_'
                       return <span key={char + i} style={{color: correctCondition ? 'green' : 'red', textDecoration: correctCondition && 'underline'}}>{char}</span>
                     })
                   }
@@ -121,13 +141,30 @@ const Story = (
             )
             }
         </p>
-        { ['creating', 'practicing'].includes(activity) &&
+        { activity === 'practicing' ? 
+        <p id='attempt-p'>
+          {
+            attempt.map((word, i) => 
+              word === correctSentence[i] ?
+              <label key={word + i}>{word} </label>: 
+              <>
+                <input type='text' key={i} value={['.', ',', ';'].includes(word[word.length - 1]) ? word.slice(0, word.length - 1) : word} 
+                  className='attempt-input'
+                  onChange={e => setAttempt(prev => 
+                    prev.map((word, index) => index === i ? e.target.value +  (['.', ',', ';'].includes(word[word.length - 1]) ? word[word.length - 1] : '')
+                    : word))}
+                />
+                {['.', ',', ';'].includes(word[word.length - 1]) ? <label>{word[word.length - 1]} </label> : ''}
+              </>
+            )
+          }
+        </p> :
         <textarea
           placeholder='Type your story here' name="" id="" 
-          value={activity === 'creating' ? currSentence.sentence: attempt[attempt?.length - 1] === '.' ? attempt : attempt + '.' }
+          value={activity === 'creating' ? currSentence.sentence: attempt.join(' ') }
           onChange={(e) => {
             if (activity === 'creating') setCurrSentence((prev) => ({...prev, sentence: e.target.value}))
-            else if (activity === 'practicing') setAttempt(e.target.value)
+            else if (activity === 'practicing') setAttempt(e.target.value.split(' '))
           }
           }
           onKeyDown={callUponAi}
@@ -139,3 +176,5 @@ const Story = (
 }
 
 export default Story
+
+

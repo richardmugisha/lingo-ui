@@ -5,6 +5,8 @@ import { ArrowBackIos as ArrowBack, ArrowForwardIos as ArrowFwd } from '@mui/ico
 import Spinner from 'react-spinner-material';
 import { useSelector } from 'react-redux';
 
+import useTextToSpeech from '../../external/yapping/utils/useTextToSpeech';
+
 const CardLearn = () => {
 
   const { openDeck: deck } = useSelector(state => state.deck)
@@ -12,6 +14,17 @@ const CardLearn = () => {
 
   const [cardIndex, setCardIndex] = useState(0);
   const [cards, setCards] = useState(deck ? deck.words : []);
+
+  // text to speech
+  const [voice, setVoice] = useState(null);
+  const { voices, speak, pause, resume, cancel } = useTextToSpeech();
+
+  useEffect(() => {
+    setVoice(voices[1]);
+  }, [voices]);
+
+  const sayIt = (script) => speak('Please pay attention: ' + script, voice);
+
 
   useEffect(() => {
     const handleKeyPress = (event) => {
@@ -28,7 +41,11 @@ const CardLearn = () => {
     };
   }, [cards.length]);
 
-  useEffect(() => console.log(cards[cardIndex]), [cardIndex]);
+  useEffect(() => {
+    console.log(cards[cardIndex])
+    cancel()
+    sayIt('to this ' + cards[cardIndex].type + ': ' +  cards[cardIndex].word + '; And this is a sentence using the ' + cards[cardIndex].type + ': ' + cards[cardIndex].example)
+  }, [cardIndex]);
 
   return (
     <>

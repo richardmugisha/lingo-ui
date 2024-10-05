@@ -60,7 +60,7 @@ const Yapping = () => {
         setActivity={setActivity} activity={activity} 
         setTitle={setTitle} 
         setStory={setStory}
-        correctWordSet={getKeywords(currSentence.sentence?.split(' '), currSentence.blanked?.split(' '))}
+        correctWordSet={getKeywords(currSentence.sentence?.split(' '), currSentence.blanked?.split(' '), currSentence)}
         />
       <Story 
         info={info} setInfo={setInfo}
