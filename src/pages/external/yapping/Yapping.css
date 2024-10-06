@@ -29,6 +29,21 @@
     align-items: center;
 }
 
+.side-wide .titles {
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.side-wide .story--span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: min(30%, 10em) !important;
+    aspect-ratio: 4/5;
+    overflow: hidden;
+}
+
 .side .side-pool {
     width: fit-content;
     overflow: auto;
@@ -272,19 +287,19 @@ textarea {
     }
 
     .story .title {
-        margin: 0;
+        /* margin: 0; */
     }
 
     .side > div:first-child {
         font-size: small;
-        padding: 0;
+        /* padding: 0; */
     }
 
     .side .side-pool {
         flex-direction: row;
         max-width: 90vw;
         overflow-x: auto;
-        padding-block: 0;
+        /* padding-block: 0; */
         font-size: small;
     }
 

@@ -30,7 +30,9 @@ const Story = (
   const sayIt = (script) => speak('Please listen: ' + script, voice);
 
   useEffect(() => {
-    console.log( attempt.join(' '), correctSentence.join(' '), '.................check this here')
+    const firstInput = document.getElementsByClassName('attempt-input')[0]
+    firstInput?.focus()
+    if (firstInput?.value?.startsWith('__')) firstInput.select()
     if (attempt && attempt.join(' ') === correctSentence.join(' ')) {
       setOkAttempt(okAttempt + ' ' + attempt.join(' '));
       sayIt(attempt)
@@ -45,8 +47,10 @@ const Story = (
   }, [attempt])
 
   useEffect(() => {
-      const [sentenceWithoutKeywords, sentenceWithKeywords] = removeKeywords(currSentence.sentence?.split(' '), currSentence.blanked?.split(' '), currSentence)
-      console.log(sentenceWithKeywords, sentenceWithoutKeywords)
+      if (!(activity === 'practicing')) return
+      console.log(currSentence.sentence?.split(' '), currSentence.blanked?.split(' '))
+      const [sentenceWithoutKeywords, sentenceWithKeywords] = removeKeywords(currSentence.sentence?.split(' '), currSentence.blanked?.split(' ').filter(word => !['.', ',', ';', ']', '"', ')', '}', '?', '!'].includes(word)))
+      // console.log(sentenceWithKeywords, sentenceWithoutKeywords)
       if (currSentence.blanked) {
         setAttempt(sentenceWithoutKeywords)
         setCorrectSentence(sentenceWithKeywords)
@@ -54,7 +58,7 @@ const Story = (
     }
   ,[currSentence])
 
-  // console.log(activity)
+  console.log(activity)
   return (
     activity &&
     <div className="story">
@@ -116,7 +120,7 @@ const Story = (
             currSentence.sentence && 
             currSentence.sentence.split(' ')
             .map((word, index) => 
-                <label key={word + index}>
+                <label key={word + currSentence.sentence[index - 1] + currSentence.sentence[index + 1]}>
                   <span style={{background: currSentence.blanked && !currSentence.blanked.includes(word) && 'yellow'}}>{word}</span>
                   &nbsp;
                 </label>
@@ -130,7 +134,7 @@ const Story = (
                     word.split('').map((char, i) => {
                       const numOfPastWords = correctSentence?.slice(0, index)?.join(' ').length
                       // console.log(numOfPastWords, index)
-                      const correctCondition = correctSentence.join(' ')[numOfPastWords + i + 1] === char && char !== '_'
+                      const correctCondition = (correctSentence.join(' ')[numOfPastWords + i + 1] === char && char !== '_') || ['.', ',', ';', ']', '"', '!', '?', ')'].includes(char)
                       return <span key={char + i} style={{color: correctCondition ? 'green' : 'red', textDecoration: correctCondition && 'underline'}}>{char}</span>
                     })
                   }
@@ -144,18 +148,19 @@ const Story = (
         { activity === 'practicing' ? 
         <p id='attempt-p'>
           {
-            attempt.map((word, i) => 
-              word === correctSentence[i] ?
-              <label key={word + i}>{word} </label>: 
-              <>
-                <input type='text' key={i} value={['.', ',', ';'].includes(word[word.length - 1]) ? word.slice(0, word.length - 1) : word} 
-                  className='attempt-input'
-                  onChange={e => setAttempt(prev => 
-                    prev.map((word, index) => index === i ? e.target.value +  (['.', ',', ';'].includes(word[word.length - 1]) ? word[word.length - 1] : '')
-                    : word))}
-                />
-                {['.', ',', ';'].includes(word[word.length - 1]) ? <label>{word[word.length - 1]} </label> : ''}
-              </>
+          attempt.map((word, i) => {
+            return word === correctSentence[i] ?
+            <label key={word + i}>{word} </label>: 
+            <span key={word + i}>
+              <input type='text'  value={['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? word.slice(0, word.length - 1) : word}
+                className='attempt-input'
+                onChange={e => setAttempt(prev => 
+                  prev.map((word, index) => index === i ? e.target.value +  (['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? word[word.length - 1] : '')
+                  : word))}
+              />
+              {['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? <label>{word[word.length - 1]} </label> : ''}
+            </span>
+            }
             )
           }
         </p> :

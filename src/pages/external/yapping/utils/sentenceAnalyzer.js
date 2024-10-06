@@ -29,7 +29,7 @@ export const getKeywords = (fullSentenceSplit, blankedSentenceSplit, currSentenc
     return missing.map(word => {
         let done = false
         return word.split('').reverse().map(char => {
-                if ([',', "'", '"', ':', ';', '.'].includes(char) && !done ){
+                if (['.', ',', ';', ']', '"', '!', '?', ')'].includes(char) && !done ){
                     return ''
                 }
                 else {
@@ -63,7 +63,7 @@ export const removeKeywords = (fullSentenceSplit, blankedSentenceSplit, currSent
                 if (fullSentenceSplit[sentIndex]) cont += ' ' + fullSentenceSplit[sentIndex]
             }
             corrSent.push(cont)
-            let dashed = cont.split('').map(char => [',', "'", '"', ':', ';', '.'].includes(char) ? char : '_').join('')
+            let dashed = cont.split('').map(char => ['.', ',', ';', ']', '"', '!', '?', ')'].includes(char) ? char : '_').join('')
             const many = dashed.length - 5
             for (let i = 0; i < Math.abs(many); i++) dashed = many > 0 ? dashed.replace('_', '', i) : '_' + dashed
             sent.push(dashed)

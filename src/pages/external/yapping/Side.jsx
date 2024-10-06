@@ -33,7 +33,7 @@ const Side = ({ stories, setWords, words, setSelected, setActivity, activity, se
                 onClick={() => {
                   setSelected(i);
                 }}
-                className={`story--span${selected === story.title ? 'selected' : ''}`}
+                className={`story--span ${selected === story.title ? 'selected' : ''}`}
               >
                 {story.title}
               </span>

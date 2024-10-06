@@ -9,7 +9,7 @@ import { getKeywords } from './utils/sentenceAnalyzer';
 const Yapping = () => {
   const { words: cards, _id: deckId } = useSelector((state) => state.deck.openDeck);
   const [words, setWords] = useState(
-    cards.map((cardObj) => cardObj['related words'][Math.floor(Math.random() * cardObj['related words'].length)])
+    cards.map((cardObj) => cardObj['related words'][Math.floor(Math.random() * cardObj['related words'].length)]).slice(0, 30)
   );
 
   const [story, setStory] = useState([]);
@@ -60,7 +60,7 @@ const Yapping = () => {
         setActivity={setActivity} activity={activity} 
         setTitle={setTitle} 
         setStory={setStory}
-        correctWordSet={getKeywords(currSentence.sentence?.split(' '), currSentence.blanked?.split(' '), currSentence)}
+        correctWordSet={activity === 'practicing' && getKeywords(currSentence.sentence?.split(' '), currSentence.blanked?.split(' ').filter(word => !['.', ',', ';', ']', '"', ')', '}', '?', '!'].includes(word)))}
         />
       <Story 
         info={info} setInfo={setInfo}

@@ -90,7 +90,7 @@ const generalHook = (
       }, [currSentence.sentence, activity]);
     
       const handlePartSelection = useCallback(() => {
-        if (activity === 'practicing') return
+        if (activity === 'practicing' || !currSentence.sentence) return
         if ( !['.', '?', '!'].includes(currSentence.sentence[currSentence.sentence.length - 1]) ) return;
         const part = window.getSelection().toString();
         if (part) {
