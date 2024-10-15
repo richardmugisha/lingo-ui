@@ -20,7 +20,7 @@ const deckSlice = createSlice({
     name: 'deck',
     initialState,
     reducers: {
-        openDeck: (state, action) => {state.openDeck = {...state.openDeck, ...action.payload} },
+        openDeck: (state, action) => {state.openDeck = action.payload },
         deckList: (state, action) => {state.deckList = action.payload},
         removeDecks: (state, action) => {
             const deletingSet = action.payload;

@@ -107,6 +107,7 @@
     font-size: xx-large;
     color: red;
     cursor: pointer;
+    z-index: 6;
 }
   
 .modal .cancel:hover {

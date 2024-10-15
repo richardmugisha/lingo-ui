@@ -1,10 +1,12 @@
 .card-learn {
-    width: min(500px, 80vw);
+    max-height: 90dvh;
+    width: min(500px, 92vw);
     margin: auto;
     background-color: #9BC5CB;
-    padding: 20px;
+    padding: 2em;
     text-align: start;
     font-size: large;
+    overflow: auto;
 }
 
 .card-learn--deckname {
@@ -91,4 +93,67 @@
     /* .card-learn i {
         width: 0;
     } */
+}
+
+/* Keyframes for entering and exiting (right swipe) */
+@keyframes enteringFromLeft {
+    0% {
+        transform: translateX(-100%); 
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0); 
+        opacity: 1;
+    }
+}
+
+@keyframes exitingToRight {
+    0% {
+        transform: translateX(0); 
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%); 
+        opacity: 0;
+    }
+}
+
+/* Keyframes for entering and exiting (left swipe) */
+@keyframes enteringFromRight {
+    0% {
+        transform: translateX(100%); 
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0); 
+        opacity: 1;
+    }
+}
+
+@keyframes exitingToLeft {
+    0% {
+        transform: translateX(0); 
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-100%); 
+        opacity: 0;
+    }
+}
+
+/* Bouncy effect with cubic-bezier for entering/exiting cards */
+.card-entering-left {
+    animation: enteringFromLeft 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.card-exiting-right {
+    animation: exitingToRight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.card-entering-right {
+    animation: enteringFromRight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.card-exiting-left {
+    animation: exitingToLeft 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }

@@ -79,7 +79,9 @@ const Personal = () => {
   }, [myCardsOnly, selectedLanguage]);
 
   const onDeckClickHandle = async (deck) => {
-    const { _id: deckId } = deck;
+    const { _id: deckId, deckName } = deck;
+    console.log(deckName)
+
     dispatch(openDeck({})); // Resetting the deck in case another deck is clicked
     setPersonalSelectedItem([]);
     navigate('card');

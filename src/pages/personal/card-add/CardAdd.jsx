@@ -12,6 +12,8 @@ const CardAdd = () => {
   const { openDeck: deck } = useSelector(state => state.deck)
   const [cardIndex, setCardIndex] = useState(0);
   const [cards, setCards ] = useState(deck.words)
+
+  useEffect(() => setCards(deck.words), [deck.words])
   
   useEffect(() => {
     const handleKeyPress = (event) => {
@@ -26,7 +28,7 @@ const CardAdd = () => {
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
-  }, [cards.length]); 
+  }, [cards?.length]); 
   
   
   console.log(deck)
@@ -45,7 +47,7 @@ const CardAdd = () => {
                         <></>
         }
       </div>
-      {cards.length ?
+      {cards?.length ?
           <>
             <div className="main">
                 <div className="top">
