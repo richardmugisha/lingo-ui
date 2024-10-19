@@ -4,6 +4,8 @@ import './Performance.css'
 import axios from 'axios';
 import Spinner from 'react-spinner-material';
 
+import API_BASE_URL from '../../../../serverConfig';
+
 const Performance = ({deckName, deckId, perf, givenTime, duration, correctAnswers, all }) => {
   const [amountUp, setAmountUp] = useState(false);
   const [speedUp, setSpeedUp] = useState(false);
@@ -15,8 +17,6 @@ const Performance = ({deckName, deckId, perf, givenTime, duration, correctAnswer
   const perfLabels = ['terrible', 'very bad', 'bad', 'practice more', 'fair', 'good', 'very good', 'wonderful']
   const perfRefs = [0, 20, 40, 60, 80, 95, 100]
   const perfEmojis = ['😥', '😔', '😬', '😌', '',  '🤠', '😎', '🤩']
-  
-  const API_BASE_URL = API_BASE_URL
   
   const getMetadata = async (correct, speed, time) => {
     try {
@@ -85,7 +85,8 @@ const Performance = ({deckName, deckId, perf, givenTime, duration, correctAnswer
         </div>
         <div className="speed">
           <div className="label">Performance</div>
-          <div className="number">{conclusion}{emoji}</div>
+          {/* <div className="number">{conclusion}{emoji}</div> */}
+          <div className="number">{'Perfect'}{'🤩'}</div>
           <div className="display" style={{color: speedUp?'greenyellow':'red'}}>{ speedUp?<TrendingUpIcon />:<TrendingDownIcon /> }</div>
         </div>
         <div className="time">

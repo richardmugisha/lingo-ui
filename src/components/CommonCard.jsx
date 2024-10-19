@@ -15,6 +15,10 @@ let allocatedTime = 0; //seconds
 let correctAnswers = 0;
 let interval = null;
 
+const enteringAudio = new Audio('/sounds/woosh.wav')
+const tickAudio = new Audio('/sounds/tick-tock.wav')
+tickAudio.volume = .2
+
 const CommonCard = () => {
 
     const { format, quizType, quizLength, order } = useSelector(state => state.quiz)
@@ -27,38 +31,36 @@ const CommonCard = () => {
     const [topProSize, setTopProSize ] = useState(0);
     const [btmProSize, setBtmProSize] = useState(0);
     const [cardFormat, setCardFormat] = useState(format);
-    const [timePerCard, setTimePerCard] = useState(5);
+    const [timePerCard, setTimePerCard] = useState(12);
+    const [batchSize, setBatchSize] = useState(deck.length ? (deck.length > 10 ? 10 : deck.length) : 0)
+
+    const [cardMotion, setCardMotion] = useState('card-entering-left');
+
+    useEffect(() => {
+      // enteringAudio.currentTime = .2
+      enteringAudio.play()
+    }, [])
+
+    const changeCard = (direction) => {
+      let timerId;
+      const delay = 700
+      if (direction === '>') {
+        setCardMotion('card-exiting-right');
+        setTopProSize(0)
+        timerId = setTimeout(() => {
+          // enteringAudio.currentTime = 0.2
+          enteringAudio.play()
+          setCardMotion('card-entering-left');
+        }, delay);
+      } else {
+        setCardMotion('card-exiting-left');
+        timerId = setTimeout(() => {
+          setCardMotion('card-entering-right');
+        }, delay);
+      }
+      return () => clearTimeout(timerId);
+    };
     
-    const allowApi = useRef(true)
-
-    // const getMetadata = async () => {
-    //   const API_BASE_URL = API_BASE_URL
-    //   try {
-    //     const response =  await axios.get(`${API_BASE_URL}/cards/deck/${ deckId }`);
-    //     const data = response.data.deck;
-    //     return data?.performance?.correct; // i will use correct b/c it is 0-100
-    //   } catch (error) {
-    //      return
-    //   }
-    // }
-
-    // useEffect(() => {
-    //   (allowApi.current) && ( async () => {
-    //     allowApi.current = false;
-    //     let d = await getMetadata()
-    //     if (!d || d.length === 0) return;
-    //     d = d.filter((i) => i !== null) // bc 0 may not come
-    //     const count = Math.min(d.length, 3);
-    //     const lastNumbers = d.slice(-count)
-    //     const sum = lastNumbers.reduce((total, num) => total + num, 0);
-    //     const average = (sum / count)/10; // 0 - 10
-    //     const result = 10 * Math.exp(-0.1 * Math.log(10/3) * average); // max = 10, min = 3
-    //     setTimePerCard(result);
-    //     return
-    //   })()
-      
-    // }, [])
-
     useEffect(() => {
        if (deck) {
           setCard(deck[order[0]]);
@@ -126,19 +128,25 @@ const CommonCard = () => {
 
 
     useEffect(() => {
-      if (!deck) return
-      allocatedTime = timePerCard * deck.length // the allocated time will depend on the constant and the length of the deck
+      if (!deck || cardMotion !== 'card-entering-left') return
+      allocatedTime = 10 // the allocated time will depend on the constant and the length of the deck
+      const stepTime = .5 // half a sec
       correctAnswers = 0;
+      tickAudio.play()
       interval = setInterval(() => {
-        setTopProSize(prev => { if (prev + timePerCard*100/allocatedTime < 100) return prev + timePerCard*100/allocatedTime
-                                    setQuizDone(true)
-                                    return prev;
-                              }
-                      );
-      }, timePerCard*1000);
+        setTopProSize(prev => {
+          if (prev + (stepTime / allocatedTime) * 100 > 100) {
+            handleItemClick({value: 'no selection because of timeout'}, true);  // true on automatic for toks, otherwise, false
+            clearInterval(interval)
+            return 100
+          }
+          return prev + (stepTime / allocatedTime) * 100
+          }
+        )
+      }, stepTime * 1000);
 
       return () => clearInterval(interval)
-    }, [deck, timePerCard])
+    }, [deck, cardMotion])
 
     useEffect(() => {
       if (interval !== null && quizDone) {
@@ -153,9 +161,10 @@ const CommonCard = () => {
       setQuizDone(() => {
         if (btmProSize < 100) {
             delayId = setTimeout(() => {
-              setCard(deck[order[Math.round(btmProSize * deck.length/100)]]);
+              setCard(deck[order[Math.round(btmProSize * batchSize/100)]]);
+              changeCard('>')
               setSelectedItem({})
-            }, format.content.type === 'mcq' ? 1000: 0);
+            }, format.content.type === 'mcq' ? 1500: 0);
           return false
         } else {
           console.log(btmProSize)
@@ -174,8 +183,10 @@ const CommonCard = () => {
     const handleItemClick = (item, correct) => {
             if (correct) correctAnswers += 1;
             setSelectedItem(item);
-            console.log(btmProSize, item)
-            setBtmProSize(prev =>  Math.round((Math.round(prev*deck.length/100) + 1) * 100/deck.length) ) 
+            tickAudio.pause()
+            tickAudio.currentTime = 0
+            // console.log(btmProSize, item)
+            setBtmProSize(prev =>  Math.round((Math.round(prev*batchSize/100) + 1) * 100/batchSize) ) 
     };
     
     const blankedWordFinder = (example, blankedExample) => {
@@ -184,16 +195,23 @@ const CommonCard = () => {
       return exHere.filter(chunk => !blankedExample.includes(chunk)).join(' ')
     }
 
+    const colors = (percentage) => {
+      if (percentage < 50) return 'green'
+      if (percentage < 65) return 'yellow'
+      if (percentage <= 80) return 'orange'
+      return 'red'
+    }
+
     return (
         <>
           { deck ?
-          quizDone ? <Performance deckName={deckName} deckId={deckId} perf={performance} givenTime={allocatedTime} duration={ topProSize * allocatedTime /100 } correctAnswers={correctAnswers} all={deck.length} /> :
+          quizDone ? <Performance deckName={deckName} deckId={deckId} perf={performance} givenTime={allocatedTime} duration={ (topProSize * allocatedTime /100) + (batchSize - 1) * allocatedTime } correctAnswers={batchSize} all={batchSize} /> :
           
           format.content.type === 'mcq' ?
-          <div className='common-card'>
+          <div className={`common-card ${cardMotion}`}>
               <div className="common-head">
                   <div className='label0'>{cardFormat.label0 }</div>
-                  { format.topProgressbar && <ProgressBar completed = {Math.floor(topProSize)} bgColor = "black" /> }
+                  { format.topProgressbar && <ProgressBar completed = {Math.floor(topProSize)} bgColor = {colors(topProSize)} customLabel=' ' height='2px' transitionDuration='.5s'/> }
                   <div className='label1'>{ cardFormat.label1 }</div>
                   { format.label2 && <div>{ format.label2 }</div> }
               </div>
@@ -219,7 +237,7 @@ const CommonCard = () => {
                                                   {label: variation['blanked example'], value: variation.example}
                                                 )
                   ).map((item, indexHere) => {
-                  return  <div key={indexHere} style={{backgroundColor: (selectedItem.value && correctOption === item.value) ? 'green': (selectedItem.value === item.value ? 'red': '')}} 
+                  return  <div key={indexHere} style={{scale: (selectedItem.value && correctOption === item.value) ? '1.1' : '1', backgroundColor: (selectedItem.value && correctOption === item.value) ? 'green': (selectedItem.value === item.value ? 'red': '')}} 
                             onClick={() => {handleItemClick(item, item.value === correctOption)}}>{item.label}
                         </div>
                 })}
@@ -228,7 +246,7 @@ const CommonCard = () => {
 
             <div className="common-foot">
               { format.label3 && <div>{ format.label3 }</div> }
-              { format.btmProgressbar && <ProgressBar completed = { Math.floor(btmProSize) } bgColor = "black" /> }
+              { format.btmProgressbar && <ProgressBar completed = { Math.floor(btmProSize) } bgColor = "#345C70" labelSize='10px' height='12px'/> }
               { format.label4 && <div>{ format.label4 }</div> }
             </div>
           </div>:

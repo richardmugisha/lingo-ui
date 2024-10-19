@@ -86,6 +86,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    box-shadow: -1em -1em 1em rgb(0, 0, 0, .2);
 }
   
 .modal:before {
@@ -97,7 +98,7 @@
     left: 0;
     transform: scale(20, 20);
     z-index: -1;
-    background-color: #000000c1;
+    background-color: rgb(20, 32, 14);
 }
   
 .modal .cancel {
