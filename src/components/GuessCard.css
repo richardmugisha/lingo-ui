@@ -1,5 +1,5 @@
 .guess-quiz {
-    min-width: 40vw;
+    width: min(600px, 90vw);
     margin: auto;
     background-color: #9BC5CB;
     color: #E0F5F8;
@@ -7,6 +7,7 @@
     font-weight: 500;
     padding: 10px;
     text-align: center;
+    perspective: 3000px;
 }
 
 .guess-top {
@@ -24,79 +25,85 @@
     cursor: pointer;
 }
 
-.guess-box {
-    max-width: 300px;
-    aspect-ratio: 1;
-    margin: 1em;
-    overflow: auto;
-    margin-inline: auto;
-    scrollbar-width: none;
-    background-color: rgb(111, 158, 158)
-}
-
 .guess-container {
-    background-color: rgb(111, 158, 158);
-    width: 600px;
-    height: 300px;
-    display: flex;
-    justify-content: center; align-items: center;
-}
-
-.guess-card {
-    background-color: rgba(194, 192, 192, 0.375);
-    color: black;
-    width: 250px;
-    aspect-ratio: 1;
-    padding: 1em;
-    box-shadow: 0 0 20px black;
-    cursor: pointer;
-    display: flex; flex-direction: column;
-    justify-content: space-around; align-items: center;
+  width: 80%;
+  aspect-ratio: 1;
+  margin: auto;
+  position: relative;
+  transition: transform 1s;
+  transform-style: preserve-3d;
 }
 
 .guess-card--footer{
     font-size: small;
 }
-.answer-card {
-    animation: growAndChangeColor 1s forwards;
+
+.guess-container > div {
+    position: absolute;
+    background-color: rgb(111, 158, 158);
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    gap: 2em;
+    align-content: space-around;
+    font-size: larger;
+    line-height: 1.5em;
+    box-shadow: -.2em -.2em 2em #345C70 !important;
+    border: 2px solid #9BC5CB;
+    cursor: pointer;
+    backface-visibility: hidden;
+    padding: 1em;
 }
 
-@keyframes growAndChangeColor {
-    0% {
-      width: 250px;
-    }
-    50% {
-      width: 270px; /* Grow by 20px */
-      background-color: rgb(165, 225, 100);
-    }
-    100% {
-      width: 250px;
-      background-color: rgba(194, 192, 192, 0.375);
-    }
-  }
+.guess-container.showBack {
+  transform: rotateY(180deg);
+}
 
-  @keyframes scrollAnimationFromRight {
-    0% { transform: translateX(250px); }
-    50% { transform: translateX(-30px); }
-    65% { transform: translateX(15px); }
-    80% { transform: translateX(-7px); }
-    90% { transform: translateX(5px); }
-    100% { transform: translateX(0); }
+.guess-container.showFront {
+  transform: rotateY(0deg);
+}
+
+.guess-question {
+  background-color: #9BC5CB !important;
+  color: #345C70;
+}
+
+.guess-answer {
+  background-color: rgb(131, 182, 131) !important;
+  transform: rotateY(180deg);
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 0 rgba(0, 255, 0, 0.5), 0 0 15px rgba(0, 255, 0, 0.2);
   }
-  @keyframes scrollAnimationFromLeft {
-    0% { transform: translateX(-250px); }
-    50% { transform: translateX(30px); }
-    65% { transform: translateX(-15px); }
-    80% { transform: translateX(7px); }
-    90% { transform: translateX(-5px); }
-    100% { transform: translateX(0); }
+  50% {
+    box-shadow: 0 0 5em rgba(0, 255, 0, 0.8), 0 0 30px rgba(0, 255, 0, 0.4);
   }
-  
-  .card-left-to-right {
-    animation: scrollAnimationFromLeft 2s ease-out;
+  100% {
+    box-shadow: 0 0 0 rgba(0, 255, 0, 0.5), 0 0 15px rgba(0, 255, 0, 0.2);
   }
-  .card-right-to-left {
-    animation: scrollAnimationFromRight 2s ease-out;
+}
+
+@keyframes red-glow {
+  0% {
+    box-shadow: 0 0 0 rgba(255, 0, 0, 0.5), 0 0 15px rgba(255, 0, 0, 0.2);
   }
-  
-  
+  50% {
+    box-shadow: 0 0 5em rgba(255, 0, 0, 0.8), 0 0 30px rgba(255, 0, 0, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(255, 0, 0, 0.5), 0 0 15px rgba(255, 0, 0, 0.2);
+  }
+}
+
+/* Apply the animations */
+.glow-green {
+  animation: glow 1s forwards ease-in-out;
+}
+
+.glow-red {
+  animation: red-glow 1s forwards ease-in-out;
+}

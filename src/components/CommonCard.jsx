@@ -17,7 +17,8 @@ let interval = null;
 
 const enteringAudio = new Audio('/sounds/woosh.wav')
 const tickAudio = new Audio('/sounds/tick-tock.wav')
-tickAudio.volume = .2
+tickAudio.volume = 0
+enteringAudio.volume = 0
 
 const CommonCard = () => {
 
@@ -32,7 +33,7 @@ const CommonCard = () => {
     const [btmProSize, setBtmProSize] = useState(0);
     const [cardFormat, setCardFormat] = useState(format);
     const [timePerCard, setTimePerCard] = useState(12);
-    const [batchSize, setBatchSize] = useState(deck.length ? (deck.length > 10 ? 10 : deck.length) : 0)
+    const [batchSize, setBatchSize] = useState(deck.length ? (deck.length > 30 ? 30 : deck.length) : 0)
 
     const [cardMotion, setCardMotion] = useState('card-entering-left');
 
@@ -93,8 +94,8 @@ const CommonCard = () => {
         if (format.content.type === 'mcq') {
           setCardFormat(prev => 
             ({...prev, 
-                  label0 : quizLength === 'short' ? (quizType !== "example" ? card[quizType] : card['blanked example']) : (quizType === 'example' ? blankedWordFinder(card.example, card['blanked example']) : card.word),
-                  label1 : quizLength === 'short' ? (quizType === 'example'? 'fill in the blanks': `is the ${quizType} of :`) : (quizType === 'example'? 'Use this to fill in the appropriated blanks': `What is the ${quizType} of the word above:`)
+                  label0 : quizLength === 'short' ? (quizType === "example" ? 'Pick the right word/expression to fill in the blanks below' : (quizType === 'meaning' ? "What's the word for:" :`What is the ${quizType} of: `)) : (quizType === 'example'? 'Use the following word in the appropriate blanks': `What's the ${quizType} of`), //(quizType === 'example' ? blankedWordFinder(card.example, card['blanked example']) : card.word),
+                  label1 : quizLength === 'short' ? (quizType === 'example'? card['blanked example']: card[quizType]) : (quizType === 'example'? blankedWordFinder(card.example, card['blanked example']): card.word)
             })
           );
           const corrOpt = (quizLength === 'long' || quizType === 'example') ? card[quizType] : card.word
@@ -161,13 +162,15 @@ const CommonCard = () => {
       setQuizDone(() => {
         if (btmProSize < 100) {
             delayId = setTimeout(() => {
+              const nextCard = deck[order[Math.round(btmProSize * batchSize/100)]] // in case it doesn't have a synonym for ex
+              console.log(nextCard, '..............')
+              if (!nextCard[quizType]) return setBtmProSize(prev =>  Math.round((Math.round(prev*batchSize/100) + 1) * 100/batchSize) )
               setCard(deck[order[Math.round(btmProSize * batchSize/100)]]);
               changeCard('>')
               setSelectedItem({})
-            }, format.content.type === 'mcq' ? 1500: 0);
+            }, 1500) //format.content.type === 'mcq' ? 1500: 0);
           return false
         } else {
-          console.log(btmProSize)
           return true
         }
       })
@@ -203,59 +206,61 @@ const CommonCard = () => {
     }
 
     return (
-        <>
-          { deck ?
+         deck ?
           quizDone ? <Performance deckName={deckName} deckId={deckId} perf={performance} givenTime={allocatedTime} duration={ (topProSize * allocatedTime /100) + (batchSize - 1) * allocatedTime } correctAnswers={batchSize} all={batchSize} /> :
-          
-          format.content.type === 'mcq' ?
-          <div className={`common-card ${cardMotion}`}>
-              <div className="common-head">
-                  <div className='label0'>{cardFormat.label0 }</div>
-                  { format.topProgressbar && <ProgressBar completed = {Math.floor(topProSize)} bgColor = {colors(topProSize)} customLabel=' ' height='2px' transitionDuration='.5s'/> }
-                  <div className='label1'>{ cardFormat.label1 }</div>
-                  { format.label2 && <div>{ format.label2 }</div> }
-              </div>
+          <>
+            { format.topProgressbar && <ProgressBar completed = {Math.floor(topProSize)} bgColor = {colors(topProSize)} customLabel=' ' height='2px' transitionDuration='.5s'/> }
+            {format.content.type === 'mcq' ?
+              <McqCard correctOption={correctOption} selectedItem={selectedItem} cardMotion={cardMotion} blankedWordFinder={blankedWordFinder} cardFormat={cardFormat} optionArray={optionArray} handleItemClick={handleItemClick} card={card} quizLength={quizLength} quizType={quizType}/>
+              :
+              <GuessCard cardMotion={cardMotion} cardFormat={cardFormat} btmProSize={btmProSize} handleItemClick={handleItemClick} topProSize={topProSize} quizLength={quizLength} quizType={quizType}/>
+            }
+            { format.btmProgressbar && <ProgressBar completed = { Math.floor(btmProSize) } bgColor = "#345C70" customLabel=' ' height='3px'/> }
+          </>
+          :
+          <div style={{height: '200px', width: '200px', padding: '50px'}}><Spinner radius={100} color={"#b0b0ff"} stroke={2} visible={true} /></div> 
+    )
+  }
+
+const McqCard = ({correctOption, selectedItem, cardMotion, blankedWordFinder, cardFormat, optionArray, handleItemClick, card, quizLength, quizType}) => (
+  <div className={`common-card ${cardMotion}`}>
+      <div className="common-head">
+          <div className='label0'>{cardFormat.label0 }</div>
+          <div className='label1'>{ cardFormat.label1 }</div>
+          {/* { format.label2 && <div>{ format.label2 }</div> } */}
+      </div>
 
 
-            <div className="common-main"> 
-              <div className="top">
-                {/* {!['guess', 'mcq'].includes(format.content.type) && card.type && <div>{card.type}</div>} */}
-                {/* {!['guess', 'mcq'].includes(format.content.type) && card.type && <div>{card.type}</div>} */}
-                <div>{card.type}</div>
-                <div>{card['language style']}</div>
-              </div>
+    <div className="common-main"> 
+      <div className="top">
+        <div>{card.type}</div>
+        <div>{card['language style']}</div>
+      </div>
 
-              <div className="middle">
-                { optionArray && 
-                  optionArray.map(variation => quizLength === 'short' ? 
-                                                (quizType !== 'example' ? {label: variation.word, value: variation.word} :
-                                                  {label: blankedWordFinder(variation.example, variation['blanked example']), value: variation.example}
-                                                ) 
-                                              :
-                                                (
-                                                  quizType !== 'example' ? {label: variation[quizType], value: variation[quizType]} :
-                                                  {label: variation['blanked example'], value: variation.example}
-                                                )
-                  ).map((item, indexHere) => {
-                  return  <div key={indexHere} style={{scale: (selectedItem.value && correctOption === item.value) ? '1.1' : '1', backgroundColor: (selectedItem.value && correctOption === item.value) ? 'green': (selectedItem.value === item.value ? 'red': '')}} 
-                            onClick={() => {handleItemClick(item, item.value === correctOption)}}>{item.label}
-                        </div>
-                })}
-              </div>
-            </div>
+      <div className="middle">
+        { optionArray && 
+          optionArray.map(variation => quizLength === 'short' ? 
+                                        (quizType !== 'example' ? {label: variation.word, value: variation.word} :
+                                          {label: blankedWordFinder(variation.example, variation['blanked example']), value: variation.example}
+                                        ) 
+                                      :
+                                        (
+                                          quizType !== 'example' ? {label: variation[quizType], value: variation[quizType]} :
+                                          {label: variation['blanked example'], value: variation.example}
+                                        )
+          ).map((item, indexHere) => {
+          return  <div key={indexHere} style={{border: (selectedItem.value && correctOption === item.value) ? '2px solid white' : '', backgroundColor: (selectedItem.value && correctOption === item.value) ? 'green': (selectedItem.value === item.value ? 'red': '')}} 
+                    onClick={() => {handleItemClick(item, item.value === correctOption)}}>{item.label}
+                </div>
+        })}
+      </div>
+    </div>
 
-            <div className="common-foot">
-              { format.label3 && <div>{ format.label3 }</div> }
-              { format.btmProgressbar && <ProgressBar completed = { Math.floor(btmProSize) } bgColor = "#345C70" labelSize='10px' height='12px'/> }
-              { format.label4 && <div>{ format.label4 }</div> }
-            </div>
-          </div>:
-          <GuessCard cardFormat={cardFormat} btmProSize={btmProSize} handleItemClick={handleItemClick} topProSize={topProSize} quizLength={quizLength} quizType={quizType}/>
-          :<div style={{height: '200px', width: '200px', padding: '50px'}}><Spinner radius={100} color={"#b0b0ff"} stroke={2} visible={true} /></div> 
-        }
-        </>
-        )
-      }
-
+    <div className="common-foot">
+      {/* { format.label3 && <div>{ format.label3 }</div> } */}
+      {/* { format.label4 && <div>{ format.label4 }</div> } */}
+    </div>
+  </div>
+)
  
 export default CommonCard

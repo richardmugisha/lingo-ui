@@ -98,7 +98,7 @@
     left: 0;
     transform: scale(20, 20);
     z-index: -1;
-    background-color: rgb(20, 32, 14);
+    background-color: navajowhite;
 }
   
 .modal .cancel {

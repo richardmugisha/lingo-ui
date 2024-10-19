@@ -1,5 +1,5 @@
 .common-card {
-    width: min(700px, 90vw);
+    width: min(600px, 90vw);
     /* margin: auto; */
     background-color: #9BC5CB;
     /* color: #E0F5F8; */
@@ -8,7 +8,7 @@
     /* display: flex; */
     /* flex-direction: column; */
     /* justify-content: space-around; */
-    padding: 1em;
+    padding: .1em .1em;
 }
 
 .common-card * {
@@ -25,8 +25,8 @@
     color: #345C70;
     padding: .5em 2em;
 }
-.common-head *, .common-foot * {
-    background-color: transparent;
+.common-head .label1 {
+    font-weight: bolder;
 }
 .sticks, .sticks {
     margin: 10px 20px;
@@ -84,14 +84,16 @@
 .common-main > .middle {
     scroll-margin: 1em;
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    flex-wrap: wrap;
     gap: .5em;
 }
 
 .common-main .middle > div {
     font-size: large;
-    border-radius: 1em;
-    padding: .5em 1em;
+    border-radius: .3em;
+    text-align: left;
+    padding: .3em 1em;
     cursor: pointer;
     background-color: rgba(52, 92, 112, .8);
 }
