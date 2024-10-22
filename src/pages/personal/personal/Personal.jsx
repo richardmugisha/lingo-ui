@@ -8,7 +8,7 @@ import CardAddAuto from '../card-add-auto/CardAddAuto';
 import NewDeck from '../new-deck/NewDeck';
 import CardLearn from '../card-learn/CardLearn';
 import './Personal.css';
-import Quiz from '../quiz/Quiz';
+import Quiz from '../quiz/quiz-selector/Quiz';
 import Filters from '../../filters/Filters';
 import { useSelector, useDispatch } from 'react-redux';
 import { openDeck, deckList, removeDecks } from '../../../features/personal/deck/deckSlice';
