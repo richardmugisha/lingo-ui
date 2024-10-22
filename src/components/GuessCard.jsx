@@ -51,8 +51,8 @@ const GuessCard = ({ cardMotion, cardFormat, btmProSize, handleItemClick, topPro
                 </div>
             </div>
             <p className='guess-card--footer'>{checkCorrect ? 
-                'Swipe Right if you were right, or Left if you were off' 
-                : 'Tap to check the answer when ready'}
+                'Tap on the Right edge of the card if you knew the answer, or Left if you did not' 
+                : 'Say the answer in your head, then Tap to check the right answer'}
             </p>
         </div>
     );

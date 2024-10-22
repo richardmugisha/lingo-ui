@@ -59,10 +59,12 @@
 
 .guess-container.showBack {
   transform: rotateY(180deg);
+  transition: .5s;
 }
 
 .guess-container.showFront {
   transform: rotateY(0deg);
+  transition: .5s;
 }
 
 .guess-question {

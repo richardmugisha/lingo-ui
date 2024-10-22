@@ -17,8 +17,8 @@ let interval = null;
 
 const enteringAudio = new Audio('/sounds/woosh.wav')
 const tickAudio = new Audio('/sounds/tick-tock.wav')
-tickAudio.volume = 0
-enteringAudio.volume = 0
+tickAudio.volume = 0.02
+enteringAudio.volume = 0.05
 
 const CommonCard = () => {
 
