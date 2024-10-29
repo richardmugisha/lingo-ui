@@ -17,17 +17,17 @@ const McqCard = ({correctOption, selectedItem, cardMotion, blankedWordFinder, ca
         <div className="middle">
           { optionArray && 
             optionArray.map(variation => quizLength === 'short' ? 
-                                          (quizType !== 'example' ? {label: variation.word, value: variation.word} :
-                                            {label: blankedWordFinder(variation.example, variation['blanked example']), value: variation.example}
+                                          (quizType !== 'example' ? {label: variation?.word, value: variation?.word} :
+                                            {label: blankedWordFinder(variation?.example, variation['blanked example']), value: variation?.example}
                                           ) 
                                         :
                                           (
                                             quizType !== 'example' ? {label: variation[quizType], value: variation[quizType]} :
-                                            {label: variation['blanked example'], value: variation.example}
+                                            {label: variation['blanked example'], value: variation?.example}
                                           )
             ).map((item, indexHere) => {
-            return  <div key={indexHere} style={{border: (selectedItem.value && correctOption === item.value) ? '2px solid white' : '', backgroundColor: (selectedItem.value && correctOption === item.value) ? 'green': (selectedItem.value === item.value ? 'red': '')}} 
-                      onClick={() => {handleItemClick(item, item.value === correctOption)}}>{item.label}
+            return  <div key={indexHere} style={{border: (selectedItem?.value && correctOption === item?.value) ? '2px solid white' : '', backgroundColor: (selectedItem?.value && correctOption === item?.value) ? 'green': (selectedItem.value === item.value ? 'red': '')}} 
+                      onClick={() => {handleItemClick(item, item?.value === correctOption)}}>{item?.label}
                   </div>
           })}
         </div>

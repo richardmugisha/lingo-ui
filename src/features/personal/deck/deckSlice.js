@@ -8,11 +8,7 @@ const initialState = {
         deckLang: '',
         creator: '',
         words: [],
-        performance: {
-            correct: [],
-            performance: [],
-            time: []
-        }
+        learning: {}
     }
 }
 

@@ -43,11 +43,11 @@ const GuessCard = ({ cardMotion, cardFormat, btmProSize, handleItemClick, topPro
             <div className={`guess-container ${flip ? 'showBack' : 'showFront'}`} ref={containerRef}>
                 <div className='guess-question' onClick={handleClick}>
                     <div style={{color: 'orangered'}}><QuestionMark /></div>
-                    <p>{ cardFormat.question }</p>
+                    <p>{ cardFormat?.question }</p>
                 </div>
                 <div className='guess-answer' onClick={handleClick}>
                     <div style={{color: 'greenyellow'}}><CheckIcon color='green'/></div>
-                    <p>{ cardFormat.answer }</p>
+                    <p>{ cardFormat?.answer }</p>
                 </div>
             </div>
             <p className='guess-card--footer'>{checkCorrect ? 

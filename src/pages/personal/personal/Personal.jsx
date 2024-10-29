@@ -7,6 +7,7 @@ import CardAddManual from '../card-add-manual/CardAddManual';
 import CardAddAuto from '../card-add-auto/CardAddAuto';
 import NewDeck from '../new-deck/NewDeck';
 import CardLearn from '../card-learn/CardLearn';
+import GuidedLearning from '../guided-learning/GuidedLearning';
 import './Personal.css';
 import Quiz from '../quiz/quiz-selector/Quiz';
 import Filters from '../../filters/Filters';
@@ -87,8 +88,9 @@ const Personal = () => {
     navigate('card');
 
     try {
-      const res = await axios.get(`${API_BASE_URL}/cards/deck/${deckId}`);
+      const res = await axios.get(`${API_BASE_URL}/cards/deck/${deckId}/${userId}`);
       const deck = res.data.deck;
+      console.log(deck)
       dispatch(openDeck(deck));
       return deck;
     } catch (error) {
@@ -193,6 +195,7 @@ const Personal = () => {
           <Route path="card/add/auto" element={<CardAddAuto />} />
           <Route path="new-deck" element={<NewDeck />} />
           <Route path="card/learn" element={<CardLearn />} />
+          <Route path="card/guided-learn" element={<GuidedLearning />} />
           <Route path="card/quiz" element={<Quiz />} />
         </Routes>
       </div>
