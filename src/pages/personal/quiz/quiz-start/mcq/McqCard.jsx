@@ -1,10 +1,12 @@
 import React from 'react'
 
-const McqCard = ({correctOption, selectedItem, cardMotion, blankedWordFinder, cardFormat, optionArray, handleItemClick, card, quizLength, quizType}) => (
+const McqCard = ({correctOption, selectedItem, cardMotion, blankedWordFinder, cardFormat, optionArray, handleItemClick, card, quizLength, quizType}) => {
+  // console.log(optionArray)
+  return (
     <div className={`common-card ${cardMotion}`}>
       <div className="common-head">
-          <div className='label0'>{cardFormat.label0 }</div>
-          <div className='label1'>{ cardFormat.label1 }</div>
+          <div className='label0'>{cardFormat?.label0 }</div>
+          <div className='label1'>{ cardFormat?.label1 }</div>
           {/* { format.label2 && <div>{ format.label2 }</div> } */}
       </div>
   
@@ -22,7 +24,7 @@ const McqCard = ({correctOption, selectedItem, cardMotion, blankedWordFinder, ca
                                           ) 
                                         :
                                           (
-                                            quizType !== 'example' ? {label: variation[quizType], value: variation[quizType]} :
+                                            quizType !== 'example' ? {label: variation && variation[quizType], value: variation && variation[quizType]} :
                                             {label: variation['blanked example'], value: variation?.example}
                                           )
             ).map((item, indexHere) => {
@@ -38,6 +40,6 @@ const McqCard = ({correctOption, selectedItem, cardMotion, blankedWordFinder, ca
         {/* { format.label4 && <div>{ format.label4 }</div> } */}
       </div>
     </div>
-  )
+  )}
 
 export default McqCard

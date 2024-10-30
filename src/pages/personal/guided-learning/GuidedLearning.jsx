@@ -56,23 +56,10 @@ const formatRouter = (level) => {
 }
 
 const GuidedLearning = () => {
-  const [cardIndex, setCardIndex] = useState(0)
-  const [format, setFormat] = useState(null)
-  const [quizLength, setQuizLength] = useState(null)
-  const [quizType, setQuizType] = useState(null)
   const { _id: deckId, deckName, words, learning } = useSelector(state => state.deck.openDeck)
-  console.log(learning)
-
-  useEffect(() => {
-    const level = learning.words[cardIndex].level.level
-    const { route, quizType, quizLength } = formatRouter(level)
-    setFormat(quizFormat(route))
-    setQuizLength(quizLength)
-    setQuizType(quizType)
-  }, [cardIndex])
 
   return (
-    format && quizLength && quizType && <QuizCard format={format} quizType={quizType} quizLength={quizLength} order={[0]} deckLearnChunk={learning.words} autoMode={true} formatRouter={formatRouter}/>
+    learning.words.length && <QuizCard importedFormat={'placeholder'} importedQuizType={'placeholder'} importedQuizLength={'placeholder'} order={'placeholder'} deckLearnChunk={learning.words} autoMode={true} formatRouter={formatRouter}/>
   )
 }
 

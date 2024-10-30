@@ -1,9 +1,9 @@
 
 export default function randomGen(max, howMany, alreadyUsed) {
     return new Promise((resolve, reject) => {
-      console.log('random', max, howMany, 'already: ', alreadyUsed)
+      // console.log('random', max, howMany, 'already: ', alreadyUsed)
       if (max === 1) resolve([0])
-      console.log('continue')
+      // console.log('continue')
       const randomArray = [];
       // Helper function to check if the item is valid and unique
       const isValidAndUnique = (item) => {

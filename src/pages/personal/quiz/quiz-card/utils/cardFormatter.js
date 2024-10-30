@@ -2,8 +2,9 @@ import randomGen from "../../../../../utils/randomGen";
 import shuffledNumbers from "../../../../../utils/shuffleArray";
 
 export default async (deck, card, format, quizType, quizLength, blankedWordFinder) => {
-    if (!card) return
-        const AlreadyPicked = deck.indexOf(card)
+  console.log(format)  
+  if (!card || !format.content) return
+        const AlreadyPicked = deck.findIndex((item) => item._id === card._id);
         const handleRandomize = async (max, howMany, alreadyUsed) => {
           try {
             const result = await randomGen(max, howMany, alreadyUsed); 
@@ -25,7 +26,7 @@ export default async (deck, card, format, quizType, quizLength, blankedWordFinde
             const dataArrHere = await handleRandomize(deck.length, deck.length >= 4 ? 3 : deck.length-1, AlreadyPicked)
             const options = shuffledNumbers([...new Set([...dataArrHere, AlreadyPicked])])
                                     .map(cardIndexHere => {
-                                        console.log('95', deck[cardIndexHere])
+                                        console.log(cardIndexHere, deck[cardIndexHere])
                                         return deck[cardIndexHere]
                                     })  
 

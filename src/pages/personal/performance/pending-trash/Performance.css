@@ -4,18 +4,14 @@
     font-weight: 500;
     background-color: #9BC5CB;
     color: #1e2324;
-    /* height: min(600px, 95dvh); */
+    height: min(600px, 95dvh);
     display: flex;
     flex-direction: column;
-    /* justify-content: space-evenly; */
+    justify-content: space-between;
 }
 
 .performance * {
     margin: .5em;
-}
-
-.performance--progress * {
-    margin: 0;
 }
 
 .performance--body > div {
@@ -41,13 +37,11 @@
 }
 
 .performance--foot {
-    display: flex;
-    justify-content: space-between;
-    font-size: small;
-}
-
-.performance--foot > * {
-    padding-block: .1em !important;
+    display: inline;
+    padding: 10px;
+    background-color: #345C70;
+    border-radius: 20px;
+    cursor: pointer;
 }
 
 @media (max-width: 420px) {

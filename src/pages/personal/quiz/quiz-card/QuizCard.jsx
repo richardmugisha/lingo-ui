@@ -11,7 +11,7 @@ import './QuizCard.css';
 import useQuizCard from './useQuizCard';
 
 
-const QuizCard = ({quizType, quizLength, order, deckLearnChunk, autoMode, formatRouter }) => {
+const QuizCard = ({importedFormat, importedQuizType, importedQuizLength, order, deckLearnChunk, autoMode, formatRouter }) => {
 
     const   {
       correctOption, 
@@ -21,7 +21,6 @@ const QuizCard = ({quizType, quizLength, order, deckLearnChunk, autoMode, format
       topProSize,
       btmProSize,
       cardFormat,
-      timePerCard,
       cardMotion,
       deck,
       deckId,
@@ -29,18 +28,21 @@ const QuizCard = ({quizType, quizLength, order, deckLearnChunk, autoMode, format
       handleItemClick,
       blankedWordFinder,
       card,
-      format
-    } = useQuizCard(quizType, quizLength, order, deckLearnChunk, autoMode, formatRouter)
+      format,
+      quizType,
+      quizLength,
+      wins
+    } = useQuizCard(importedFormat, importedQuizType, importedQuizLength, order, deckLearnChunk, autoMode, formatRouter)
 
     useEffect(() => {
-        console.log('>>>>>>>>>>>>>>>>>  ', format?.content?.type || format?.content)
-    }, [format?.content?.type])
+      console.log(wins, '..............wins')
+    }, [quizDone])
 
     return (
          deck ?
-          quizDone ? <Performance deckName={deckName} deckId={deckId} perf={performance} givenTime={allocatedTime} duration={ (topProSize * allocatedTime /100) + (deckLearnChunk.length - 1) * allocatedTime } correctAnswers={deckLearnChunk.length} all={deckLearnChunk.length} /> :
+          (quizDone && wins.length) ? <Performance deckName={'deckName'} deckId={'deckId'} perf={'performance'} givenTime={'allocatedTime'} duration={ (topProSize * 0 /100) + (deckLearnChunk.length - 1) * 0 } wins={wins} all={2} /> :
           <>
-            { format?.topProgressbar && <ProgressBar completed = {Math.floor(topProSize)} bgColor = {colors(topProSize)} customLabel=' ' height='2px' transitionDuration='.5s'/> }
+            { format?.topProgressbar && <ProgressBar completed = {Math.floor(topProSize)} bgColor = {colors(topProSize)} customLabel=' ' height='2px' transitionDuration='.2s'/> }
             {format?.content?.type === 'mcq' ?
               <McqCard correctOption={correctOption} selectedItem={selectedItem} cardMotion={cardMotion} blankedWordFinder={blankedWordFinder} cardFormat={cardFormat} optionArray={optionArray} handleItemClick={handleItemClick} card={card} quizLength={quizLength} quizType={quizType}/>
               :

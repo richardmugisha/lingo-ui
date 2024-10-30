@@ -14,6 +14,12 @@ const GuessCard = ({ cardMotion, cardFormat, btmProSize, handleItemClick, topPro
         setFlip(false)
     }, [cardFormat, cardMotion]);
 
+    useEffect(() => {
+        if ( topProSize >= 100 ) {
+            handleClick({})
+        }
+    }, [topProSize])
+
     const handleClick = (e) => {
         if (!checkCorrect) flipCard()
         else {
@@ -38,7 +44,7 @@ const GuessCard = ({ cardMotion, cardFormat, btmProSize, handleItemClick, topPro
     return (
         <div className={`guess-quiz ${cardMotion}`}>
             <div className='guess-top'>
-                {labels[quizLength][quizType]}
+                {labels && labels[quizLength] && labels[quizLength][quizType]}
             </div>
             <div className={`guess-container ${flip ? 'showBack' : 'showFront'}`} ref={containerRef}>
                 <div className='guess-question' onClick={handleClick}>

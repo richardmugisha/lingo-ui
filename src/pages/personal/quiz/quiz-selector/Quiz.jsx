@@ -10,10 +10,8 @@ import { useSelector } from 'react-redux';
 // import { setQuizType, setOrder, setQuizLength, setFormat } from '../../../../features/personal/quiz/quizSlice';
 
 const Quiz = () => {
-  const deck  = useSelector(state => state.deck.openDeck)
-
-  const order = shuffledNumbers(deck.words.length-1)
-  // dispatch(setOrder(order))
+  const deck  = useSelector(state => state.deck.openDeck.words)
+  const order = shuffledNumbers(deck.length-1)
 
   const [questionTypes, setQuestionTypes] = useState(['mcq', 'guess'])
   const [answerTypes, setAnswerTypes] = useState(['meaning', 'example', 'synonym', 'antonym']);
@@ -62,7 +60,7 @@ const Quiz = () => {
           <input className="quiz-submit" onClick={() => {handleSubmit()}} type='submit' value={'submit'} />
         </div> 
        :
-      <QuizCard format={format} quizType={quizType} quizLength={quizLength} order={order}/>
+      deck.length && <QuizCard importedFormat={format} importedQuizType={quizType} importedQuizLength={quizLength} order={order} deckLearnChunk={deck} autoMode={false}/>
   )
 }
 

@@ -3,16 +3,23 @@ import {TrendingUp as TrendingUpIcon, TrendingDown as TrendingDownIcon } from '@
 import './Performance.css'
 import axios from 'axios';
 import Spinner from 'react-spinner-material';
+import ProgressBar from "@ramonak/react-progress-bar";
+
+import { useNavigate } from 'react-router-dom';
+import { Button } from "@mui/material"
+import { Add as AddIcon, School as SchoolIcon, Quiz as QuizIcon, ContentCopy, Create } from '@mui/icons-material';
+
+
 
 import API_BASE_URL from '../../../../serverConfig';
 
-const Performance = ({deckName, deckId, perf, givenTime, duration, correctAnswers, all }) => {
-  const [amountUp, setAmountUp] = useState(false);
-  const [speedUp, setSpeedUp] = useState(false);
-  const [timeUp, setTimeUp] = useState(false);
-  const [ready, setReady ] = useState(false);
+const Performance = ({deckName, deckId, perf, givenTime, duration, wins, all }) => {
+  const [correct, setCorrect] = useState(null)
+  const [progress, setProgress] = useState(null)
+  const [ready, setReady ] = useState(true);
   
   const uploading = useRef(false)
+  const navigate = useNavigate();
 
   const perfLabels = ['terrible', 'very bad', 'bad', 'practice more', 'fair', 'good', 'very good', 'wonderful']
   const perfRefs = [0, 20, 40, 60, 80, 95, 100]
@@ -20,82 +27,82 @@ const Performance = ({deckName, deckId, perf, givenTime, duration, correctAnswer
   
   const getMetadata = async (correct, speed, time) => {
     try {
-      // const performData =  await axios.get(`${API_BASE_URL}/cards/deck/${ deckName }`);
-      // const data = performData.data.deckMetadata
-      // console.log(data)
-      // if (!data) return [true, true, false] // if no reference, we assume we are progressing
-      // const perf = data.performance;
-      
-      return { correctStatus: correct > (perf.correct[perf.correct.length-1]), speedStatus: speed > perf.performance[perf.performance.length-1], time: time > perf.time[perf.performance.length-1]}
+      return 
     } catch (error) {
       throw new Error(error)
     }
   }
   
-  let overAllPerf = (correctAnswers/all)/(duration / givenTime) * 100
-
   useEffect(() => {
     if (uploading.current) return;
   
     const fetchData = async () => {
        try {
-          const data = await getMetadata(correctAnswers * 100 / all, overAllPerf, duration);
-          console.log(data);
-          setAmountUp(data.correctStatus);
-          setSpeedUp(data.speedStatus);
-          setTimeUp(data.time);
-          setReady(true);
+          
        } catch (error) {
           console.log(error);
        }
     };
  
-    const uploadData = async (correct, speed, time) => {
+    const uploadData = async () => {
        uploading.current = true;
        try {
-          console.log('...uploading', uploading);
-          const performData = await axios.patch(`${API_BASE_URL}/cards/deck/${deckId}`, { correct, performance: speed, time });
-          console.count(performData.data);
        } catch (error) {
           console.log(error);
        }
     };
  
     fetchData();
-    uploadData(correctAnswers * 100 / all, overAllPerf, duration);
- }, []);
+    uploadData();
+  }, []);
 
-  overAllPerf = Math.floor(overAllPerf)
 
-  perfRefs.push(overAllPerf)
-  perfRefs.sort((a, b) => a - b)
-  const conclusion = perfLabels[perfRefs.indexOf(overAllPerf)]
-  const emoji = perfEmojis[perfRefs.indexOf(overAllPerf)]
+  // const conclusion = perfLabels[perfRefs.indexOf(overAllPerf)]
+  // const emoji = perfEmojis[perfRefs.indexOf(overAllPerf)]
+
+  useEffect(()=>{
+    setCorrect(wins.filter(card => card.result > 0).length)
+    setProgress(wins.reduce((acc, curr) => acc + curr.level + curr.result , 0) * 100 / (wins.length * 8) )
+  }, [wins])
+
+  const perfGauge = (correct, wins) => {
+    const perf = Math.round(correct * 100 /wins.length)
+    perfRefs.push(perf)
+    perfRefs.sort((a, b) => a - b)
+    console.log([perfLabels[perfRefs.indexOf(perf)], perfEmojis[perfRefs.indexOf(perf)]])
+    return [perfLabels[perfRefs.indexOf(perf)], perfEmojis[perfRefs.indexOf(perf)]]
+  }
 
   return (
     <>
     { ready ? 
     <div className='performance'>
       <div className="performance--title">Performance</div><hr />
+      <div className="performance--progress">
+        <ProgressBar completed = {progress > 0 ? Math.round(progress) : 2} bgColor = {'gold'} transitionDuration='1s'/>
+      </div>
       <div className="performance--body">
         <div className="amount">
           <div className="label">Correct</div>
-          <div className="number">{`${Math.floor(correctAnswers*100/all)}%`}</div>
-          <div className="display" style={{color: amountUp?'greenyellow':'red' }}>{ amountUp?<TrendingUpIcon />:<TrendingDownIcon />}</div>
+          <div className="number">{`${correct}/${wins?.length}`}</div>
+          {/* <div className="display" style={{color: amountUp?'greenyellow':'red' }}>{ amountUp?<TrendingUpIcon />:<TrendingDownIcon />}</div> */}
         </div>
         <div className="speed">
           <div className="label">Performance</div>
           {/* <div className="number">{conclusion}{emoji}</div> */}
-          <div className="number">{'Perfect'}{'🤩'}</div>
-          <div className="display" style={{color: speedUp?'greenyellow':'red'}}>{ speedUp?<TrendingUpIcon />:<TrendingDownIcon /> }</div>
+          <div className="number">{perfGauge(correct, wins)[0]}{perfGauge(correct, wins)[1]}</div>
+          {/* <div className="display" style={{color: speedUp?'greenyellow':'red'}}>{ speedUp?<TrendingUpIcon />:<TrendingDownIcon /> }</div> */}
         </div>
         <div className="time">
-          <div className="label">Time</div>
-          <div className="number">{`${Math.floor(duration)}s`}</div>
-          <div className="display" style={{color: timeUp?'red':'greenyellow'}}>{ timeUp?<TrendingUpIcon />:<TrendingDownIcon /> }</div>
+          <div className="label">Accuracy</div>
+          <div className="number">{Math.round(correct * 100 /wins.length)}%</div>
+          {/* <div className="display" style={{color: timeUp?'red':'greenyellow'}}>{ timeUp?<TrendingUpIcon />:<TrendingDownIcon /> }</div> */}
         </div>
       </div>
-      <div className="performance--foot">Check results</div>
+      <div className="performance--foot">
+        <Button startIcon={<SchoolIcon />} variant="contained" disableElevation color='primary' onClick={() => navigate('../card/learn')}>Revise the deck</Button>
+        <Button startIcon={<QuizIcon />} variant="contained" disableElevation color='primary' onClick={() => navigate('../card/guided-learn')}>Take another quiz</Button>
+      </div>
     </div> :
     <div style={{height: '200px', width: '200px', padding: '50px'}}><Spinner radius={100} color={"#b0b0ff"} stroke={2} visible={true} /></div> 
     }
