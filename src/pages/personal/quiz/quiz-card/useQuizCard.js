@@ -66,29 +66,13 @@ const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order
       return () => clearTimeout(timerId);
     };
     
-    // useEffect(() => {
-    //    if (deck) {
-    //       setCard(deck[order[0]]);
-    //       let d = deck.performance?.correct
-    //       if (!d || d.length === 0) return;
-    //       d = d.filter((i) => i !== null) // bc 0 may not come
-    //       const count = Math.min(d.length, 3);
-    //       const lastNumbers = d.slice(-count)
-    //       const sum = lastNumbers.reduce((total, num) => total + num, 0);
-    //       const average = (sum / count)/10; // 0 - 10
-    //       const result = 10 * Math.exp(-0.1 * Math.log(10/3) * average); // max = 10, min = 3
-    //       setTimePerCard(result);
-    //       return
-    //    }
-    // }
-    // , [deck])
-    
     useEffect(() => {
       (async() => {
         if (!card ) return
         let formatted;
         if (autoMode) {
-          const level = 7 //Math.round(Math.random() * 8) //card.level.level
+          // const level = 7 //Math.round(Math.random() * 8) //card.level.level
+          const level = card.level.level
           const { quizType, route, quizLength } = formatRouter(level)
           const format = quizFormat(route)
           setQuizType( quizType )
@@ -125,7 +109,7 @@ const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order
         setTopProSize(prev => {
           const percentage = prev + stepTime * 100 * 1000 / cardTime 
           if (percentage > 100) {
-            handleItemClick({value: 'no selection because of timeout'}, true);  // true on automatic for toks, otherwise, false
+            handleItemClick({value: 'no selection because of timeout'}, false);  // true on automatic for toks, otherwise, false
             clearInterval(interval)
             return 100
           }

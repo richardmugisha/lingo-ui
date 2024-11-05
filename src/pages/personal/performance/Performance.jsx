@@ -7,80 +7,84 @@ import ProgressBar from "@ramonak/react-progress-bar";
 
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@mui/material"
-import { Add as AddIcon, School as SchoolIcon, Quiz as QuizIcon, ContentCopy, Create } from '@mui/icons-material';
+import { School as SchoolIcon, Quiz as QuizIcon } from '@mui/icons-material';
 
+const perfEmojis = ['😥', '😔', '😬', '😌', '',  '🤠', '😎', '🤩']
+const perfLabels = ['terrible', 'very bad', 'bad', 'practice more', 'fair', 'good', 'very good', 'wonderful']
 
+const CHUNK_SIZE = 10       // Number of words to learn at a time
+const CHUNK_TARGET_MASTERY_LEVEL = 4; // level to reach before going to the next chunk
 
 import API_BASE_URL from '../../../../serverConfig';
 
-const Performance = ({deckName, deckId, perf, givenTime, duration, wins, all }) => {
+const Performance = ({ wins, entireDeck, deckLearnChunk, autoMode }) => {
   const [correct, setCorrect] = useState(null)
   const [progress, setProgress] = useState(null)
-  const [ready, setReady ] = useState(true);
+
+  const userId = JSON.parse(localStorage.getItem('user')).userId;
   
-  const uploading = useRef(false)
+  const uploadingRight = useRef(true)
   const navigate = useNavigate();
 
-  const perfLabels = ['terrible', 'very bad', 'bad', 'practice more', 'fair', 'good', 'very good', 'wonderful']
   const perfRefs = [0, 20, 40, 60, 80, 95, 100]
-  const perfEmojis = ['😥', '😔', '😬', '😌', '',  '🤠', '😎', '🤩']
-  
-  const getMetadata = async (correct, speed, time) => {
-    try {
-      return 
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
-  
-  useEffect(() => {
-    if (uploading.current) return;
-  
-    const fetchData = async () => {
-       try {
-          
-       } catch (error) {
-          console.log(error);
-       }
-    };
- 
-    const uploadData = async () => {
-       uploading.current = true;
-       try {
-       } catch (error) {
-          console.log(error);
-       }
-    };
- 
-    fetchData();
-    uploadData();
-  }, []);
 
-
-  // const conclusion = perfLabels[perfRefs.indexOf(overAllPerf)]
-  // const emoji = perfEmojis[perfRefs.indexOf(overAllPerf)]
 
   useEffect(()=>{
     setCorrect(wins.filter(card => card.result > 0).length)
-    setProgress(wins.reduce((acc, curr) => acc + curr.level + curr.result , 0) * 100 / (wins.length * 8) )
+    setProgress(wins.reduce((acc, curr) => acc + curr.level + curr.result , 0) * 100 / (wins.length * CHUNK_TARGET_MASTERY_LEVEL) )
+    if (!autoMode) return 
+    const wordsMasteriesList = wins.map(word => ({_id: word._id, level: word.level + word.result }))
+    let newWordSet = deckLearnChunk.words.map(word => word._id)
+    let { level, chunkIndex } = deckLearnChunk
+    let levelUp = false
+    if (wordsMasteriesList.every(word => word.level > deckLearnChunk.level)) {
+      level++
+      if ( level > 0 && level % CHUNK_TARGET_MASTERY_LEVEL === 0 ) {
+        if ((chunkIndex + 1) * CHUNK_SIZE < entireDeck.length) { // if moving to the next chunk, increment chunk index, and reset level to the baseline of the current level
+          chunkIndex++;
+          level -= CHUNK_TARGET_MASTERY_LEVEL
+        } else { // if done with round through the deck, start at chunk zero maintaining the level
+          chunkIndex = 0
+        }
+        levelUp = true
+        newWordSet = entireDeck.slice(chunkIndex * CHUNK_SIZE, chunkIndex * CHUNK_SIZE + CHUNK_SIZE).map(word => word._id)
+      }
+    }
+
+    console.log(wordsMasteriesList, deckLearnChunk);
+
+    (async (wordsMasteriesList, deckId, deckLearnChunk) => {
+      if (uploadingRight.current === false) return
+      uploadingRight.current = false;
+      const result = await uploadMasteryUpdates(wordsMasteriesList, deckId, deckLearnChunk)
+      console.log(result)
+    })(wordsMasteriesList, deckLearnChunk._id, {...deckLearnChunk, words: newWordSet, level, chunkIndex, levelUp})
+
   }, [wins])
+
+  const uploadMasteryUpdates = async (wordsMasteriesList, deckId, deckLearnChunk) => {
+    try {
+       const performData = await axios.patch(`${API_BASE_URL}/cards/deck?deckId=${deckId}&userId=${userId}`, { wordsMasteriesList, deckLearnChunk });
+       return performData.data
+    } catch (error) {
+       return error
+    }
+ };
 
   const perfGauge = (correct, wins) => {
     const perf = Math.round(correct * 100 /wins.length)
     perfRefs.push(perf)
     perfRefs.sort((a, b) => a - b)
-    console.log([perfLabels[perfRefs.indexOf(perf)], perfEmojis[perfRefs.indexOf(perf)]])
+    // console.log([perfLabels[perfRefs.indexOf(perf)], perfEmojis[perfRefs.indexOf(perf)]])
     return [perfLabels[perfRefs.indexOf(perf)], perfEmojis[perfRefs.indexOf(perf)]]
   }
 
   return (
-    <>
-    { ready ? 
     <div className='performance'>
       <div className="performance--title">Performance</div><hr />
-      <div className="performance--progress">
+      {autoMode && <div className="performance--progress">
         <ProgressBar completed = {progress > 0 ? Math.round(progress) : 2} bgColor = {'gold'} transitionDuration='1s'/>
-      </div>
+      </div>}
       <div className="performance--body">
         <div className="amount">
           <div className="label">Correct</div>
@@ -103,10 +107,7 @@ const Performance = ({deckName, deckId, perf, givenTime, duration, wins, all }) 
         <Button startIcon={<SchoolIcon />} variant="contained" disableElevation color='primary' onClick={() => navigate('../card/learn')}>Revise the deck</Button>
         <Button startIcon={<QuizIcon />} variant="contained" disableElevation color='primary' onClick={() => navigate('../card/guided-learn')}>Take another quiz</Button>
       </div>
-    </div> :
-    <div style={{height: '200px', width: '200px', padding: '50px'}}><Spinner radius={100} color={"#b0b0ff"} stroke={2} visible={true} /></div> 
-    }
-    </>
+    </div>
   )
 }
 export default Performance

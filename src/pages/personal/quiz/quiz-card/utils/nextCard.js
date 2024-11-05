@@ -16,5 +16,5 @@ export default (setQuizDone, btmProSize, setBtmProSize, delayId, cardTime, quizT
               return true
         }
       })
-    }, 100)
+    }, 3000)
 }

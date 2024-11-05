@@ -12,7 +12,6 @@ import useQuizCard from './useQuizCard';
 
 
 const QuizCard = ({importedFormat, importedQuizType, importedQuizLength, order, deckLearnChunk, autoMode, formatRouter }) => {
-
     const   {
       correctOption, 
       selectedItem,
@@ -32,7 +31,7 @@ const QuizCard = ({importedFormat, importedQuizType, importedQuizLength, order, 
       quizType,
       quizLength,
       wins
-    } = useQuizCard(importedFormat, importedQuizType, importedQuizLength, order, deckLearnChunk, autoMode, formatRouter)
+    } = useQuizCard(importedFormat, importedQuizType, importedQuizLength, order, deckLearnChunk.words, autoMode, formatRouter)
 
     useEffect(() => {
       console.log(wins, '..............wins')
@@ -40,7 +39,7 @@ const QuizCard = ({importedFormat, importedQuizType, importedQuizLength, order, 
 
     return (
          deck ?
-          (quizDone && wins.length) ? <Performance deckName={'deckName'} deckId={'deckId'} perf={'performance'} givenTime={'allocatedTime'} duration={ (topProSize * 0 /100) + (deckLearnChunk.length - 1) * 0 } wins={wins} all={2} /> :
+          (quizDone && wins.length) ? <Performance wins={wins} entireDeck={deck} deckLearnChunk={deckLearnChunk} autoMode={autoMode} /> :
           <>
             { format?.topProgressbar && <ProgressBar completed = {Math.floor(topProSize)} bgColor = {colors(topProSize)} customLabel=' ' height='2px' transitionDuration='.2s'/> }
             {format?.content?.type === 'mcq' ?

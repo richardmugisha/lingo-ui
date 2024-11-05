@@ -88,7 +88,7 @@ const Personal = () => {
     navigate('card');
 
     try {
-      const res = await axios.get(`${API_BASE_URL}/cards/deck/${deckId}/${userId}`);
+      const res = await axios.get(`${API_BASE_URL}/cards/deck?deckId=${deckId}&userId=${userId}`);
       const deck = res.data.deck;
       console.log(deck)
       dispatch(openDeck(deck));

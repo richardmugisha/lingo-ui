@@ -7,7 +7,7 @@ import QuizCard from '../quiz/quiz-card/QuizCard'
 import { useSelector } from 'react-redux'
 
 const formatRouter = (level) => {
-  if (level === 0 ) return {
+  if (level < 1 ) return {
     quizLength: 'short',
     route: 'quiz-short-guess',
     quizType: 'meaning'
@@ -59,7 +59,7 @@ const GuidedLearning = () => {
   const { _id: deckId, deckName, words, learning } = useSelector(state => state.deck.openDeck)
 
   return (
-    learning.words.length && <QuizCard importedFormat={'placeholder'} importedQuizType={'placeholder'} importedQuizLength={'placeholder'} order={'placeholder'} deckLearnChunk={learning.words} autoMode={true} formatRouter={formatRouter}/>
+    learning.words.length && <QuizCard importedFormat={'placeholder'} importedQuizType={'placeholder'} importedQuizLength={'placeholder'} order={'placeholder'} deckLearnChunk={learning} autoMode={true} formatRouter={formatRouter}/>
   )
 }
 
