@@ -4,6 +4,8 @@ import quizFormat from '../quiz/quiz-selector/quizFormat'
 
 import QuizCard from '../quiz/quiz-card/QuizCard'
 
+import CardLearn from '../card-learn/CardLearn'
+
 import { useSelector } from 'react-redux'
 
 const formatRouter = (level) => {
@@ -57,9 +59,12 @@ const formatRouter = (level) => {
 
 const GuidedLearning = () => {
   const { _id: deckId, deckName, words, learning } = useSelector(state => state.deck.openDeck)
+  const [craming, setCraming] = useState(learning.level % 4 === 0)
 
   return (
-    learning.words.length && <QuizCard importedFormat={'placeholder'} importedQuizType={'placeholder'} importedQuizLength={'placeholder'} order={'placeholder'} deckLearnChunk={learning} autoMode={true} formatRouter={formatRouter}/>
+    craming ?
+    <CardLearn deckLearningChunk={{deckName, words: learning.words}}  setCraming={setCraming} /> :
+    learning.words.length && <QuizCard importedFormat={'placeholder'} importedQuizType={'placeholder'} importedQuizLength={'placeholder'} order={'placeholder'} deckLearnChunk={learning} autoMode={true} formatRouter={formatRouter} setCraming={setCraming} />
   )
 }
 

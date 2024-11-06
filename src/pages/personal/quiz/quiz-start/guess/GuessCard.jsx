@@ -6,6 +6,7 @@ import { QuestionMark, Check as CheckIcon } from '@mui/icons-material';
 const GuessCard = ({ cardMotion, cardFormat, btmProSize, handleItemClick, topProSize, quizType, quizLength }) => {
     const [checkCorrect, setCheckCorrect] = useState(false)
     const [flip, setFlip] = useState(false)
+    const [playedYet, setPlayedYet] = useState(false)
 
     const containerRef = useRef(null)
 
@@ -14,11 +15,12 @@ const GuessCard = ({ cardMotion, cardFormat, btmProSize, handleItemClick, topPro
         setFlip(false)
     }, [cardFormat, cardMotion]);
 
-    useEffect(() => {
-        if ( topProSize >= 100 ) {
-            handleClick({})
-        }
-    }, [topProSize])
+    // useEffect(() => {
+    //     if ( topProSize >= 100 && !playedYet) {
+    //         console.log('================offfff')
+    //         handleClick({})
+    //     }
+    // }, [topProSize])
 
     const handleClick = (e) => {
         if (!checkCorrect) flipCard()
@@ -33,7 +35,8 @@ const GuessCard = ({ cardMotion, cardFormat, btmProSize, handleItemClick, topPro
 
     const grade = (know) => {
         containerRef.current.classList.add(know ? 'glow-green' : 'glow-red')
-        handleItemClick({value: "placeholder", know})
+        setPlayedYet(true)
+        handleItemClick({value: "guess-placeholder"}, know)
     }
 
     const flipCard = () => {

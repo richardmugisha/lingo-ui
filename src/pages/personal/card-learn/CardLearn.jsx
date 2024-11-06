@@ -5,10 +5,12 @@ import { ArrowBackIos as ArrowBack, ArrowForwardIos as ArrowFwd } from '@mui/ico
 import Spinner from 'react-spinner-material';
 import { useSelector } from 'react-redux';
 
+import { Button } from "@mui/material"
+
 import useTextToSpeech from '../../external/yapping/utils/useTextToSpeech';
 
-const CardLearn = () => {
-  const { openDeck: deck } = useSelector(state => state.deck);
+const CardLearn = ({ deckLearningChunk, setCraming }) => {
+  const { openDeck: deck } = deckLearningChunk ? { openDeck: deckLearningChunk } : useSelector(state => state.deck);
 
   const [cardIndex, setCardIndex] = useState(0);
   const [cards, setCards] = useState(deck ? deck.words : []);
@@ -21,6 +23,8 @@ const CardLearn = () => {
   useEffect(() => {
     setVoice(voices[1]);
   }, [voices]);
+
+  useEffect(() => () => cancel() , [])
 
   const sayIt = (script) => speak('Please pay attention: ' + script, voice);
 
@@ -145,7 +149,9 @@ const CardLearn = () => {
     <>
       {deck ? (
         <div className={`card-learn ${cardMotion}`}>
-          <div className='card-learn--deckname'>{deck.deckName}</div>
+          <div className='card-learn--top'>{deck.deckName} 
+            {deckLearningChunk && <Button variant="contained" disableElevation color='primary' onClick={() => {cancel(); setCraming(false)}}>Ready for a quiz</Button>
+          }</div>
           {cards.length ? (
             <>
               <div className="card-learn--body">

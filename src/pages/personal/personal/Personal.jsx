@@ -20,6 +20,10 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from
 
 import API_BASE_URL from '../../../../serverConfig'
 
+const CHUNK_SIZE = 10       // Number of words to learn at a time
+const CHUNK_TARGET_MASTERY_LEVEL = 4; // level to reach before going to the next chunk
+const TARGET_PERFECT_LEVEL = 8
+
 const Personal = () => {
   const dispatch = useDispatch();
   const { deckList: deck_list } = useSelector((state) => state.deck);
@@ -33,6 +37,8 @@ const Personal = () => {
   const [popup, setPopup] = useState('');
   const [useFilters, setUseFilters] = useState(false)
   const batchReqRef = useRef(0)
+
+  const [userLearning, setUserLearning] = useState({})
 
   useEffect(() => {
     error && console.log(error);
@@ -67,6 +73,8 @@ const Personal = () => {
         const response = await axios.get(`${API_BASE_URL}/cards/decks/${myCardsOnly ? userId : 'all'}/${selectedLanguage.value || 'all'}`);
         const data = await response.data;
         setSearching(false);
+        console.log(data)
+        setUserLearning(data.userLearning)
         return data;
       } catch (error) {
         console.log(error.message);
@@ -75,7 +83,7 @@ const Personal = () => {
     };
 
     getDeckList()
-      .then((data) => dispatch(deckList(data)))
+      .then((data) => dispatch(deckList(data.decks)))
       .catch((e) => setError(e.message));
   }, [myCardsOnly, selectedLanguage]);
 
@@ -178,7 +186,14 @@ const Personal = () => {
               </div>
               {deck.deckName}
               <div className="deck--meta deck--mastery-and-length">
-                <div>Mastery: {Math.round(deck.performance?.correct[deck.performance?.correct?.length - 1] || 0)}%</div>
+                <div>Mastery: 
+                  {
+                    (() => {
+                        const currDeck = userLearning?.decks?.find(deckHere => deckHere.deckId === deck._id)
+                        return currDeck ? Math.floor( Math.floor(currDeck.level / CHUNK_TARGET_MASTERY_LEVEL) * deck.words.length + currDeck.chunkIndex * CHUNK_TARGET_MASTERY_LEVEL + currDeck.level % CHUNK_TARGET_MASTERY_LEVEL * deck.words.slice(currDeck.chunkIndex * CHUNK_SIZE, currDeck.chunkIndex * CHUNK_SIZE + CHUNK_SIZE).length * 100 / (deck.words.length * TARGET_PERFECT_LEVEL) ) : 0
+                    })()
+                  }
+                  %</div>
                 <div>{deck.words?.length} cards</div>
               </div>
             </div>

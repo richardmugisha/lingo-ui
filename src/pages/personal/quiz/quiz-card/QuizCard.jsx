@@ -11,7 +11,7 @@ import './QuizCard.css';
 import useQuizCard from './useQuizCard';
 
 
-const QuizCard = ({importedFormat, importedQuizType, importedQuizLength, order, deckLearnChunk, autoMode, formatRouter }) => {
+const QuizCard = ({importedFormat, importedQuizType, importedQuizLength, order, deckLearnChunk, autoMode, formatRouter, setCraming }) => {
     const   {
       correctOption, 
       selectedItem,
@@ -39,7 +39,7 @@ const QuizCard = ({importedFormat, importedQuizType, importedQuizLength, order, 
 
     return (
          deck ?
-          (quizDone && wins.length) ? <Performance wins={wins} entireDeck={deck} deckLearnChunk={deckLearnChunk} autoMode={autoMode} /> :
+          (quizDone && wins.length) ? <Performance wins={wins} entireDeck={deck} deckLearnChunk={deckLearnChunk} autoMode={autoMode} setCraming={setCraming} /> :
           <>
             { format?.topProgressbar && <ProgressBar completed = {Math.floor(topProSize)} bgColor = {colors(topProSize)} customLabel=' ' height='2px' transitionDuration='.2s'/> }
             {format?.content?.type === 'mcq' ?

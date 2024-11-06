@@ -9,11 +9,14 @@
     overflow: auto;
 }
 
-.card-learn--deckname {
+.card-learn--top {
+    display: flex;
+    justify-content: space-between;
     font-size: x-large;
     margin-bottom: 1.5em;
     color: rgba(0, 115, 255, 0.758);
 }
+
 
 .card-learn--word {
     font-size: large;

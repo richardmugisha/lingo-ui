@@ -9,10 +9,8 @@ import { useSelector } from 'react-redux'
 
 let interval = null;
 
-const enteringAudio = new Audio('/sounds/woosh.wav')
-const tickAudio = new Audio('/sounds/tick-tock.wav')
-tickAudio.volume = 0 //.02
-enteringAudio.volume = 0 //.05
+// const enteringAudio = new Audio('/sounds/woosh.wav')
+// const tickAudio = new Audio('/sounds/tick-tock.wav')
 
 const AVERAGE_READING_SPEED_PER_CHAR = 68  //milliseconds in 14 languages
 const BONUS_TIME = 3000 //milli
@@ -36,14 +34,21 @@ const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order
     const [ quizType, setQuizType ] = useState(importedQuizType)
     const [ quizLength, setQuizLength ] = useState(importedQuizLength)
     const [ wins, setWins ] = useState([])
+    const [hasPlayed, setHasPlayed] = useState(false)
+
+    const [enteringAudio] = useState(new Audio('/sounds/woosh.wav'))
+    const [tickAudio] = useState(new Audio('/sounds/tick-tock.wav'))
 
     // const [batchSize, setBatchSize] = useState(deck.length ? (deck.length > 30 ? 30 : deck.length) : 0)
 
     const [cardMotion, setCardMotion] = useState('card-entering-left');
 
     useEffect(() => {
+      enteringAudio.volume = .05
+      enteringAudio.currentTime = 0.3
+      tickAudio.volume = .02
       enteringAudio.play()
-      return () => enteringAudio.pause()
+      return () => {enteringAudio.pause(), tickAudio.pause()}
     }, [])
 
     const changeCard = (direction) => {
@@ -53,7 +58,9 @@ const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order
         setCardMotion('card-exiting-right');
         setTopProSize(0)
         timerId = setTimeout(() => {
-          // enteringAudio.currentTime = 0.2
+          enteringAudio.currentTime = 0.2
+          tickAudio.currentTime = 0
+          tickAudio.volume = .02
           enteringAudio.play()
           setCardMotion('card-entering-left');
         }, delay);
@@ -69,6 +76,7 @@ const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order
     useEffect(() => {
       (async() => {
         if (!card ) return
+        setHasPlayed(false);
         let formatted;
         if (autoMode) {
           // const level = 7 //Math.round(Math.random() * 8) //card.level.level
@@ -109,7 +117,7 @@ const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order
         setTopProSize(prev => {
           const percentage = prev + stepTime * 100 * 1000 / cardTime 
           if (percentage > 100) {
-            handleItemClick({value: 'no selection because of timeout'}, false);  // true on automatic for toks, otherwise, false
+            if ( !(hasPlayed || quizDone) ) handleItemClick({value: 'no selection because of timeout'}, false);  // true on automatic for toks, otherwise, false
             clearInterval(interval)
             return 100
           }
@@ -119,7 +127,7 @@ const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order
       }, stepTime * 1000);
 
       return () => clearInterval(interval)
-    }, [deck, cardMotion, cardTime])
+    }, [deck, cardMotion, cardTime, hasPlayed, quizDone])
 
     useEffect(() => {
       if (interval !== null && quizDone) {
@@ -137,11 +145,11 @@ const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order
     }, [btmProSize])
 
     const handleItemClick = (item, correct) => {
-            console.log(wins)
+            setHasPlayed(true)
+            console.log('..........................off off off off off', item, hasPlayed)
             setWins(prev => [...prev, {...card?.level, result: (correct ? 1 : -1) }])
             setSelectedItem(item);
-            tickAudio.pause()
-            tickAudio.currentTime = 0
+            tickAudio.volume = 0
             setBtmProSize(prev =>  Math.round((Math.round(prev*deckLearnChunk.length/100) + 1) * 100/deckLearnChunk.length) ) 
     };
     
