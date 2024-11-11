@@ -1,9 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {TrendingUp as TrendingUpIcon, TrendingDown as TrendingDownIcon } from '@mui/icons-material';
 import './Performance.css'
 import axios from 'axios';
-import Spinner from 'react-spinner-material';
-import ProgressBar from "@ramonak/react-progress-bar";
 
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@mui/material"
@@ -20,9 +17,8 @@ const CHUNK_TARGET_MASTERY_LEVEL = 4; // level to reach before going to the next
 
 import API_BASE_URL from '../../../../serverConfig';
 
-const Performance = ({ wins, entireDeck, deckLearnChunk, autoMode, setCraming }) => {
+const Performance = ({ wins, entireDeck, deckLearnChunk, autoMode, setUserDecision }) => {
   const [correct, setCorrect] = useState(null)
-  const [progress, setProgress] = useState(null)
 
   const userId = JSON.parse(localStorage.getItem('user')).userId;
   const dispatch = useDispatch()
@@ -30,12 +26,11 @@ const Performance = ({ wins, entireDeck, deckLearnChunk, autoMode, setCraming })
   const uploadingRight = useRef(true)
   const navigate = useNavigate();
 
-  const perfRefs = [0, 20, 40, 60, 80, 95, 100]
+  const perfRefs = [-1, 20, 40, 60, 80, 95, 99]
 
 
   useEffect(()=>{
     setCorrect(wins.filter(card => card.result > 0).length)
-    setProgress(wins.reduce((acc, curr) => acc + curr.level + curr.result , 0) * 100 / (wins.length * CHUNK_TARGET_MASTERY_LEVEL) )
     if (!autoMode) return 
     const wordsMasteriesList = wins.map(word => ({_id: word._id, level: word.level + word.result }))
     let newWordSet = deckLearnChunk.words.map(word => word._id)
@@ -89,9 +84,6 @@ const Performance = ({ wins, entireDeck, deckLearnChunk, autoMode, setCraming })
   return (
     <div className='performance'>
       <div className="performance--title">Performance</div><hr />
-      {autoMode && <div className="performance--progress">
-        <ProgressBar completed = {progress > 0 ? Math.round(progress) : 2} bgColor = {'gold'} transitionDuration='1s'/>
-      </div>}
       <div className="performance--body">
         <div className="amount">
           <div className="label">Correct</div>
@@ -112,7 +104,7 @@ const Performance = ({ wins, entireDeck, deckLearnChunk, autoMode, setCraming })
       </div>
       <div className="performance--foot">
         <Button startIcon={<SchoolIcon />} variant="contained" disableElevation color='primary' onClick={() => navigate('../card/learn')}>Revise the deck</Button>
-        <Button startIcon={<QuizIcon />} variant="contained" disableElevation color='primary' onClick={() => setCraming(true)}>Take another quiz</Button>
+        <Button startIcon={<QuizIcon />} variant="contained" disableElevation color='primary' onClick={() => setUserDecision('')}>Take another quiz</Button>
       </div>
     </div>
   )
