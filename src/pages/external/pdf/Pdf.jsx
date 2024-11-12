@@ -1,61 +1,119 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Worker, Viewer } from '@react-pdf-viewer/core';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+import * as pdfjsLib from 'pdfjs-dist';
+import 'pdfjs-dist/build/pdf.worker.entry';  // Ensure the worker is loaded correctly
 import './Pdf.css';
+
+// Generate a thumbnail from the first page of the PDF file
+const generateThumbnail = async (file) => {
+  const fileUrl = URL.createObjectURL(file);
+  const loadingTask = pdfjsLib.getDocument(fileUrl);
+
+  try {
+    const pdfDocument = await loadingTask.promise;
+    const firstPage = await pdfDocument.getPage(1);
+
+    const scale = 1.5;  // Increase the scale for a clearer thumbnail
+    const viewport = firstPage.getViewport({ scale });
+    const canvas = document.createElement('canvas');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+
+    const context = canvas.getContext('2d');
+    const renderContext = {
+      canvasContext: context,
+      viewport: viewport,
+    };
+
+    // Render the page into the canvas
+    await firstPage.render(renderContext).promise;
+
+    // Optional: Resize the canvas down after rendering to balance quality
+    const tempCanvas = document.createElement('canvas');
+    const tempContext = tempCanvas.getContext('2d');
+    tempCanvas.width = viewport.width / 2;
+    tempCanvas.height = viewport.height / 2;
+    tempContext.drawImage(canvas, 0, 0, tempCanvas.width, tempCanvas.height);
+
+    // Convert resized canvas to an image data URL
+    return tempCanvas.toDataURL();
+  } catch (error) {
+    console.error('Error generating thumbnail:', error);
+    return null;
+  }
+};
+
 
 const Pdf = () => {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [filePaths, setFilePaths] = useState([]);
 
-  const handleFileSelection = (file) => {
+  useEffect(() => {
+    // Retrieve saved file paths from localStorage on component mount
+    const savedPaths = JSON.parse(localStorage.getItem('filePaths')) || [];
+    setFilePaths(savedPaths);
+  }, []);
+
+  const handleFileSelection = async (file) => {
     if (file) {
       const fileUrl = URL.createObjectURL(file);
+      const fileName = file.name;
+
+      // Generate thumbnail for the PDF file
+      const thumbnail = await generateThumbnail(file);
+
+      // Save the file info (name, URL, thumbnail) in localStorage if not already saved
+      const newFilePaths = [...new Set([...filePaths, { name: fileName, url: fileUrl, thumbnail }])];
+      setFilePaths(newFilePaths);
+      localStorage.setItem('filePaths', JSON.stringify(newFilePaths));
       setSelectedFile(fileUrl);
     }
   };
 
+  const handleSavedFileClick = (fileUrl) => {
+    setSelectedFile(fileUrl);
+  };
 
   return (
     <div className="pdf">
-      <h1 style={{fontSize: selectedFile? '16px': '5em'}}>PDF Viewer</h1>
-      <PdfViewer selectedFile={selectedFile} onSelectFile={handleFileSelection} />
+      <h1 style={{ fontSize: selectedFile ? '16px' : '5em' }}>PDF Viewer</h1>
+      <PdfViewer selectedFile={selectedFile} onSelectFile={handleFileSelection} filePaths={filePaths} onFileClick={handleSavedFileClick} />
     </div>
   );
 };
 
-const PdfViewer = ({ selectedFile, onSelectFile }) => {
+const PdfViewer = ({ selectedFile, onSelectFile, filePaths, onFileClick }) => {
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
   const [info, setInfo] = useState({
     exists: true, type: 'info', message: 'Select the word/expression you need to save!'
-  })
+  });
 
   const handleWordApprove = (e) => {
     const word = window.getSelection().toString();
     if (e.key === 'Enter' && word) {
-      const temp = JSON.parse(localStorage.getItem('temporary'))
+      const temp = JSON.parse(localStorage.getItem('temporary'));
       const words = [...new Set(temp?.words || [])];
-      localStorage.setItem('temporary', JSON.stringify({ words: [...words, word]}) )
-      setInfo({exists: true, type: 'info', message: 'Saved successfully!'})
+      localStorage.setItem('temporary', JSON.stringify({ words: [...words, word] }));
+      setInfo({ exists: true, type: 'info', message: 'Saved successfully!' });
+    } else if (e.key === 'x') {
+      setInfo({ exists: false });
     }
-    else if (e.key === 'x') {
-      setInfo({exists: false})
-    }
-  }
+  };
 
   const handleWordSelect = () => {
     const word = window.getSelection().toString();
     if (word) {
-      setInfo({exists: true, type: 'info', message: `Now, hit Enter to save the word: ${word} or X otherwise!`})
+      setInfo({ exists: true, type: 'info', message: `Now, hit Enter to save the word: ${word} or X otherwise!` });
     }
-  }
+  };
 
   useEffect(() => {
-    // Add event listeners to document level
     document.addEventListener('mouseup', handleWordSelect);
     document.addEventListener('keydown', handleWordApprove);
 
-    // Cleanup event listeners on unmount
     return () => {
       document.removeEventListener('mouseup', handleWordSelect);
       document.removeEventListener('keydown', handleWordApprove);
@@ -64,41 +122,23 @@ const PdfViewer = ({ selectedFile, onSelectFile }) => {
 
   useEffect(() => {
     let timerId;
-    if (info.exists ) {
+    if (info.exists) {
       timerId = setTimeout(() => {
-        setInfo({exists: false})
+        setInfo({ exists: false });
       }, 5000);
     }
-    return () => clearTimeout(timerId)
-  }, [info])
+    return () => clearTimeout(timerId);
+  }, [info]);
 
-  const [fullScreen, setFullScreen] = useState(false)
-
-  //class="rpv-core_minimal-button"
-
-  useEffect(() => {
-    const handleFullScreen = () => {
-      console.log('things')
-      setFullScreen(prev => !prev)
-    }
-    const fullScreenBtn = document.getElementsByClassName('rpv-core_minimal-button')
-    // console.log(fullScreen, 'some')
-    // // if (fullScreenBtn) {
-    // //   fullScreenBtn.style.display = 'none'
-    // //   //fullScreenBtn.addEventListener('click', handleFullScreen )
-    
-    // // return fullScreenBtn.removeEventListener('click', handleFullScreen)
-    // //}
-    
-  }, [selectedFile])
+  const [fullScreen, setFullScreen] = useState(false);
 
   return (
     <div className="pdf-viewer-container">
-      {
-        (selectedFile && info.exists) && <p className={`pdf-viewer--info pdf-viewer--info-${info.type}`}>
+      {(selectedFile && info.exists) && (
+        <p className={`pdf-viewer--info pdf-viewer--info-${info.type}`}>
           {info.message}
         </p>
-      }
+      )}
       {!selectedFile && (
         <div className="pdf-upload">
           <label htmlFor="fileInput">
@@ -113,9 +153,22 @@ const PdfViewer = ({ selectedFile, onSelectFile }) => {
           />
         </div>
       )}
+      {filePaths.length > 0 && !selectedFile && (
+        <div className="saved-file-paths">
+          <h3>Or continue reading:</h3>
+          <ul>
+            {filePaths.map((file, index) => (
+              <li key={index} onClick={() => onFileClick(file.url)} style={{ cursor: 'pointer' }}>
+                <img src={file.thumbnail} alt={`${file.name} thumbnail`} />
+                <div>{file.name.split('.').slice(0, file.name.split('.').length - 1)}</div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       {selectedFile && (
         <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
-          <div className={`pdf-viewer pdf-viewer--full-${fullScreen}`} >
+          <div className={`pdf-viewer pdf-viewer--full-${fullScreen}`}>
             <Viewer fileUrl={selectedFile} plugins={[defaultLayoutPluginInstance]} />
           </div>
         </Worker>

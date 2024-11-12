@@ -63,3 +63,50 @@
   top: 100%; left: 100%;
   transform: translate(-100%, -100%);
 }
+
+.pdf .saved-file-paths {
+  margin-top: 1em;
+  text-align: left;
+}
+
+.pdf .saved-file-paths h3 {
+  margin: 1em;
+}
+
+
+.pdf .saved-file-paths ul {
+  display: flex;
+  max-width: 100%;
+  max-height: 400px;
+  flex-wrap: wrap;
+  overflow: auto;
+  gap: 1em;
+}
+
+.pdf .saved-file-paths li {
+  background-color: lightblue;
+  padding: .5em;
+  padding-top: 1em;
+  width: 13em;
+  text-align: center;
+  list-style-type: none;
+}
+
+.pdf .saved-file-paths img {
+  height: 200px;
+  width: 180px;
+}
+
+.pdf .saved-file-paths ::-webkit-scrollbar {
+  width: 5px; /* Set your desired width */
+}
+
+.pdf .saved-file-paths ::-webkit-scrollbar-thumb {
+  background-color: rgb(97, 138, 151);
+  border-radius: 6px; /* Set half of the scrollbar width to create a circular thumb */
+}
+
+/* Optional: You can style the track to add some visual cues */
+.pdf .saved-file-paths ::-webkit-scrollbar-track {
+  background-color: #cce1e4; /* Set your desired track color */
+}
