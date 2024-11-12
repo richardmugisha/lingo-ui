@@ -111,6 +111,7 @@ const PdfViewer = ({ selectedFile, onSelectFile, filePaths, onFileClick }) => {
   };
 
   useEffect(() => {
+    if (!selectedFile) return
     document.addEventListener('mouseup', handleWordSelect);
     document.addEventListener('keydown', handleWordApprove);
 
@@ -118,7 +119,7 @@ const PdfViewer = ({ selectedFile, onSelectFile, filePaths, onFileClick }) => {
       document.removeEventListener('mouseup', handleWordSelect);
       document.removeEventListener('keydown', handleWordApprove);
     };
-  }, []);
+  }, [selectedFile]);
 
   useEffect(() => {
     let timerId;
