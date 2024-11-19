@@ -6,6 +6,8 @@ import generalHook from './useGeneralHook';
 import { useSelector } from 'react-redux';
 import { getKeywords } from './utils/sentenceAnalyzer';
 
+import Info from '../../../components/Info'
+
 const Yapping = () => {
   const { words: cards, _id: deckId } = useSelector((state) => state.deck.openDeck);
   const [words, setWords] = useState(
@@ -41,9 +43,7 @@ const Yapping = () => {
   return (
     <div className='Yapping'>
       {info.exists && (
-        <div className={`Yapping--info Yapping--info-${info.type}`} id='Yapping--info'>
-          {info.message}
-        </div>
+        <Info info={info} id='Yapping--info' />
       )}
       {aiHelp &&
         <form action="" className='Yapping--summary' id='Yapping--form' onSubmit={handleSummarySubmit}>

@@ -286,10 +286,6 @@ textarea {
         gap: 1em;
     }
 
-    .story .title {
-        /* margin: 0; */
-    }
-
     .side > div:first-child {
         font-size: small;
         /* padding: 0; */

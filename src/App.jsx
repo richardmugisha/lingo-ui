@@ -1,6 +1,6 @@
 import './App.css';
 import Home from './pages/home/Home';
-import Personal from './pages/personal/personal/Personal';
+import Personal from './pages/personal/Personal';
 import Network from './pages/network/Network';
 import Header from './pages/header/Header';
 import More from './pages/external/More';

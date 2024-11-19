@@ -6,7 +6,7 @@
     else{
         // Create an array of numbers from 0 to maxNumber
         for (var i = 0; i <= maxNumber; i++) {
-        shuffledArray.push(i);
+          shuffledArray.push(i);
         }
     }
     
