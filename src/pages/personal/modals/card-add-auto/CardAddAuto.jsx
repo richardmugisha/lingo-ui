@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './CardAddAuto.css';
 
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import usePageRefreshHandle from '../../../../utils/usePageRefreshHandle';
 
@@ -13,21 +14,33 @@ import useExtensionWords from './utils/useExtensionWords';
 
 const CardAddAuto = () => {
   const handleRefresh = usePageRefreshHandle()
-  const openDeck = useSelector(state => state.deck.openDeck)
-  const deck = openDeck.name ? openDeck : JSON.parse(localStorage.getItem('deck-with-pending-creation'));
-  const {_id: deckId, deckLang, deckName } = deck
-  console.log(deckName)
-  //// const [userId ] = useState(JSON.parse(localStorage.getItem('user')).userId)
+  const navigate = useNavigate()
+  
+  const retrieveIds = () => {
+      const openDeck = useSelector(state => state.deck.openDeck)
+      console.log(openDeck)
+      if (openDeck?.deckName) return openDeck
+      if (handleRefresh()) return useSelector(state => state.deck.openDeck)
+      const newDeck = localStorage.getItem('new-deck--to-create')
+      if (!newDeck) return {}
+      const { deckName, deckLang } = JSON.parse(newDeck);
+      console.log(deckName, deckLang)
+      return {_id: '', deckLang, deckName}
+  }
 
-  const [ isExtensionOpen, extensionWords ] = [false, []]//useExtensionWords()
+  const [openDeck] = useState(retrieveIds())
+  const {_id: deckId, deckLang, deckName } =  openDeck
+
+  const [ isExtensionOpen, extensionWords ] = useExtensionWords()
 
   const [searchValue, setSearchValue] = useState('')
   const [debouncedSearch, searchWords, loading] = useSearchWords(searchValue, deckLang)
   const [extraWords, setExtraWords] = useState(JSON.parse(localStorage.getItem('temporary'))?.words || [])
-
+  
   useEffect(() => {
-    handleRefresh(deckId)
-  }, [deckId])  
+    console.log(openDeck?.deckName)
+    if (!openDeck?.deckName) navigate('../new-deck')
+  }, [openDeck])
 
   const handleDeleteExtraWord = (index) => {
     setExtraWords((prev) => {
@@ -42,7 +55,6 @@ const CardAddAuto = () => {
     if (extensionWords.length) {
       setExtraWords(prev => {
         prev = prev.concat(extensionWords)
-        console.log(prev, prev.length)
         localStorage.setItem('temporary', JSON.stringify({words: prev}))
         return prev
       }

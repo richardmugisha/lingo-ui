@@ -13,7 +13,9 @@ export default () => {
             if (deckIdHere) {
                 fetchDeck(deckIdHere)
                 .then(deck => dispatch(openDeck(deck)))
+                return deckIdHere
             }
         }
+        else return deckId
     }
 }

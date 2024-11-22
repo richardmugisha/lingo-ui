@@ -49,6 +49,7 @@ const Personal = () => {
   }, [])
 
   useEffect(() => {
+    localStorage.removeItem('new-deck--to-create')
     const toAdd = JSON.parse(localStorage.getItem('toAdd'))
     const toWish = JSON.parse(localStorage.getItem('toWish'))
     const requests = []

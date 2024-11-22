@@ -6,18 +6,32 @@ import { openDeck } from '../../../../features/personal/deck/deckSlice'
 
 import { LanguageSelect } from '../../../filters/Filters';
 
+import usePageRefreshHandle from '../../../../utils/usePageRefreshHandle';
+
 const NewDeck = () => {
   const dispatch = useDispatch();
+  const handleRefresh = usePageRefreshHandle()
+
   const [value, setValue] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState({label: '', value: ''});
 
   const navigate = useNavigate()
 
+  useEffect(() => {
+    const newDeck = localStorage.getItem('new-deck--to-create')
+    if (!newDeck) return
+    const { deckName, deckLang, langLabel } = JSON.parse(newDeck)
+    console.log(deckName, deckLang, langLabel)
+    if (!deckName) return
+    setValue(deckName); dispatch(openDeck({_id: '', deckName})); setSelectedLanguage({value: deckLang, label: langLabel})
+    
+  }, [])
+
   useEffect(() =>
     { 
-      if (!value || !selectedLanguage) return
+      if (!value || !selectedLanguage.value) return
       dispatch(openDeck({_id: '', deckName: value, deckLang: selectedLanguage.value}))
-      localStorage.setItem('deck-with-pending-creation', JSON.stringify({deckName: value, deckLang: selectedLanguage.value}))
+      localStorage.setItem('new-deck--to-create', JSON.stringify({ deckName: value, deckLang: selectedLanguage.value, langLabel: selectedLanguage.label }))
     }, 
     [selectedLanguage, value])
 
@@ -30,7 +44,6 @@ const NewDeck = () => {
     return () => clearTimeout(timerId)
   }
   const handle = (from) => {
-    console.log(selectedLanguage.value)
     return !(value && selectedLanguage.value) ? showAlert() : 
             navigate(from)
   }

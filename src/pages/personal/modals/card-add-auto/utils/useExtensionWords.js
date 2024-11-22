@@ -5,12 +5,9 @@ export default () => {
     const [extensionWords, setExtensionWords] = useState([])
     const oneTimeRef = useRef(0)
 
-    console.log('......let us see how long this will go', isExtensionOpen, extensionWords)
-
     useEffect(() => {
         if (oneTimeRef.current === 1) return;
         oneTimeRef.current = 1;
-        console.log('..........sup')
         fetchingExtensionData(setExtensionWords, setIsExtensionOpen)
     }, [])
 
@@ -42,11 +39,9 @@ const fetchingExtensionData = (setExtensionWords, setIsExtensionOpen) => {
         if (document.documentElement.dataset.hasExtension) {
             clearTimeout(timeout);
             setIsExtensionOpen(true);
-            console.log('..........i still dont get it')
             window.postMessage({ type: 'REQUEST_DATA_FROM_EXTENSION' }, '*');
         } else {
             attempt++;
-            console.log('........wtf')
             timeout = setTimeout(retrievingExtension, 2000);
         }
     };

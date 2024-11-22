@@ -8,7 +8,7 @@ export const useSearchWords = ( searchValue, deckLang, delay=1000) => {
     const [debouncedValue, setDebouncedValue] = useState(searchValue)
     const [loading, setLoading] = useState(false)
 
-    console.log(deckLang)
+    // //console.log(deckLang)
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -24,7 +24,7 @@ export const useSearchWords = ( searchValue, deckLang, delay=1000) => {
             setLoading(true)
             axios.get(`${API_BASE_URL}/words/search?language=${deckLang}&word=${debouncedValue}`)
                 .then(res => {
-                console.log(res.data.searchWords)
+                // //console.log(res.data.searchWords)
                 setSearchWords(res.data.searchWords)
                 setLoading(false)      
             }) 
