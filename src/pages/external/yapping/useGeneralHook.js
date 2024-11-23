@@ -21,6 +21,7 @@ const generalHook = (
   const [summary, setSummary] = useState('')
 
   useEffect(() => {
+    if (!deckId) return
     axios
     .get(`${API_BASE_URL}/cards/story-time/${deckId}`)
     .then((res) => {
@@ -29,10 +30,10 @@ const generalHook = (
           // setActivity(stories.length === 0 ? 'creating': 'practicing'); 
           return stories
       })
-      console.log(stories, res);
+      // console.log(stories, res);
     })
     .catch((e) => console.log(e.msg));
-  }, [])
+  }, [deckId])
 
   useEffect(() => {
     let timerId;
@@ -58,7 +59,7 @@ const generalHook = (
     axios.post(API_BASE_URL + '/cards/story-time/' + deckId, {userId, story, title, words, aiAssistance: aiHelp, summary: summaryInput})
          .then(({ data }) => {
             const story = data.story;
-            console.log(story)
+            // console.log(story)
             setStories((prev) => {
               // setActivity('practicing');
               setActivity('');
@@ -70,7 +71,7 @@ const generalHook = (
   }, [aiHelp])
 
     const handleSubmit = () => {
-        console.log(deckId);
+        // console.log(deckId);
         axios
           .post(`${API_BASE_URL}/cards/story-time/${deckId}`, { userId: !checked ? userId : null, story, title, words })
           .then((res) => {

@@ -6,13 +6,20 @@ import generalHook from './useGeneralHook';
 import { useSelector } from 'react-redux';
 import { getKeywords } from './utils/sentenceAnalyzer';
 
+import usePageRefreshHandle from "../../../utils/usePageRefreshHandle"
+
 import Info from '../../../components/Info'
 
 const Yapping = () => {
+  const handleRefresh = usePageRefreshHandle()
   const { words: cards, _id: deckId } = useSelector((state) => state.deck.openDeck);
   const [words, setWords] = useState(
     cards.map((cardObj) => cardObj['related words'][Math.floor(Math.random() * cardObj['related words'].length)]).slice(0, 30)
   );
+
+  useEffect(() => {
+    handleRefresh(deckId)
+  }, [deckId])  
 
   const [story, setStory] = useState([]);
   const [stories, setStories] = useState([]);
@@ -38,7 +45,7 @@ const Yapping = () => {
     title, setTitle, 
     stories, setStories)
 
-  // useEffect(() => console.log(story) , [story])
+  // //useEffect(() => console.log(story) , [story])
 
   return (
     <div className='Yapping'>

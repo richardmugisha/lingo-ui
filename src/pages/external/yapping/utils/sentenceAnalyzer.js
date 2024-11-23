@@ -11,7 +11,7 @@ export const getKeywords = (fullSentenceSplit, blankedSentenceSplit, currSentenc
     const missing = []
     
     while (blankIndex < blankedSentenceSplit.length && sentIndex < fullSentenceSplit.length) {
-        console.log(fullSentenceSplit, blankedSentenceSplit, sentIndex, currSentence)
+        //// console.log(fullSentenceSplit, blankedSentenceSplit, sentIndex, currSentence)
         const currWord = fullSentenceSplit[sentIndex]
         const currBlank = blankedSentenceSplit[blankIndex]
         if (currWord !== currBlank) {
@@ -53,7 +53,7 @@ export const removeKeywords = (fullSentenceSplit, blankedSentenceSplit, currSent
     const sent = []
     const corrSent = []
     while (blankIndex < blankedSentenceSplit.length && sentIndex < fullSentenceSplit.length) {
-        console.log(fullSentenceSplit, blankedSentenceSplit, sentIndex, currSentence)
+        //// console.log(fullSentenceSplit, blankedSentenceSplit, sentIndex, currSentence)
         const currWord = fullSentenceSplit[sentIndex]
         const currBlank = blankedSentenceSplit[blankIndex]
         if (currWord !== currBlank) {
@@ -77,6 +77,6 @@ export const removeKeywords = (fullSentenceSplit, blankedSentenceSplit, currSent
         sentIndex++;
         blankIndex++;
     }
-    // console.log(sent.join(' '))
+    //// console.log(sent.join(' '))
     return [sent, corrSent]
 }

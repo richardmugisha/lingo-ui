@@ -48,7 +48,7 @@ const Story = (
 
   useEffect(() => {
       if (!(activity === 'practicing')) return
-      console.log(currSentence.sentence?.split(' '), currSentence.blanked?.split(' '))
+      //// console.log(currSentence.sentence?.split(' '), currSentence.blanked?.split(' '))
       const [sentenceWithoutKeywords, sentenceWithKeywords] = removeKeywords(currSentence.sentence?.split(' '), currSentence.blanked?.split(' ').filter(word => !['.', ',', ';', ']', '"', ')', '}', '?', '!'].includes(word)))
       // console.log(sentenceWithKeywords, sentenceWithoutKeywords)
       if (currSentence.blanked) {
@@ -58,7 +58,6 @@ const Story = (
     }
   ,[currSentence])
 
-  console.log(activity)
   return (
     activity &&
     <div className="story">

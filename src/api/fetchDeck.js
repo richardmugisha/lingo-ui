@@ -6,7 +6,6 @@ export default async (deckId) => {
     try {
         const res = await axios.get(`${API_BASE_URL}/cards/deck?deckId=${deckId}&userId=${userId}`);
         const deck = res.data.deck;
-        console.log(deck)
         return deck;
     } catch (error) {
         console.log(error)

@@ -6,25 +6,20 @@ import { openDeck } from '../../../../features/personal/deck/deckSlice'
 
 import { LanguageSelect } from '../../../filters/Filters';
 
-import usePageRefreshHandle from '../../../../utils/usePageRefreshHandle';
-
-const NewDeck = () => {
+export default () => {
   const dispatch = useDispatch();
-  const handleRefresh = usePageRefreshHandle()
+  const navigate = useNavigate()
 
   const [value, setValue] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState({label: '', value: ''});
-
-  const navigate = useNavigate()
 
   useEffect(() => {
     const newDeck = localStorage.getItem('new-deck--to-create')
     if (!newDeck) return
     const { deckName, deckLang, langLabel } = JSON.parse(newDeck)
-    console.log(deckName, deckLang, langLabel)
     if (!deckName) return
     setValue(deckName); dispatch(openDeck({_id: '', deckName})); setSelectedLanguage({value: deckLang, label: langLabel})
-    
+
   }, [])
 
   useEffect(() =>
@@ -65,5 +60,3 @@ const NewDeck = () => {
     </div>
   )
 }
-
-export default NewDeck

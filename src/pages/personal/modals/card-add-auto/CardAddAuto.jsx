@@ -18,13 +18,11 @@ const CardAddAuto = () => {
   
   const retrieveIds = () => {
       const openDeck = useSelector(state => state.deck.openDeck)
-      console.log(openDeck)
       if (openDeck?.deckName) return openDeck
       if (handleRefresh()) return useSelector(state => state.deck.openDeck)
       const newDeck = localStorage.getItem('new-deck--to-create')
       if (!newDeck) return {}
       const { deckName, deckLang } = JSON.parse(newDeck);
-      console.log(deckName, deckLang)
       return {_id: '', deckLang, deckName}
   }
 
