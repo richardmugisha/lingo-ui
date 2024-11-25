@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './Yapping.css';
 import Side from './Side';
+import StoryCatalog from './story-catalog/StoryCatalog';
+import Onboarding from './creation-onboarding/Onboarding';
 import Story from './Story';
+import Submission from './story-submission/Submission';
+
 import generalHook from './useGeneralHook';
 import { useSelector } from 'react-redux';
 import { getKeywords } from './utils/sentenceAnalyzer';
@@ -30,7 +34,7 @@ const Yapping = () => {
   const [aiHelp, setAiHelp] = useState('');
   const [aiOptionsDisplay, setAiOptionsDisplay] = useState(false);
   const [currSentence, setCurrSentence] = useState({sentence: '', blanked: ''});
-
+  const [selectedWords, setSelectedWords] = useState([])
   const [info, setInfo] = useState({ type: '', message: '', exists: false });
 
   const { handlePartSelection, handleSubmit, handleSummarySubmit, callUponAi} = generalHook(aiHelp, setAiHelp,
@@ -41,14 +45,14 @@ const Yapping = () => {
     deckId, 
     checked, 
     words, setWords,
+    setSelectedWords,
     story, setStory,
     title, setTitle, 
     stories, setStories)
 
-  // //useEffect(() => console.log(story) , [story])
-
   return (
     <div className='Yapping'>
+      <h1>Story time</h1>
       {info.exists && (
         <Info info={info} id='Yapping--info' />
       )}
@@ -60,27 +64,66 @@ const Yapping = () => {
           <input type="submit" value='Start' className='Yapping--button'/>
         </form>
       }
-      <Side 
+      {
+        stories?.length && !activity ?
+        <StoryCatalog 
+          stories={stories}
+          setSelected={setSelected} selected={selected}
+          setActivity={setActivity}
+          setTitle={setTitle} 
+          setStory={setStory}
+        /> :
+        <></>
+      }
+      {
+        ['creating', 'practicing'].includes(activity) &&
+        <Side 
         stories={stories}
         words={words} setWords={setWords} 
+        selectedWords={selectedWords} setSelectedWords={setSelectedWords}
+        currSentence={currSentence.sentence}
         setSelected={setSelected} selected={selected}
         setActivity={setActivity} activity={activity} 
-        setTitle={setTitle} 
+        title={title} setTitle={setTitle} 
         setStory={setStory}
         correctWordSet={activity === 'practicing' && getKeywords(currSentence.sentence?.split(' '), currSentence.blanked?.split(' ').filter(word => !['.', ',', ';', ']', '"', ')', '}', '?', '!'].includes(word)))}
         />
-      <Story 
-        info={info} setInfo={setInfo}
-        story={story} activity={activity} 
-        title={title} setTitle={setTitle}
-        currSentence={currSentence} setCurrSentence={setCurrSentence}
-        setAiHelp={setAiHelp} aiHelp={aiHelp} 
-        setChecked={setChecked} checked={checked}
-        setAiOptionsDisplay={setAiOptionsDisplay} aiOptionsDisplay={aiOptionsDisplay} 
-        handlePartSelection={handlePartSelection} 
-        handleSubmit={handleSubmit} 
-        callUponAi={callUponAi}
+      }
+      { activity==='onboarding' &&
+        <Onboarding 
+          setAiHelp={setAiHelp} aiHelp={aiHelp}
+          title={title} setTitle={setTitle}
+          aiOptionsDisplay={aiOptionsDisplay} setAiOptionsDisplay={setAiOptionsDisplay}
+          setActivity={setActivity}
         />
+      }
+      {
+        ['creating', 'practicing'].includes(activity) &&
+        <Story 
+          selectedWords={selectedWords}
+          info={info} setInfo={setInfo}
+          story={story} 
+          activity={activity} setActivity={setActivity}
+          title={title} setTitle={setTitle}
+          currSentence={currSentence} setCurrSentence={setCurrSentence}
+          setAiHelp={setAiHelp} aiHelp={aiHelp} 
+          setChecked={setChecked} checked={checked}
+          setAiOptionsDisplay={setAiOptionsDisplay} aiOptionsDisplay={aiOptionsDisplay} 
+          handlePartSelection={handlePartSelection} 
+          handleSubmit={handleSubmit} 
+          callUponAi={callUponAi}
+        />
+      }
+      {
+        activity === 'submitting' && 
+        <Submission 
+          title={title} setTitle={setTitle}
+          story={story}
+          checked={checked} setChecked={setChecked}
+          handleSubmit={handleSubmit}
+        />
+      }
+
     </div>
   );
 };

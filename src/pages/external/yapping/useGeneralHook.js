@@ -12,6 +12,7 @@ const generalHook = (
   deckId, 
   checked, 
   words, setWords,
+  setSelectedWords,
   story, setStory,
   title, setTitle, 
   stories, setStories
@@ -77,6 +78,13 @@ const generalHook = (
           .then((res) => {
             const { story } = res.data;
             console.log(story);
+            setStories((prev) => {
+              // setActivity('practicing');
+              setActivity('');
+              setInfo({ type: 'success', message: 'Your story was created successfully! => ' + story.title, exists: true })
+              return [...prev, story]
+            });
+            setAiHelp('')
           })
           .catch((e) => console.log(e.msg));
     };
@@ -112,6 +120,7 @@ const generalHook = (
         setInfo({ exists: false });
         setStory((prev) => [...prev, currSentence] );
         setCurrSentence({sentence: '', blanked: ''});
+        setSelectedWords([])
       }, [currSentence.blanked])
     
       const handleApproval = useCallback((e) => {

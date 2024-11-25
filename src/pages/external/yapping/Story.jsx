@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import { useEffect, useState } from 'react';
 import { removeKeywords } from './utils/sentenceAnalyzer';
+
+import { Button } from '@mui/material';
 
 import useTextToSpeech from './utils/useTextToSpeech';
 
 const Story = (
-  { info, setInfo,
-    story, activity, 
+  { selectedWords,
+    info, setInfo,
+    story, 
+    activity, setActivity,
     title, setTitle,
     currSentence, setAiHelp, aiHelp, 
     aiOptionsDisplay, setAiOptionsDisplay, 
@@ -27,13 +30,13 @@ const Story = (
     setVoice(voices[1]);
   }, [voices]);
 
-  const sayIt = (script) => speak('Please listen: ' + script, voice);
+  const sayIt = (script) => activity === 'creating' ? script.join(' ') : script && speak('Please listen: ' + script, voice);
 
   useEffect(() => {
     const firstInput = document.getElementsByClassName('attempt-input')[0]
     firstInput?.focus()
     if (firstInput?.value?.startsWith('__')) firstInput.select()
-    if (attempt && attempt.join(' ') === correctSentence.join(' ')) {
+    if (attempt?.join(' ') === correctSentence.join(' ')) {
       setOkAttempt(okAttempt + ' ' + attempt.join(' '));
       sayIt(attempt)
       const index = currSentence.index
@@ -48,9 +51,7 @@ const Story = (
 
   useEffect(() => {
       if (!(activity === 'practicing')) return
-      //// console.log(currSentence.sentence?.split(' '), currSentence.blanked?.split(' '))
       const [sentenceWithoutKeywords, sentenceWithKeywords] = removeKeywords(currSentence.sentence?.split(' '), currSentence.blanked?.split(' ').filter(word => !['.', ',', ';', ']', '"', ')', '}', '?', '!'].includes(word)))
-      // console.log(sentenceWithKeywords, sentenceWithoutKeywords)
       if (currSentence.blanked) {
         setAttempt(sentenceWithoutKeywords)
         setCorrectSentence(sentenceWithKeywords)
@@ -59,62 +60,23 @@ const Story = (
   ,[currSentence])
 
   return (
-    activity &&
     <div className="story">
-        {activity === 'creating' && (
-          <div>
-            <p>Create a story using the words / expressions </p>
-            <div>
-              <section>
-                <span className='ai-assistant' onClick={() => setAiOptionsDisplay(!aiOptionsDisplay)}>
-                  <AutoAwesomeIcon />
-                  {aiHelp ? aiHelp : 'Ai assistant'}
-                </span>
-                {aiOptionsDisplay && (
-                  <section>
-                    <div>
-                      <span className='summary' onClick={() => { setAiHelp('Ai co-editor'); setAiOptionsDisplay(false); }}>
-                        Ai co-editor
-                      </span>
-                      <p>This will take turns with you in writing sentences for your story</p>
-                    </div>
-                    <div>
-                      <span className='summary' onClick={() => { setAiHelp('Ai for you'); setAiOptionsDisplay(false); }}>
-                        Ai for you
-                      </span>
-                      <p>This will take over the generation of the entire story for you</p>
-                    </div>
-                  </section>
-                )}
-              </section>
-              <span>
-                <label htmlFor="incognito" onClick={() => setChecked(!checked)}>
-                  <input onChange={() => {}} className='checkbox' value={checked} type="checkbox" name="incognito" id="incognito"
-                  />
-                  &nbsp;incognito
-                </label>
-                <span tooltip='nothing'> &#9432;</span>
-              </span>
-              <input type="submit" value="Submit" className='submit' onClick={handleSubmit} />
-            </div>
-          </div>
-        )}
-
-        {activity === 'practicing' ? 
-        <h3>{title}</h3>
-        :
-        <input
-          type="text" name="" id="" placeholder='Title of the story' className='title' value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />}
-        {story.length > 0 &&
-        <p id='text-container'>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          {
-            activity === 'creating' ? story.map(sentenceObj => sentenceObj.sentence).join(' ') :
-            okAttempt
-          }
-        </p>}
+        {story.length > 0 && (!selectedWords?.length) && (activity !== 'practicing' || okAttempt)?
+          <>
+            <h3>
+              Your story so far ...
+            </h3>
+            <p id='text-container'>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {
+                activity === 'creating' ? story.map(sentenceObj => sentenceObj.sentence).join(' ') :
+                okAttempt
+              }
+            </p> 
+          </>
+          : 
+          <></>
+        }
         <p className='sentence'>{activity === 'creating' ? 
             currSentence.sentence && 
             currSentence.sentence.split(' ')
@@ -145,36 +107,51 @@ const Story = (
             }
         </p>
         { activity === 'practicing' ? 
-        <p id='attempt-p'>
-          {
-          attempt.map((word, i) => {
-            return word === correctSentence[i] ?
-            <label key={word + i}>{word} </label>: 
-            <span key={word + i}>
-              <input type='text'  value={['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? word.slice(0, word.length - 1) : word}
-                className='attempt-input'
-                onChange={e => setAttempt(prev => 
-                  prev.map((word, index) => index === i ? e.target.value +  (['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? word[word.length - 1] : '')
-                  : word))}
-              />
-              {['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? <label>{word[word.length - 1]} </label> : ''}
-            </span>
+          <p id='attempt-p'>
+            {
+            attempt.map((word, i) => {
+              return word === correctSentence[i] ?
+              <label key={word + i}>{word} </label>: 
+              <span key={word + i}>
+                <input type='text'  value={['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? word.slice(0, word.length - 1) : word}
+                  className='attempt-input'
+                  onChange={e => setAttempt(prev => 
+                    prev.map((word, index) => index === i ? e.target.value +  (['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? word[word.length - 1] : '')
+                    : word))}
+                />
+                {['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? <label>{word[word.length - 1]} </label> : ''}
+              </span>
+              }
+              )
             }
-            )
-          }
-        </p> :
-        <textarea
-          placeholder='Type your story here' name="" id="" 
-          value={activity === 'creating' ? currSentence.sentence: attempt.join(' ') }
-          onChange={(e) => {
-            if (activity === 'creating') setCurrSentence((prev) => ({...prev, sentence: e.target.value}))
-            else if (activity === 'practicing') setAttempt(e.target.value.split(' '))
-          }
-          }
-          onKeyDown={callUponAi}
-          onMouseUp={() => handlePartSelection(currSentence, setCurrSentence)}
-          readOnly={info.exists && info.type === 'warning'}
-        />}
+          </p> :
+          (selectedWords?.length ?
+          <textarea
+            placeholder={`Type your sentence here with ${selectedWords}`} name="" id="" 
+            value={activity === 'creating' ? currSentence.sentence: attempt.join(' ') }
+            onChange={(e) => {
+              if (activity === 'creating') setCurrSentence((prev) => ({...prev, sentence: e.target.value}))
+              else if (activity === 'practicing') setAttempt(e.target.value.split(' '))
+            }
+            }
+            onKeyDown={callUponAi}
+            onMouseUp={() => handlePartSelection(currSentence, setCurrSentence)}
+            readOnly={info.exists && info.type === 'warning'}
+          /> : 
+          <>
+            {
+              story?.length > 2 ?
+              <Button
+                variant="contained" color='primary' disableElevation 
+                onClick={() => setActivity('submitting')}
+              >
+                Ready to submit?
+              </Button> :
+              <></>
+            }
+          </>
+        )
+        }
       </div>
   )
 }

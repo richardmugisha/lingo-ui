@@ -1,15 +1,15 @@
 import React, { useState, useEffect} from 'react';
 
 import { Button } from "@mui/material"
-import { Add as AddIcon, School as SchoolIcon, Quiz as QuizIcon, ContentCopy, Create } from '@mui/icons-material';
+import { Add as AddIcon } from '@mui/icons-material';
 
 import shuffledNumbers from '../../../utils/shuffleArray';
 
-const Side = ({ stories, setWords, words, setSelected, setActivity, activity, setTitle, setStory, selected, correctWordSet }) => {
+const Side = ({ stories, setWords, words, selectedWords, setSelectedWords, currSentence, setSelected, setActivity, activity, title, setTitle, setStory, selected, correctWordSet }) => {
   const [wordSetToDisplay, setWordSetToDisplay] = useState([])
   
   useEffect(() => {
-    if (correctWordSet.length) {
+    if (correctWordSet.length && activity === 'practicing') {
       const wordsToDisplay = shuffledNumbers(words.length - 1).slice(0, 3).map((randIndex) => words[randIndex]).concat(correctWordSet)
       const randomizedOrder = shuffledNumbers(wordsToDisplay.length - 1).map(randomIndex => wordsToDisplay[randomIndex])
       setWordSetToDisplay(randomizedOrder)
@@ -19,12 +19,10 @@ const Side = ({ stories, setWords, words, setSelected, setActivity, activity, se
   return (
     <div className={`side ${activity? '': "side-wide"}`}>
         <div>
-          <h1>Story time</h1>
-          <p>{activity ? (activity === 'practicing' ? 'Use the right words from this set!' : 'Remove the word you are done using by clicking on it!')
-          : 'Pick a story to practice with' 
-          }</p> <br />
+          <h3>Title: {title || '---No title yet!---'}</h3><br />
+          <p>{activity === 'practicing' ? 'Use the right word(s) from this set!' : selectedWords?.length ? '': 'Pick the word(s) you are about to use!'}
+          </p> <br />
         </div>
-        {/* selected < 0 && stories.length */}
         { (!activity) ? (
           <div className='side-pool titles'>
             {stories.map((story, i) => (
@@ -40,15 +38,34 @@ const Side = ({ stories, setWords, words, setSelected, setActivity, activity, se
             ))}
           </div>
         ) : (
-          <div className='side-pool word-pool'>
-            {(activity === 'practicing' ? wordSetToDisplay : words).map((word, i) => (
-              <span 
-                className='story--span'
-                onClick={() => activity !== 'practicing' && setWords(words.filter((w, index) => index !== i))} key={i}>
-                {word}
-              </span>
-            ))}
-          </div>
+          <>
+            { /*!currSentence &&*/
+              <div className='side-pool word-pool'>
+              {(activity === 'practicing' ? wordSetToDisplay : words).map((word, i) => (
+                <span 
+                  className='story--span'
+                  onClick={() => { if (activity !== 'practicing') { setWords(words.filter((w, index) => index !== i)); setSelectedWords(prev => [...prev, words[i]]) } }} key={i}>
+                  {word}
+                </span>
+              ))}
+            </div>
+            }
+            <br />
+            {
+              selectedWords?.length ?
+              <div className='side-pool word-pool'>
+                {(selectedWords).map((word, i) => (
+                  <span 
+                    className='story--span'
+                  >
+                  {word}
+                </span>
+              ))}
+              </div> :
+              <></>
+            }
+          </>
+          
         )}
         {
           !activity &&

@@ -1,15 +1,17 @@
 .Yapping {
     display: flex;
-    gap: 3em;
+    gap: 2em;
     width: 100%;
     height: 100%;
+    flex-direction: column;
+    align-items: center;
 }
 
 .story {
     flex: 1;
 }
 
-.side > div:first-child > h1 {
+.side > div:first-child > h1, .side > div:first-child > h3 {
     color: #345C70;
 }
 
@@ -18,37 +20,16 @@
 }
 
 .side {
-    /* height: 100%; */
     display: flex;
     flex-direction: column;
-    width: min-content;
-}
-
-.side-wide {
-    width: 100vw;
-    align-items: center;
-}
-
-.side-wide .titles {
-    flex-direction: row !important;
-    flex-wrap: wrap;
-    display: flex;
-}
-
-.side-wide .story--span {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: min(30%, 10em) !important;
-    aspect-ratio: 4/5;
-    overflow: hidden;
+    /* width: min-content; */
 }
 
 .side .side-pool {
-    width: fit-content;
+    max-width: 90vw;
     overflow: auto;
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
     align-items: center;
     gap: 1em;
 }
@@ -89,7 +70,7 @@
 .Yapping--info-info { background-color: rgb(108, 173, 244) }
 .Yapping--info-danger { background-color: rgb(250, 115, 105) }
 
-h1 { font-size: x-large;}
+h1 { font-size: xx-large;}
 .side .side-pool, textarea {
     border: 1px solid ;
     padding: 1em;
@@ -107,7 +88,7 @@ h1 { font-size: x-large;}
     margin-block: 1em;
     padding: 1em;
     background-color: beige;
-    width: min(90%, 800px);
+    width: min(90vw, 1000px);
     border: 1px solid #345C70;
     border-radius: 1em;
     line-height: 2em;
@@ -118,7 +99,7 @@ h1 { font-size: x-large;}
 }
 
 textarea {
-    width: 90%;
+    width: 90vw;
     height: 70px;
     border-radius: .5em;
     font-size: 1.2em;
@@ -126,12 +107,6 @@ textarea {
     color: #345C70;
     position: relative;
     margin-top: 2em;
-}
-
-.story .title {
-    padding: .5em 1em;
-    margin: 1em;
-    width: 95%;
 }
 
 .side span.story--span {
@@ -172,83 +147,12 @@ textarea {
     border-radius: 1em;
 }
 
-.story .checkbox {
-    appearance: none;
-    position: relative;
-    display: inline-block;
-    background-color: lightgrey;
-    height: 1.65rem;
-    width: 2.75rem;
-    vertical-align: middle;
-    border-radius: 2rem;
-    box-shadow: 0 1px 3px #0003 inset;
-    transition: 0.25s linear background;
-}
-
-.story .checkbox::before {
-    content: '';
-    display: block;
-    width: 1.25rem;
-    height: 1.25rem;
-    background: #fff;
-    border-radius: 1.2rem;
-    position: absolute;
-    top: .2rem;
-    left: 0.2rem;
-    box-shadow: 0 1px 30px #0003;
-    transition: 0.25s linear transform;
-    transform: translateX(0rem);
-}
-
-.story .checkbox:checked {
-    background: #345C70;
-}
-
-.story .checkbox:checked::before {
-    transform: translateX(1rem);
-}
-
 .story > div > div {
     display: flex;
     justify-content: space-between;
     gap: 2em;
 }
 
-.story .ai-assistant {
-    font-weight: bolder;
-    display: flex;
-    cursor: pointer;
-    background: radial-gradient( white, rgb(245, 245, 172));
-    padding: .5em 1em;
-    border: 1px solid;
-    border-radius: 50%;
-    transition: border-radius 300ms ease-in-out;
-}
-.story .ai-assistant:hover {
-    border-radius: 2em 1em/ 1em 2em;
-}
-
-
-.story section section {
-    padding: .3em 1em;
-    text-align: start;
-    position: absolute;
-    z-index: 2;
-    max-width: 300px;
-    background-color: beige;
-    border: 1px solid #345C70;
-    margin-top: .5em;
-    transition: block 1s ease-in-out;
-}
-
-.story section .summary {
-    font-weight: bold;
-    text-decoration: underline;
-    cursor: pointer;
-}
-.story section p {
-    margin-left: 1em;
-}
 
 .story #attempt-p {
     border: 1px solid;
@@ -270,7 +174,7 @@ textarea {
 }
   
 .side-pool::-webkit-scrollbar-thumb, textarea::-webkit-scrollbar-thumb, #text-container::-webkit-scrollbar-thumb {
-    background-color: rgb(97, 138, 151);
+    background-color: rgb(66, 157, 185);
     border-radius: 6px; /* Set half of the scrollbar width to create a circular thumb */
 }
   
@@ -280,22 +184,20 @@ textarea {
 }
 
 @media (max-width: 719px) {
-    .Yapping {
+    /* .Yapping {
         flex-direction: column;
         align-items: center;
         gap: 1em;
-    }
+    } */
 
     .side > div:first-child {
         font-size: small;
-        /* padding: 0; */
     }
 
     .side .side-pool {
-        flex-direction: row;
+        /* flex-direction: row; */
         max-width: 90vw;
-        overflow-x: auto;
-        /* padding-block: 0; */
+        /* overflow-x: auto; */
         font-size: small;
     }
 
