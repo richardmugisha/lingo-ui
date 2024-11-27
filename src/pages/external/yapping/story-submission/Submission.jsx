@@ -1,17 +1,17 @@
-
+import { useRef } from "react";
 import "./Submission.css"
 import { Button } from "@mui/material"
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
 const Submission = ({title, setTitle, story, checked, setChecked, handleSubmit}) => {
-  const existingTitle = title
+  const existingTitle = useRef(title)
   return (
     <div className="submission">
       <h3><AutoAwesomeIcon />Final touches</h3>
       <>
         {
-            existingTitle ?
-            <h3>Title: {existingTitle}</h3> :
+            existingTitle.current ?
+            <h3>Title: {existingTitle.current}</h3> :
             <span>
               <label htmlFor="">Complete the title</label>
               <input

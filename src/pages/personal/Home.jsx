@@ -80,10 +80,10 @@ export default () => {
     const { _id: deckId } = deck;
     dispatch(openDeck({})); // Resetting the deck in case another deck is clicked
     setPersonalSelectedItem([]);
+    navigate(`options/?deck=${deck._id}`)
     fetchDeck(deckId)
       .then(deck => {
         dispatch(openDeck(deck))
-        navigate(`options/?deck=${deck._id}`)
       })
       .catch(error => setError(error.message === 'network error' ? 'Network error' : 'Oops! Try again!'))
   };

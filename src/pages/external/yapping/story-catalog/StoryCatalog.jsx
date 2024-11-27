@@ -7,7 +7,7 @@ const StoryCatalog = ({ stories, setActivity, setTitle, setStory, selected, setS
   return (
     <div className='side side-wide'>
         <div>
-          <p>Pick a story to practice with</p> <br />
+          <p>Pick a story to practice with</p>
         </div>
         <div className='side-pool titles'>
             {stories.map((story, i) => (
@@ -24,9 +24,7 @@ const StoryCatalog = ({ stories, setActivity, setTitle, setStory, selected, setS
         </div>
         {
           <>
-            <br />
             or 
-            <br /><br />
             <Button startIcon={<AddIcon />} variant="contained" color='primary' disableElevation 
                 onClick={() => {
                     setActivity('onboarding');

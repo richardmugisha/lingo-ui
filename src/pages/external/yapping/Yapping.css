@@ -1,6 +1,6 @@
 .Yapping {
     display: flex;
-    gap: 2em;
+    gap: 1.5em;
     width: 100%;
     height: 100%;
     flex-direction: column;
@@ -8,11 +8,13 @@
 }
 
 .story {
-    flex: 1;
+    flex: 1 1 auto;
+    height: 50%;
 }
 
 .side > div:first-child > h1, .side > div:first-child > h3 {
     color: #345C70;
+    margin-bottom: .8em;
 }
 
 .side > div:first-child > p {
@@ -22,14 +24,13 @@
 .side {
     display: flex;
     flex-direction: column;
-    /* width: min-content; */
+    max-height: 90dvh;
 }
 
 .side .side-pool {
     max-width: 90vw;
     overflow: auto;
     display: flex;
-    /* flex-direction: column; */
     align-items: center;
     gap: 1em;
 }
@@ -95,7 +96,7 @@ h1 { font-size: xx-large;}
     font-weight: 450;
     font-size: 1.1em;
     overflow: auto;
-    flex: 1;
+    flex: 1 1 auto;
 }
 
 textarea {
@@ -115,11 +116,15 @@ textarea {
     color: white;
     border-radius: 1em;
     cursor: pointer;
-    width: fit-content;
 }
 
 .side .word-pool span {
     background-color: rgb(184, 49, 28);
+    padding: .5em 1em;
+    color: white;
+    border-radius: 1em;
+    cursor: pointer;
+    text-wrap: nowrap;
 }
 
 .side .selected {
@@ -202,6 +207,6 @@ textarea {
     }
 
     .Yapping .story {
-        height: 75%;
+        height: 70%;
     }
   }
