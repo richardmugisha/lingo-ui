@@ -3,39 +3,57 @@ import { useEffect, useState } from "react";
 
 import API_BASE_URL from '../../../../../../serverConfig'
 
-export const useSearchWords = ( searchValue, deckLang, delay=1000) => {
+export const useSearchWords = (trackedSearchValue, deckLang, delay=2000) => {
     const [searchWords, setSearchWords] = useState([])
-    const [debouncedValue, setDebouncedValue] = useState(searchValue)
-    const [loading, setLoading] = useState(false)
+    // const [debouncedValue, setDebouncedValue] = useState(searchValue)
+    const [status, setStatus] = useState('idle') // idle  | loading | success | error
 
     // //console.log(deckLang)
 
     useEffect(() => {
         const timeout = setTimeout(() => {
-            setDebouncedValue(searchValue)
+            // setDebouncedValue(searchValue)
+            if (!trackedSearchValue) setSearchWords([])
         }, delay)
-
+        if (! (status === 'loading')) setStatus('idle')
         return () => clearTimeout(timeout)
-    }, [searchValue]);
+    }, [trackedSearchValue]);
 
-    useEffect(() => {
-        if (debouncedValue)  {
-            console.log(deckLang)
-            setLoading(true)
-            axios.get(`${API_BASE_URL}/words/search?language=${deckLang}&word=${debouncedValue}`)
+    const fetching = (searchValue) => {
+        console.log(searchValue)
+        if (searchValue)  {
+            setStatus('loading')
+            axios.get(`${API_BASE_URL}/words/search?language=${deckLang}&word=${searchValue}`)
                 .then(res => {
-                // //console.log(res.data.searchWords)
+                // console.log(res.data.searchWords)
                 setSearchWords(res.data.searchWords)
-                setLoading(false)      
+                setStatus('success')      
             }) 
         }
         else {
             setSearchWords([])
-            setLoading(false)  
+            setStatus('error')  
         }    
-        
-    }, [debouncedValue, deckLang])
+    }
 
-    return [debouncedValue, searchWords, loading]
+    // useEffect(() => {
+    //     if (debouncedValue)  {
+    //         console.log(deckLang)
+    //         setLoading(true)
+    //         axios.get(`${API_BASE_URL}/words/search?language=${deckLang}&word=${debouncedValue}`)
+    //             .then(res => {
+    //             // //console.log(res.data.searchWords)
+    //             setSearchWords(res.data.searchWords)
+    //             setLoading(false)      
+    //         }) 
+    //     }
+    //     else {
+    //         setSearchWords([])
+    //         setLoading(false)  
+    //     }    
+        
+    // }, [debouncedValue, deckLang])
+
+    return [fetching, searchWords, status, setStatus]
 
 }

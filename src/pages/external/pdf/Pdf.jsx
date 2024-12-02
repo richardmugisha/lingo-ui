@@ -86,47 +86,65 @@ const Pdf = () => {
 };
 
 const PdfViewer = ({ selectedFile, onSelectFile, filePaths, onFileClick }) => {
+  const [word, setWord] = useState(null);
+  const [context, setContext] = useState(null);
+
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
   const [info, setInfo] = useState({
     exists: true, type: 'info', message: 'Select the word/expression you need to save!'
   });
 
   const handleWordApprove = (e) => {
-    const word = window.getSelection().toString();
-    if (e.key === 'Enter' && word) {
+    console.log(word, context)
+    if (word && context) {
       const temp = JSON.parse(localStorage.getItem('temporary'));
       const words = [...new Set(temp?.words || [])];
-      localStorage.setItem('temporary', JSON.stringify({ words: [...words, word] }));
+      console.log(words)
+      localStorage.setItem('temporary', JSON.stringify({ words: [...words, {word, context}] }));
       setInfo({ exists: true, type: 'info', message: 'Saved successfully!' });
-    } else if (e.key === 'x') {
-      setInfo({ exists: false });
+      setWord(null); setContext(null)
+    }
+    else if (word) {
+      setInfo({ exists: true, type: 'info', message: `Now, select the sentence that contains "${word}"` });
     }
   };
 
   const handleWordSelect = () => {
-    const word = window.getSelection().toString();
-    if (word) {
-      setInfo({ exists: true, type: 'info', message: `Now, hit Enter to save the word: ${word} or X otherwise!` });
+    const selection = window.getSelection().toString();
+    if (word && selection) setContext(selection)
+    else if (!word && selection) {
+        setWord(selection)
+        setInfo({ exists: true, type: 'info', message: `Now, select the sentence that contains "${selection}"` });
     }
   };
 
   useEffect(() => {
     if (!selectedFile) return
-    document.addEventListener('mouseup', handleWordSelect);
-    document.addEventListener('keydown', handleWordApprove);
+    document.onselectstart = (e) => false
+    const timerId = setTimeout(() => {
+      document.onselectstart = (e) => true
+      document.addEventListener('mouseup', handleWordSelect);
+    }, 3000);
 
     return () => {
+      clearTimeout(timerId)
       document.removeEventListener('mouseup', handleWordSelect);
-      document.removeEventListener('keydown', handleWordApprove);
+      // document.removeEventListener('click', handleWordApprove);
     };
-  }, [selectedFile]);
+  }, [selectedFile, word,  context]);
+
+  const handleClear = {
+    word: () => setWord(null),
+    context: () => setContext(null),
+    both: () => {setWord(null); setContext(null)}
+  }
 
   useEffect(() => {
     let timerId;
     if (info.exists) {
       timerId = setTimeout(() => {
         setInfo({ exists: false });
-      }, 5000);
+      }, 3000);
     }
     return () => clearTimeout(timerId);
   }, [info]);
@@ -136,9 +154,31 @@ const PdfViewer = ({ selectedFile, onSelectFile, filePaths, onFileClick }) => {
   return (
     <div className="pdf-viewer-container">
       {(selectedFile && info.exists) && (
-        <p className={`pdf-viewer--info pdf-viewer--info-${info.type}`}>
+        <section className={`pdf-viewer--info pdf-viewer--info-${info.type}`}>
           {info.message}
-        </p>
+        </section>
+      )}
+      {(selectedFile && word && context) && (
+        <section className="pdf-viewer--info pdf-viewer--logging-selections">
+          <div className='word-and-context'>
+            <div className='word'>{word}</div>
+            <div className='context'>{context}</div>
+          </div>
+          <div className='guide'>
+            <p>❌If there is a mistake, clear the selections </p>
+            <p>✅Otherwise, click anywhere to save</p>
+          </div>
+          <div className='controls'>
+            {/* {!context && <button onClick={handleClear.word}>❌ Clear</button>} */}
+            {(word && context) && (
+                <>
+                  <button className='clear' onClick={handleClear.both}>❌ Clear</button>
+                  <button className='save' onClick={handleWordApprove}>✅ Save</button>
+                  {/* <button onClick={handleClear.context}>❌ just context</button> */}
+                </>
+            )}
+          </div>
+        </section>
       )}
       {!selectedFile && (
         <div className="pdf-upload">

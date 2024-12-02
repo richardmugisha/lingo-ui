@@ -4,7 +4,7 @@
     color: #E0F5F8;
     padding: 1em;
     min-height: 400px;
-    width: min(500px, 95vw);
+    width: min(700px, 95vw);
     display: flex;
     flex-direction: column;
     gap: .5em;
@@ -27,8 +27,6 @@
     padding: 10px 20px;
     height: 50px;
 }
-
-
 
 .card-auto-search {
     margin-top: 0em;
@@ -54,7 +52,7 @@
 }
 .card-auto--extra-words > ul  {
     display: flex;
-    font-weight: bolder;
+    /* font-weight: bolder; */
     gap: 1em;
     flex-wrap: wrap;
 }
@@ -67,6 +65,10 @@ ul > .extra-word {
     max-height: 300px;
     overflow-y: auto;
 }
+
+/* .card-auto--search-list .add-btn {
+    text-wrap: nowrap;
+} */
 
 .card-auto--search-list::-webkit-scrollbar {
     width: 5px; /* Set your desired width */
@@ -82,16 +84,35 @@ ul > .extra-word {
     background-color: #cce1e4; /* Set your desired track color */
   }
 
-.card-auto--search-list > li {
+.card-add-auto .search-item {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     color: #345C70;
-    padding: .5em;
+    padding: .5em 1em;
     border: 1px solid rgba(255, 255, 255, 0.42);
     border-radius: .5em;
     margin-top: .3em;
 }
 
+.card-add-auto .clickable {
+    cursor: pointer;
+}
+
+.card-add-auto .clickable:hover {
+    /* background: cyan; */
+    background-color: rgba(0, 255, 255, 0.113);
+}
+
+.search-item .word-and-context {
+    text-align: left;
+}
+
+.search-item .word {
+    font-size: larger;
+    font-weight: 700;
+
+}
 
 .card-add-auto .item-not-found {
     display: flex;
@@ -99,4 +120,16 @@ ul > .extra-word {
     align-items: center;
     gap: 1em;
     color: rgb(148, 19, 19);
+}
+
+.card-wish-input {
+    margin-top: 0em;
+    min-width: 500px;
+    height: 2em;
+    border-radius: 10px;
+    color: #345C70;
+    border: 1px solid #345c70bd;
+    font-size: medium;
+    font-weight: 500;
+    padding: .5em;
 }
