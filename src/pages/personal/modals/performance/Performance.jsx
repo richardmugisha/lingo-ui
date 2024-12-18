@@ -14,7 +14,7 @@ const perfLabels = ['Really??', "C'mon", 'Are you for real?', 'practice more', '
 import { CHUNK_SIZE, CHUNK_TARGET_MASTERY_LEVEL } from '../../../../constants';
 import uploadMasteryUpdates from '../../../../api/uploadMasteryUpdates';
 
-const Performance = ({ wins, entireDeck, deckLearnChunk, autoMode, setUserDecision }) => {
+const Performance = ({ wins, entireDeck, deckLearnChunk, mode, setUserDecision }) => {
   const [correct, setCorrect] = useState(null)
 
   const userId = JSON.parse(localStorage.getItem('user')).userId;
@@ -29,7 +29,7 @@ const Performance = ({ wins, entireDeck, deckLearnChunk, autoMode, setUserDecisi
 
   useEffect(()=>{
     setCorrect(wins.filter(card => card.result > 0).length)
-    if (!autoMode) return 
+    if (!["guided-learning"].includes(mode)) return 
     const wordsMasteriesList = wins.map(word => ({_id: word._id, level: word.level + word.result }))
     let newWordSet = deckLearnChunk.words.map(word => word._id)
     let { level, chunkIndex } = deckLearnChunk
@@ -93,7 +93,7 @@ const Performance = ({ wins, entireDeck, deckLearnChunk, autoMode, setUserDecisi
       </div>
       <div className="performance--foot">
         <Button startIcon={<SchoolIcon />} variant="contained" disableElevation color='primary' onClick={() => navigate(`../learning/?deck=${deckId}`)}>Revise the deck</Button>
-        <Button startIcon={<QuizIcon />} variant="contained" disableElevation color='primary' onClick={() => autoMode ? setUserDecision('') : insane(navigate, deckId)}>Continue</Button>
+        <Button startIcon={<QuizIcon />} variant="contained" disableElevation color='primary' onClick={() => ["guided-learning"].includes(mode) ? setUserDecision('') : insane(navigate, deckId)}>Continue</Button>
       </div>
     </div>
   )

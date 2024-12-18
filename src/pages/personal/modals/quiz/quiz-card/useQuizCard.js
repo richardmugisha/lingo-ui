@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import quizFormat from "../quiz-selector/quizFormat";
 
@@ -8,16 +8,12 @@ import nextCard from "./utils/nextCard";
 import { useSelector } from 'react-redux'
 
 let interval = null;
+import { AVERAGE_READING_SPEED_PER_CHAR, READING_BONUS_TIME as BONUS_TIME } from "../../../../../constants"
 
-// const enteringAudio = new Audio('/sounds/woosh.wav')
-// const tickAudio = new Audio('/sounds/tick-tock.wav')
+const enteringAudio = new Audio('/sounds/woosh.wav')
+const tickAudio = new Audio('/sounds/tick-tock.wav')
 
-const AVERAGE_READING_SPEED_PER_CHAR = 68  //milliseconds in 14 languages
-const BONUS_TIME = 3000 //milli
-
-
-
-const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order, deckLearnChunk, autoMode, formatRouter) => {
+const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order, deckLearnChunk, mode, formatRouter, handlePlay) => {
     const { _id: deckId, words: deck } = useSelector(state => state.deck.openDeck)
     const [card, setCard] = useState(deckLearnChunk[0]);
     const [correctOption, setCorrectOption] = useState(null);
@@ -34,19 +30,20 @@ const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order
     const [ quizType, setQuizType ] = useState(importedQuizType)
     const [ quizLength, setQuizLength ] = useState(importedQuizLength)
     const [ wins, setWins ] = useState([])
-    const [hasPlayed, setHasPlayed] = useState(false)
-
-    const [enteringAudio] = useState(new Audio('/sounds/woosh.wav'))
-    const [tickAudio] = useState(new Audio('/sounds/tick-tock.wav'))
+    const hasPlayed = useRef(false)
 
     const [cardMotion, setCardMotion] = useState('card-entering-left');
 
     useEffect(() => {
       enteringAudio.volume = .05
       enteringAudio.currentTime = 0.3
+      tickAudio.currentTime = 0
       tickAudio.volume = .02
       enteringAudio.play()
-      return () => {enteringAudio.pause(), tickAudio.pause()}
+      return () => {
+        enteringAudio.pause(), 
+        tickAudio.pause()
+      }
     }, [])
 
     const changeCard = (direction) => {
@@ -63,6 +60,7 @@ const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order
           setCardMotion('card-entering-left');
         }, delay);
       } else {
+        setTopProSize(0)
         setCardMotion('card-exiting-left');
         timerId = setTimeout(() => {
           setCardMotion('card-entering-right');
@@ -74,9 +72,10 @@ const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order
     useEffect(() => {
       (async() => {
         if (!card ) return
-        setHasPlayed(false);
+        hasPlayed.current = false;
+        tickAudio.play()
         let formatted;
-        if (autoMode) {
+        if (["guided-learning", "quiz-game"].includes(mode)) {
           // const level = 7 //Math.round(Math.random() * 8) //card.level.level
           const level = card.level.level
           const { quizType, route, quizLength } = formatRouter(level)
@@ -110,12 +109,15 @@ const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order
     useEffect(() => {
       if (!deck || cardMotion !== 'card-entering-left') return
       const stepTime = .1 // half a sec
-      tickAudio.play()
       interval = setInterval(() => {
         setTopProSize(prev => {
+          if (prev > 100) {
+            clearInterval(interval); return prev
+          }
           const percentage = prev + stepTime * 100 * 1000 / cardTime 
+          // console.log(`percentage: ${percentage}`)
           if (percentage > 100) {
-            if ( !(hasPlayed || quizDone) ) handleItemClick({value: 'no selection because of timeout'}, false);  // true on automatic for toks, otherwise, false
+            if ( !(hasPlayed.current || quizDone) ) handleItemClick({value: 'no selection because of timeout'}, false);  // true on automatic for toks, otherwise, false
             clearInterval(interval)
             return 100
           }
@@ -125,7 +127,7 @@ const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order
       }, stepTime * 1000);
 
       return () => clearInterval(interval)
-    }, [deck, cardMotion, cardTime, hasPlayed, quizDone])
+    }, [deck, cardMotion, cardTime, quizDone, handlePlay])
 
     useEffect(() => {
       if (interval !== null && quizDone) {
@@ -143,10 +145,21 @@ const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order
     }, [btmProSize])
 
     const handleItemClick = (item, correct) => {
-            setHasPlayed(true)
+            hasPlayed.current = true
             setWins(prev => [...prev, {...card?.level, result: (correct ? 1 : -1) }])
             setSelectedItem(item);
             tickAudio.volume = 0
+            if (mode === "quiz-game") { // want to do this after server
+              return handlePlay(
+                [
+                  correct,
+                  () => {
+                    setBtmProSize(prev =>  Math.round((Math.round(prev*deckLearnChunk.length/100) + 1) * 100/deckLearnChunk.length) ) 
+                  }
+                ]
+              )
+            }
+
             setBtmProSize(prev =>  Math.round((Math.round(prev*deckLearnChunk.length/100) + 1) * 100/deckLearnChunk.length) ) 
     };
     

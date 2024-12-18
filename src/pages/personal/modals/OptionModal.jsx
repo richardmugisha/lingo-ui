@@ -1,16 +1,15 @@
 import React from 'react';
 
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { Clear as Close } from '@mui/icons-material';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import { Options, CardAdd, CardAddManual, CardAddAuto, CardLearn, NewDeck, GuidedLearning, Quiz } from "../modals"
+import { Options, CardAdd, CardAddManual, CardAddAuto, CardLearn, NewDeck, GuidedLearning, Quiz } from "."
 
+import Modal from '../../../components/modal/Modal';
 
-export default () =>{
-    const navigate = useNavigate()
-    return (
-    <div className="modal">
-        {useLocation().pathname.split('/personal')[1] && <Close className="cancel" onClick={() => navigate('/')} />}
+export default () => 
+    <Modal
+      homePage = 'personal'
+      ModalOutlet = {
         <Routes>
           <Route path="options" element={<Options />} />
           <Route path="adding" element={<CardAdd />} />
@@ -21,6 +20,5 @@ export default () =>{
           <Route path="guided-learning" element={<GuidedLearning />} />
           <Route path="quiz" element={<Quiz />} />
         </Routes>
-      </div>
-    )
-}
+      }
+    />

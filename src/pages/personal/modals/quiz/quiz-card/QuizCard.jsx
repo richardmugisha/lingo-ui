@@ -11,7 +11,7 @@ import './QuizCard.css';
 import useQuizCard from './useQuizCard';
 
 
-const QuizCard = ({importedFormat, importedQuizType, importedQuizLength, order, deckLearnChunk, autoMode, formatRouter, setUserDecision }) => {
+const QuizCard = ({importedFormat, importedQuizType, importedQuizLength, order, deckLearnChunk, mode, formatRouter, setUserDecision, handlePlay }) => {
     const   {
       correctOption, 
       selectedItem,
@@ -31,11 +31,11 @@ const QuizCard = ({importedFormat, importedQuizType, importedQuizLength, order, 
       quizType,
       quizLength,
       wins
-    } = useQuizCard(importedFormat, importedQuizType, importedQuizLength, order, deckLearnChunk.words, autoMode, formatRouter)
+    } = useQuizCard(importedFormat, importedQuizType, importedQuizLength, order, deckLearnChunk.words, mode, formatRouter, handlePlay)
 
     return (
          deck ?
-          (quizDone && wins.length) ? <Performance wins={wins} entireDeck={deck} deckLearnChunk={deckLearnChunk} autoMode={autoMode} setUserDecision={setUserDecision} /> :
+          (quizDone && wins.length) ? <Performance wins={wins} entireDeck={deck} deckLearnChunk={deckLearnChunk} mode={mode} setUserDecision={setUserDecision} /> :
           <>
             { format?.topProgressbar && <ProgressBar completed = {Math.floor(topProSize)} bgColor = {colors(topProSize)} customLabel=' ' height='2px' transitionDuration='.2s'/> }
             {format?.content?.type === 'mcq' ?

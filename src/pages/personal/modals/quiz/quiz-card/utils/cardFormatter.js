@@ -2,7 +2,6 @@ import randomGen from "../../../../../../utils/randomGen"
 import shuffledNumbers from "../../../../../../utils/shuffleArray";
 
 export default async (deck, card, format, quizType, quizLength, blankedWordFinder) => {
-  console.log(format)  
   if (!card || !format.content) return
         const AlreadyPicked = deck.findIndex((item) => item._id === card._id);
         const handleRandomize = async (max, howMany, alreadyUsed) => {

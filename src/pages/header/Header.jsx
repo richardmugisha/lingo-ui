@@ -19,7 +19,7 @@ const Header = () => {
         <div className='header-logo' style={{cursor: 'pointer'}} onClick={() => navigate('/portal/personal')}><Logo /></div>
         <nav>
             <ul className={`nav-right ${menuShow && 'show'}`}>
-              <li>Quiz</li>
+              <li onClick={() => navigate('/portal/network/options')}>Multiplayer</li>
               <li>Add</li>
               <li onClick={() => navigate('/portal/more')}>More</li>
             </ul>

@@ -13,7 +13,8 @@ const CHUNK_SIZE = 10       // Number of words to learn at a time
 const CHUNK_TARGET_MASTERY_LEVEL = 4; // level to reach before going to the next chunk
 const TARGET_PERFECT_LEVEL = 8
 
-const formatRouter = (level) => {
+const formatRouter = (leve) => {
+  const level = 4;
   if (level < 1 ) return {
     quizLength: 'short',
     route: 'quiz-short-guess',
@@ -83,7 +84,7 @@ const GuidedLearning = () => {
       userDecision ? (
         craming ?
           <CardLearn deckLearningChunk={{deckName, words: learning.words}}  setCraming={setCraming} /> :
-          learning.words.length && <QuizCard importedFormat={'placeholder'} importedQuizType={'placeholder'} importedQuizLength={'placeholder'} order={'placeholder'} deckLearnChunk={learning} autoMode={true} formatRouter={formatRouter} setUserDecision={setUserDecision} />
+          learning.words.length && <QuizCard importedFormat={'placeholder'} importedQuizType={'placeholder'} importedQuizLength={'placeholder'} order={'placeholder'} deckLearnChunk={learning} mode="guided-learning" formatRouter={formatRouter} setUserDecision={setUserDecision} />
         ) :
         <LearningDashboarb deckName={deckName} learning={learning} words={words} setUserDecision={setUserDecision}/>
   )

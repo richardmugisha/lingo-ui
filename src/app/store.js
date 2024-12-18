@@ -6,6 +6,8 @@ import deckReducer from "../features/personal/deck/deckSlice";
 import quizReducer from "../features/personal/quiz/quizSlice";
 import authReducer from "../features/auth/authSlice";
 
+import networkReducer from "../features/network/networkSlice"
+
 //const logger = reduxLogger.createLogger()
 
 const store = configureStore({
@@ -13,7 +15,8 @@ const store = configureStore({
         system: systemReducer,
         deck: deckReducer,
         quiz: quizReducer,
-        auth: authReducer
+        auth: authReducer,
+        network: networkReducer
     },
     //middleware: (getDefaultMiddleWare) => getDefaultMiddleWare().concat(logger),
 })
