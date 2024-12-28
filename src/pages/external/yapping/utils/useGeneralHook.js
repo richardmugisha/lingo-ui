@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 
 import axios from 'axios';
-import API_BASE_URL from '../../../../serverConfig'
+import API_BASE_URL from "../../../../../serverConfig";
 
-const generalHook = (
+const useGeneralHook = (
+  mode,
   aiHelp, setAiHelp,
   selected, setSelected,
   currSentence, setCurrSentence, 
@@ -15,14 +16,14 @@ const generalHook = (
   setSelectedWords,
   story, setStory,
   title, setTitle, 
-  stories, setStories
+  stories, setStories,
+  summary
   ) => {
 
   const [userId] = useState(JSON.parse(localStorage.getItem('user')).userId);
-  const [summary, setSummary] = useState('')
 
   useEffect(() => {
-    if (!deckId) return
+    if (!deckId || mode?.startsWith("game")) return
     axios
     .get(`${API_BASE_URL}/cards/story-time/${deckId}`)
     .then((res) => {
@@ -49,10 +50,10 @@ const generalHook = (
 
   const handleSummarySubmit = useCallback((e) => {
     e.preventDefault();
-    const summaryInput = document.getElementById('Yapping--summary').value;
-    const titleInput = document.getElementById('Yapping--title').value;
-    document.getElementById('Yapping--form').style.display = 'none'
-    setSummary(summaryInput); setTitle(titleInput);
+    // const summaryInput = document.getElementById('Yapping--summary').value;
+    // const titleInput = document.getElementById('Yapping--title').value;
+    // document.getElementById('Yapping--form').style.display = 'none'
+    // setSummary(summaryInput); setTitle(titleInput);
     if (aiHelp === 'Ai co-editor') {
       setInfo({exists: true, type: 'info', message: 'You can start writing the story. Hit Enter whenever you need a sentence from your assistant.'})
       return
@@ -69,10 +70,12 @@ const generalHook = (
             });
             setAiHelp('')
           })
-  }, [aiHelp])
+  }, [aiHelp, summary, title])
 
     const handleSubmit = () => {
         // console.log(deckId);
+        setActivity("uploading");
+        if (mode?.startsWith("game")) return;
         axios
           .post(`${API_BASE_URL}/cards/story-time/${deckId}`, { userId: !checked ? userId : null, story, title, words })
           .then((res) => {
@@ -109,9 +112,11 @@ const generalHook = (
             type: 'warning',
             message: 'Thank you for selecting.\nIf you are satisfied with your selection, press > to write your next sentence',
           });
-    
+          
+          console.log(!currSentence.blanked)
+          if (!currSentence.blanked) return () => window.addEventListener('keydown', handleApproval);
           // window.addEventListener('keydown', handleApproval);
-          return () => window.addEventListener('keydown', handleApproval);
+          // return () => window.addEventListener('keydown', handleApproval);
         }
       }
     ,[currSentence, setCurrSentence, activity]);
@@ -124,14 +129,15 @@ const generalHook = (
       }, [currSentence.blanked])
     
       const handleApproval = useCallback((e) => {
-        if (e.key === 'ArrowRight') {
+        console.log(e)
+        if ( e.type==="click" || e.key === 'ArrowRight') {
           partApproval();
           window.removeEventListener('keydown', handleApproval);
         }
       }, [partApproval]);
       
       useEffect(() => {
-        window.addEventListener('keydown', handleApproval);
+        // window.addEventListener('keydown', handleApproval);
         return () => {
           window.removeEventListener('keydown', handleApproval);
         };
@@ -169,7 +175,8 @@ const generalHook = (
           }
       }, [selected, stories]);
 
-      return { handlePartSelection, handleSubmit, handleSummarySubmit, callUponAi}
+      return { handlePartSelection, handleSubmit, handleSummarySubmit, callUponAi, handleApproval
+      }
 }
 
-export default generalHook
+export default useGeneralHook

@@ -19,12 +19,11 @@ const Side = ({ stories, setWords, words, selectedWords, setSelectedWords, okAtt
   return (
     <div className={`side ${activity? '': "side-wide"}`}>
         <div>
-          {{creating: story?.length < 3, practicing: okAttempt?.split('.')?.length < 3 }[activity] ?
+          {{creating: story?.length < 3, practicing: okAttempt?.split('.')?.length < 3 }[activity] &&
             <>
-              <p>{activity === 'practicing' ? 'Use the right word(s) from this set!' : selectedWords?.length ? '': 'Pick the word(s) you are about to use!'}
+              <p style={{color: "white"}}>{activity === 'practicing' ? 'Use the right word(s) from this set!' : selectedWords?.length === 0 && 'Pick the word(s) you are about to use!'}
               </p> 
-            </> :
-            <></>
+            </> 
           }
         </div>
         <>
@@ -39,13 +38,12 @@ const Side = ({ stories, setWords, words, selectedWords, setSelectedWords, okAtt
           </div>
           }
           {
-            selectedWords?.length ?
+            selectedWords.length > 0 &&
             <div className='side-pool word-pool'>
               {(selectedWords).map((word, i) => (
                 <span key={word+i}>{word}</span>
               ))}
-            </div> :
-            <></>
+            </div> 
           }
         </>
       </div>

@@ -62,6 +62,7 @@ export default () => {
     const getDeckList = async () => {
       try {
         const data = await fetchAllDecks(userId, myCardsOnly, selectedLanguage.value);
+        if (!data?.length) setMyCardsOnly(false)
         setUserLearning(data.userLearning)
         return data;
       } catch (error) {

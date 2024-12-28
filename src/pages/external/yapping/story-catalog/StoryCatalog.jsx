@@ -3,40 +3,45 @@ import './StoryCatalog.css'
 import { Button } from "@mui/material"
 import { Add as AddIcon } from '@mui/icons-material';
 
-const StoryCatalog = ({ stories, setActivity, setTitle, setStory, selected, setSelected }) => {
+const StoryCatalog = ({ stories, setActivity, setTitle, setSummary, setStory, selected, setSelected }) => {
+  const resetStory = () => {
+      setActivity('onboarding');
+      setTitle('');
+      setSummary("");
+      setStory('');
+    }
+
   return (
     <div className='side side-wide'>
-        <div>
-          <p>Pick a story to practice with</p>
-        </div>
-        <div className='side-pool titles'>
-            {stories.map((story, i) => (
-                <span
-                    key={story.title + i}
-                    onClick={() => {
-                        setSelected(i);
-                    }}
-                    className={`story--span ${selected === story.title ? 'selected' : ''}`}
-                >
-                {story.title}
-                </span>
-            ))}
-        </div>
-        {
-          <>
-            or 
-            <Button startIcon={<AddIcon />} variant="contained" color='primary' disableElevation 
-                onClick={() => {
-                    setActivity('onboarding');
-                    setTitle('');
-                    setStory('');
-                }}
-            >
-                New story
-            </Button>
-          </>
-        }
-      </div>
+      {stories?.length ?
+        <>
+          <div>
+            <p>Pick a story to practice with</p>
+          </div>
+          <div className='side-pool titles'>
+              {stories?.map((story, i) => (
+                  <span
+                      key={story.title + i}
+                      onClick={() => {
+                          setSelected(i);
+                      }}
+                      className={`story--span ${selected === story.title ? 'selected' : ''}`}
+                  >
+                  {story.title}
+                  </span>
+              ))}
+          </div>
+          or
+        </> :
+        <>No stories yet!</> 
+      }
+      <Button startIcon={<AddIcon />} variant="contained" color='primary' disableElevation 
+          onClick={resetStory}
+      >
+          New story
+      </Button>
+          
+    </div>
   )
 }
 
