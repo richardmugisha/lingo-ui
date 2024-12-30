@@ -97,7 +97,8 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
       setStoryGameUtils(prev => ({...prev, activity, source: "this-writer"}));
     }
     if (activity === "onboarding" && storyGameUtils.activity === "") {
-      setStoryGameUtils(prev => ({...prev, activity, source: "this-writer"}))
+      console.log(activity, "-----------")
+      setStoryGameUtils(prev => ({activity, source: "this-writer"}))
     }
     if (activity === "creating" && storyGameUtils.activity === "onboarding") {
       setStoryGameUtils(prev => ({...prev, activity, source: "this-writer"}))

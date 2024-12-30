@@ -92,7 +92,12 @@ const Playing = () => {
         } else if (method === "command" && payload?.command === "start") {
           setStatus("countdown");
         }
-        else if (method === "switch-activity" && payload.activity) setStoryGameUtils(prev => ({...prev, activity: payload.activity}))
+        // else if (method === "switch-activity" && payload.activity) setStoryGameUtils(prev => ({...prev, activity: payload.activity}))
+        else if (method === "switch-activity") {
+          console.log(payload)
+          if (payload.activity === "" && payload.story) return setStoryGameUtils(prev => ({...prev, source: "external", activity: payload.activity, story: payload.story}))
+          setStoryGameUtils(prev => (payload.activity === "onboarding" ? {source: "external", activity: payload.activity} : {...prev, source: "external", activity: payload.activity}))
+        }
       };
 
       socket.addEventListener("message", handleMessage)
@@ -124,6 +129,14 @@ const Playing = () => {
         })
       }
     }, [players, storyGameUtils])
+
+    useEffect(() => {
+      console.log(storyGameUtils.activity)
+      if ( storyGameUtils.source !== "external" && storyGameUtils.activity !== null && players.length) {
+        if (storyGameUtils.activity === "uploading") return socket.send(JSON.stringify({method: "switch-activity", payload: {gameID, playerID, ...storyGameUtils}}))
+        socket.send(JSON.stringify({method: "switch-activity", payload: {gameID, playerID, activity: storyGameUtils.activity}}))
+      }
+    }, [storyGameUtils.activity])
 
     const handleStart = () => {
       socket.send(JSON.stringify({method: "command", payload: {command: "start", gameID}}))
@@ -234,11 +247,11 @@ const PlayingManager = ({ isCreator , typeOfGame, socket, deck, gameID, playerID
       else if (method === "voted-sentence") {
         setStoryGameUtils(prev => ({...prev, source: "external", votedSentence: payload.votedSentence}))
       }
-      else if (method === "switch-activity") {
-        console.log(payload)
-        if (payload.activity === "" && payload.story) return setStoryGameUtils(prev => ({...prev, source: "external", activity: payload.activity, story: payload.story}))
-        setStoryGameUtils(prev => ({...prev, source: "external", activity: payload.activity}))
-      }
+      // else if (method === "switch-activity") {
+      //   console.log(payload)
+      //   if (payload.activity === "" && payload.story) return setStoryGameUtils(prev => ({...prev, source: "external", activity: payload.activity, story: payload.story}))
+      //   setStoryGameUtils(prev => ({...prev, source: "external", activity: payload.activity}))
+      // }
     }
   }, [afterUpdateFunc])
 
@@ -246,13 +259,13 @@ const PlayingManager = ({ isCreator , typeOfGame, socket, deck, gameID, playerID
     if (storyGameUtils.currSentences) setVoting(true)
   }, [storyGameUtils.currSentences])
 
-  useEffect(() => {
-    console.log(storyGameUtils.activity)
-    if ( storyGameUtils.source !== "external" && (storyGameUtils.activity || storyGameUtils.activity === "")) {
-      if (storyGameUtils.activity === "uploading") return socket.send(JSON.stringify({method: "switch-activity", payload: {gameID, playerID, ...storyGameUtils}}))
-      socket.send(JSON.stringify({method: "switch-activity", payload: {gameID, playerID, activity: storyGameUtils.activity}}))
-    }
-  }, [storyGameUtils.activity])
+  // useEffect(() => {
+  //   console.log(storyGameUtils.activity)
+  //   if ( storyGameUtils.source !== "external" && (storyGameUtils.activity !== null)) {
+  //     if (storyGameUtils.activity === "uploading") return socket.send(JSON.stringify({method: "switch-activity", payload: {gameID, playerID, ...storyGameUtils}}))
+  //     socket.send(JSON.stringify({method: "switch-activity", payload: {gameID, playerID, activity: storyGameUtils.activity}}))
+  //   }
+  // }, [storyGameUtils.activity])
 
 
   const handleVoting = (e) => {
