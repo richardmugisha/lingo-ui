@@ -4,15 +4,15 @@ import Counter from "./utils/Counter";
 
 import { initializeWebSocketConn } from "../../../../api/quiz-game/websocket"
 
-import QuizCard from "../../../personal/modals/quiz/quiz-card/QuizCard";
 import WaitingRoom from "../waiting-room/WaitingRoom";
 
 import Yapping from "../../../external/yapping/Yapping";
 
+import PlayingManager from "./components/playing-manager/PlayingManager";
+
 import { useSelector } from "react-redux";
 
-import PlayersDashboard from "./components/player-state/PlayerDashboard";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 
 const Playing = () => {
@@ -25,12 +25,11 @@ const Playing = () => {
     const [ gameID, setGameID ] = useState(searchParams.get("gameID"))
     const [ isCreator ] = useState(searchParams.get("isCreator") === "true")
     const [randomGame ] = useState(searchParams.get("mode") === "random")
-    const [typeOfGame] = useState(searchParams.get("type-of-game") || 'story') // quiz | story
+    const [typeOfGame, setTypeOfGame] = useState(searchParams.get("typeOfGame") || 'quiz') // quiz | story
     const [players, setPlayers] = useState([])
     const [error, setError] = useState(null)
     const [status, setStatus] = useState(isCreator ? "creating" : "joining") // creating | joining | waiting | countdown | playing
     const [storyGameUtils, setStoryGameUtils] = useState({activity: "onboarding"})
-    // const [exportStoryGameUtils, setExportStoryGameUtils] = useState({})
 
     useEffect(() => {
       if (socketHasInitRef.current) return;
@@ -54,7 +53,7 @@ const Playing = () => {
           socket.send(
             JSON.stringify({
               method: "create",
-              payload: { playerID, playerName, avatar },
+              payload: { playerID, playerName, avatar, typeOfGame },
             })
           );
         } else if (playerID && randomGame) {
@@ -74,12 +73,13 @@ const Playing = () => {
         const { method, payload } = JSON.parse(event.data);
         console.log(payload)
         if (["join", "create"].includes(method)) {
-          const { gameID, playerID, status: statusCode } = payload;
+          const { gameID, playerID, status: statusCode, typeOfGame } = payload;
           if (statusCode === 404) {console.log("error========");return setError(404)}
           setSearchParams({ gameID, playerID });
           setGameID(prev => prev || gameID)
           setPlayers(payload.players)
           setStatus("waiting");
+          setTypeOfGame(prev => payload.typeOfGame || prev)
         } else if (method === "waiting-room-update") {
           if (typeOfGame === "story") {
             if (payload.storyGameUtils?.title) setStoryGameUtils(prev => ({...prev, title: payload.storyGameUtils.title}))
@@ -115,9 +115,7 @@ const Playing = () => {
     }, [socket])
 
     useEffect(() => {
-      // console.log(storyGameUtils, typeOfGame === "story", storyGameUtils.activity === "onboarding",
-      //   isCreator, (players.length > 1), !(players.length === storyGameUtils.playerCount),
-      //  (storyGameUtils?.title || storyGameUtils?.summary))
+      
       if (typeOfGame === "story" && storyGameUtils.activity === "onboarding" &&
         isCreator && (players.length > 1) && !(players.length === storyGameUtils.playerCount) &&
        (storyGameUtils?.title || storyGameUtils?.summary)
@@ -156,7 +154,7 @@ const Playing = () => {
         </> :
         <> 
         {
-          status === "countdown" ? <Counter status={status} setStatus={setStatus} /> :
+          (status === "countdown" || storyGameUtils.activity === "countdown") ? <Counter status={status} setStatus={setStatus} storyGameUtils={storyGameUtils} setStoryGameUtils={setStoryGameUtils} /> :
           deck.words.length ? 
             <PlayingManager isCreator={isCreator} typeOfGame={typeOfGame} socket={socket} 
               deck={deck} gameID={gameID} playerID={playerID}
@@ -175,139 +173,3 @@ const Playing = () => {
 
 export default Playing
 
-const formatRouter = (lev) => {
-    const level = lev % 6
-    if (level === 0 ) return {
-      quizLength: 'short',
-      route: 'quiz-short-mcq',
-      quizType: 'meaning'
-    }
-    if (level === 1) return {
-      quizLength: 'short',
-      route: 'quiz-short-mcq',
-      quizType: 'example'
-    }
-    if (level === 2) return {
-      quizLength: 'long',
-      route: 'quiz-long-mcq',
-      quizType: 'meaning'
-    }
-    if (level === 3) return {
-      quizLength: 'long',
-      route: 'quiz-long-mcq',
-      quizType: 'example'
-    }
-    if (level === 4) return {
-      quizLength: 'short',
-      route: 'quiz-long-mcq',
-      quizType: 'synonym'
-    }
-    if (level === 5) return {
-      quizLength: 'short',
-      route: 'quiz-short-mcq',
-      quizType: 'meaning'
-    }
-  }
-
-const PlayingManager = ({ isCreator , typeOfGame, socket, deck, gameID, playerID, storyGameUtils, setStoryGameUtils, StoryView }) => {
-  // console.log("....Playing")
-  if (!socket) return
-  const [afterUpdateFunc, setAfterUpdateFunc ] = useState(null)
-  const [players, setPlayers] = useState([])
-  const [voting, setVoting] = useState(false)
-
-  const handlePlay = (afterPlayHandle) => { // The call back is what happens after the server responds to the play
-    const [ correct, registerPlay ] = afterPlayHandle
-    socket.send(JSON.stringify({method: "play", payload: {playerID, gameID, isCorrect: correct}}))
-    setAfterUpdateFunc(() => registerPlay)
-  }
-
-  useEffect(() => {
-    console.log(storyGameUtils.source, storyGameUtils.currSentence)
-    if (storyGameUtils.currSentence) {
-      socket.send(JSON.stringify({method: "add-new-sentence", payload: {gameID, playerID, storyGameUtils}}))
-    }
-  }, [storyGameUtils.currSentence])
-
-  useEffect(() => {
-    socket.onmessage = event => {
-      const { method, payload } = JSON.parse(event.data)
-      if (method === "play") {
-        // nothing to do for now
-      }
-      else if (method === "playing-update") {
-        if (afterUpdateFunc) {
-          afterUpdateFunc()
-        }
-        setPlayers(payload.players || [])
-      }
-      else if (method === "all-players-wrote") {
-        setStoryGameUtils(prev => ({...prev, voting: true, source: "external", currSentences: payload.currSentences}))
-      }
-      else if (method === "voted-sentence") {
-        setStoryGameUtils(prev => ({...prev, source: "external", votedSentence: payload.votedSentence}))
-      }
-      // else if (method === "switch-activity") {
-      //   console.log(payload)
-      //   if (payload.activity === "" && payload.story) return setStoryGameUtils(prev => ({...prev, source: "external", activity: payload.activity, story: payload.story}))
-      //   setStoryGameUtils(prev => ({...prev, source: "external", activity: payload.activity}))
-      // }
-    }
-  }, [afterUpdateFunc])
-
-  useEffect(() => {
-    if (storyGameUtils.currSentences) setVoting(true)
-  }, [storyGameUtils.currSentences])
-
-  // useEffect(() => {
-  //   console.log(storyGameUtils.activity)
-  //   if ( storyGameUtils.source !== "external" && (storyGameUtils.activity !== null)) {
-  //     if (storyGameUtils.activity === "uploading") return socket.send(JSON.stringify({method: "switch-activity", payload: {gameID, playerID, ...storyGameUtils}}))
-  //     socket.send(JSON.stringify({method: "switch-activity", payload: {gameID, playerID, activity: storyGameUtils.activity}}))
-  //   }
-  // }, [storyGameUtils.activity])
-
-
-  const handleVoting = (e) => {
-    const bestSentence = parseInt(e.target.id)
-    setVoting(false);
-    setStoryGameUtils(prev => ({...prev, voting: false}))
-    socket.send(JSON.stringify({method: "voting-best-sentence", payload: {gameID, playerID, bestSentence}}))
-  }
-
-  return (
-    <>
-      
-      <PlayersDashboard players={players} gameID={gameID} socket={socket} playerID={playerID}/>
-      {typeOfGame === "quiz" ?
-        <QuizCard 
-          importedFormat={'placeholder'} importedQuizType={'placeholder'}
-          importedQuizLength={'placeholder'} order={'placeholder'} deckLearnChunk={deck} mode={"quiz-game"} 
-          formatRouter={formatRouter} setUserDecision={''} 
-          handlePlay={handlePlay}
-        /> :
-        StoryView
-        // <Yapping isGameCreator={isCreator} mode={"game-creating"} storyGameUtils={storyGameUtils} setStoryGameUtils={setStoryGameUtils}/>
-      }
-      {
-        voting ? 
-        <Voting currSentences={storyGameUtils.currSentences} handleVoting={handleVoting}/> :
-        <></>
-      }
-    </>
-  ) 
-}
-
-const Voting = ({ currSentences, handleVoting }) => {
-  return (
-    <div style={{padding: "1em 2em"}}>
-      {
-        currSentences.map((currSentence, i) => <div key={i} id={i}
-          style={{padding: "1em 2em", background: "lightblue", cursor: "pointer"}} 
-          onClick={handleVoting}>
-          {currSentence.sentence}</div>
-        )
-      }
-    </div>
-  )
-}

@@ -1,20 +1,15 @@
-import { Button } from "@mui/material"
-import { useNavigate, useLocation } from 'react-router-dom';
-
-import { initializeWebSocketConn, getWebSocketConn } from "../../../../api/quiz-game/websocket"
+import Button from "../playing/components/game-button/Button";
+import { useNavigate } from 'react-router-dom';
 
 import './JoinRoom.css'
 
 export default ({ mode }) => {
     const navigate = useNavigate();
 
-    const baseUrl = "http://localhost:3000/portal/network/waiting-room"
-
     const label = mode === 'friends' ? 'Create a new game' : 'Join a random game'
-    const to = mode === 'friends' ? 'create-new-game' : 'waiting-room'
 
     const handleCreateOrJoin = () => {
-        navigate(`playing/?isCreator=${true}`)
+        navigate(`game-catalog/?isCreator=${true}`)
     }
 
     const handleStart = () => {
@@ -29,10 +24,10 @@ export default ({ mode }) => {
             <div>
                 <label htmlFor="">Enter Game ID:</label>
                 <input type="text" id="gameIdInput"/>
-                <Button variant="contained" disableElevation color='primary' onClick={handleStart}>Join</Button>
+                <Button variant="contained" disableElevation color='primary' handleClick={handleStart} text="Join" />
             </div>
             <p>or</p>
-            <Button variant="contained" disableElevation color='primary' onClick={handleCreateOrJoin}>{label}</Button>
+            <Button variant="contained" disableElevation color='primary' handleClick={handleCreateOrJoin} text={label} />
         </div>
     )
 }

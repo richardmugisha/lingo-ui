@@ -6,8 +6,9 @@ import usePageRefreshHandle from '../../../../utils/usePageRefreshHandle';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { Button } from "@mui/material"
-import {  School as SchoolIcon, Quiz as QuizIcon } from '@mui/icons-material';
+// import { Button } from "@mui/material"
+import Button from "../playing/components/game-button/Button"
+// import {  School as SchoolIcon, Quiz as QuizIcon } from '@mui/icons-material';
 
 const Options = () => {
   const navigate = useNavigate();
@@ -22,9 +23,9 @@ const Options = () => {
   return (
     <div className='card'>
         
-        <Button startIcon={<SchoolIcon />} variant="contained" disableElevation color='primary' onClick={() => navigate(`../play-with-friends`)}>Play with friends</Button>
-        <Button startIcon={<SchoolIcon />} variant="contained" disableElevation color='primary' onClick={() => navigate(`../random-game-playing/?mode=random`)}>Random game</Button>
-        <Button startIcon={<QuizIcon />} variant="contained" disableElevation color='primary' onClick={() => navigate(`../championship`)}>Tournament</Button>
+        <Button variant="contained" disableElevation color='primary' handleClick={() => navigate(`../play-with-friends`)} text="Play with friends" />
+        <Button variant="contained" disableElevation color='primary' handleClick={() => navigate(`../random-game-playing/?mode=random`)} text="Random game" />
+        <Button variant="contained" disableElevation color='primary' handleClick={() => navigate(`../championship`)} text="Tournament" />
             
     </div>
   )

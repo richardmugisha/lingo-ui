@@ -1,24 +1,36 @@
 
 import { useState, useEffect } from "react"
 
-const Counter = ({ status, setStatus }) => {
+const Counter = ({ status, setStatus, storyGameUtils, setStoryGameUtils }) => {
     const [counter, setCounter] = useState(3)
 
     useEffect(() => {
-        if (status !== "countdown") return
-        const intervalId = setInterval(() => {
-            setCounter(counter - 1)
-            if (counter - 1 === 0) {
-              clearInterval(intervalId);
-              setStatus("playing")
-            }
-        }, 1000);
+      let intervalId;
+      if (status === "countdown" || storyGameUtils.activity === "countdown") {
+          intervalId = setInterval(() => {
+              setCounter(counter - 1)
+              if (counter - 1 === 0) {
+                clearInterval(intervalId);
+                setStatus("playing");
+                setStoryGameUtils(prev => ({...prev, activity: "creating"}))
+              }
+          }, 1000);
+      }
 
-        return () => clearInterval(intervalId)
+      return () => clearInterval(intervalId)
 
     }, [counter, status])
 
-  return <div>{counter}</div>
+  return <div style={{
+    minWidth: "min(500px, 95vw)",
+    aspectRatio: "1",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "1rem",
+    fontSize: "3rem",
+    fontWeight: "bold",
+  }}>{counter}</div>
 
 }
 

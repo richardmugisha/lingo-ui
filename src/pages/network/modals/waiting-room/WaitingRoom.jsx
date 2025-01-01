@@ -1,18 +1,19 @@
 
 import "./WaitingRoom.css"
-import { Button } from "@mui/material"
+// import { Button } from "@mui/material"
 import { useNavigate } from "react-router-dom"
+import Button from "../playing/components/game-button/Button"
 
 const WaitingRoom = ({ typeOfGame, gameID, players, isCreator, handleStart, error, playerID }) => {
   const navigate = useNavigate()
-  // console.log("waiting room", gameID, players, isCreator, handleStart, error, playerID)
+
   return (
     <div className="waiting-room" style={{padding: "1em"}}>
         { gameID ?
           <>
             <div style={{display: "flex", justifyContent: "space-between"}}>
               <label htmlFor="">Share Game ID: {gameID}</label>
-              <Button variant="contained" disableElevation color='primary' /*onClick={handleCopy}*/ >Copy and share link</Button>
+              <Button variant="contained" disableElevation color='primary' /*onClick={handleCopy}*/ text="Copy and share link" />
             </div> 
         
             <h2>Waiting for {5 - players.length} players</h2>
@@ -21,7 +22,7 @@ const WaitingRoom = ({ typeOfGame, gameID, players, isCreator, handleStart, erro
                 key={player?.playerID}>{player?.playerID === playerID ? "You": player?.playerName} joined</li>)}
             </ul>
             { (isCreator && players.length > 1 && typeOfGame !== "story") &&
-              <Button variant="contained" disableElevation color='primary' onClick={handleStart}>Start</Button>
+              <Button variant="contained" disableElevation color='primary' handleClick={handleStart} text="Start Game" />
             }
           </>
           : 

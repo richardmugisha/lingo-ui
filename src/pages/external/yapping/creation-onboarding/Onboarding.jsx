@@ -24,7 +24,7 @@ const Onboarding = ({words, mode, isLeadAuthor, setAiHelp, setAiOptionsDisplay, 
       {isLeadAuthor &&
         <Button
           variant="contained" color='primary' disableElevation
-          onClick={() => setActivity('creating')}
+          onClick={() => setActivity('countdown')}
         >
           Start
         </Button>

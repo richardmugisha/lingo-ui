@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Modal from '../../components/modal/Modal';
 
-import { Options, JoinRoom, Playing } from './modals';
+import { Options, JoinRoom, Playing, Catalog } from './modals';
 
 export default () => 
     <Modal
@@ -14,6 +14,7 @@ export default () =>
           <Route path="options" element={<Options />} />
           <Route path="play-with-friends">
             <Route path="" element={<JoinRoom mode="friends" />}/>
+            <Route path="game-catalog" element={<Catalog mode="friends"/>} />
             {/* <Route path="waiting-room" element={<WaitingRoom mode="friends" />} /> */}
             <Route path="playing" element={<Playing />} />
           </Route>

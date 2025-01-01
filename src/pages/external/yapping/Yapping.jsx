@@ -87,21 +87,18 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
     if (currSentence.sentence && storyGameUtils.source !== "this-writer") {
       setStoryGameUtils(prev => ({...prev, source: "this-writer"})) // so that when story changes, can be exported to game
     }
-    if (activity === "submitting" && storyGameUtils.activity === "creating") {
-      setStoryGameUtils(prev => ({...prev, activity, source: "this-writer"}))
-    }
-    if (activity === "uploading" && storyGameUtils.activity === "submitting") {
-      setStoryGameUtils(prev => ({...prev, activity, title, summary, story, checked, source: "this-writer"}))
-    }
-    if (activity === "" && storyGameUtils.activity === "uploading") {
-      setStoryGameUtils(prev => ({...prev, activity, source: "this-writer"}));
-    }
-    if (activity === "onboarding" && storyGameUtils.activity === "") {
-      console.log(activity, "-----------")
-      setStoryGameUtils(prev => ({activity, source: "this-writer"}))
-    }
-    if (activity === "creating" && storyGameUtils.activity === "onboarding") {
-      setStoryGameUtils(prev => ({...prev, activity, source: "this-writer"}))
+    if (
+      (activity === "submitting" && storyGameUtils.activity === "creating") ||
+      (activity === "uploading" && storyGameUtils.activity === "submitting") ||
+      (activity === "" && storyGameUtils.activity === "uploading") ||
+      (activity === "onboarding" && storyGameUtils.activity === "") ||
+      (activity === "countdown" && storyGameUtils.activity === "onboarding") ||
+      (activity === "creating" && storyGameUtils.activity === "countdown")
+    ) {
+      setStoryGameUtils(prev => (activity === "uploading" && storyGameUtils.activity === "submitting") ?
+                        {...prev, activity, title, summary, story, checked, source: "this-writer"} :
+                        {...prev, activity, source: "this-writer"}
+        )
     }
   }, [currSentence, activity])
 
