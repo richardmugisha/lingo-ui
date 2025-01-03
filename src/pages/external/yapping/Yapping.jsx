@@ -136,7 +136,7 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
       }
       {activity ? <h3>Title: {title || '---No title yet!---'}</h3> : <></>}
       {
-        stories?.length && !activity ?
+        !activity ?
         <StoryCatalog 
           stories={stories}
           setSelected={setSelected} selected={selected}
