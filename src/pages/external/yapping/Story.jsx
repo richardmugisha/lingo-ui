@@ -2,11 +2,12 @@ import { useEffect, useState, useCallback } from 'react';
 import { removeKeywords } from './utils/sentenceAnalyzer';
 
 import { Button } from '@mui/material';
+import { STORY_MINIMUM_NUMBER_OF_SENTENCES } from "../../../constants/"
 
 import useTextToSpeech from './utils/useTextToSpeech';
 
 const Story = (
-  { isLeadAuthor,
+  { mode, isLeadAuthor,
     selectedWords, words,
     info, setInfo,
     story, 
@@ -105,7 +106,7 @@ const Story = (
             <p id='text-container' style={{padding: "1em 3em"}}>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               {
-                (activity === 'creating' && story) ? handleStoryDisplay(story).map(sentence => <span>{sentence}<br /></span>)
+                (activity === 'creating' && story) ? story.map(currS => currS.sentence).join(" ")  /*handleStoryDisplay(story).map((sentence, i) => <span key={i}>{sentence}<br /></span>)*/
                 : okAttempt
               }
             </p> 
@@ -192,7 +193,7 @@ const Story = (
               )
             }
             {
-                ((story?.length > -1 || (story?.length > 0 && words.length === 0)) && !currSentence.sentence && isLeadAuthor) &&
+                ((story?.length >= STORY_MINIMUM_NUMBER_OF_SENTENCES || (story?.length > 0 && words.length === 0)) && !currSentence.sentence && (isLeadAuthor || !mode)) &&
                 <Button
                   variant="contained" color='primary' disableElevation 
                   onClick={() => setActivity('submitting')}

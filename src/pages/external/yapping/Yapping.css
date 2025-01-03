@@ -90,7 +90,11 @@ h1 { font-size: xx-large;}
     margin-block: 1em;
     padding: 1em;
     background-color: beige;
-    width: min(90vw, 1000px);
+    /* width: min(90vw, 1000px); */
+    width: 80ch;
+    word-wrap: normal;
+    overflow-wrap: normal;
+    white-space: normal;
     border: 1px solid #345C70;
     border-radius: 1em;
     line-height: 2em;

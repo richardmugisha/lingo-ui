@@ -8,11 +8,11 @@ const StoryCatalog = ({ stories, setActivity, setTitle, setSummary, setStory, se
       setActivity('onboarding');
       setTitle('');
       setSummary("");
-      setStory('');
+      setStory([]);
     }
 
   return (
-    <div className='side side-wide'>
+    <div className='side side-wide story-catalog'>
       {stories?.length ?
         <>
           <div>
@@ -21,7 +21,7 @@ const StoryCatalog = ({ stories, setActivity, setTitle, setSummary, setStory, se
           <div className='side-pool titles'>
               {stories?.map((story, i) => (
                   <span
-                      key={story.title + i}
+                      key={i}
                       onClick={() => {
                           setSelected(i);
                       }}

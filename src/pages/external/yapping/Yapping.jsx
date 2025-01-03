@@ -32,7 +32,7 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
   const [title, setTitle] = useState(mode?.startsWith("game") ? storyGameUtils.title : "");
   const [summary, setSummary] = useState(mode?.startsWith("game") ? storyGameUtils.summary : "")
   const [checked, setChecked] = useState(false);
-  const [activity, setActivity] = useState(storyGameUtils.activity || ""); // creating or practicing
+  const [activity, setActivity] = useState(storyGameUtils?.activity || ""); // creating or practicing
   const [selected, setSelected] = useState(-1); // story index
   const [aiHelp, setAiHelp] = useState('');
   const [aiOptionsDisplay, setAiOptionsDisplay] = useState(false);
@@ -61,12 +61,13 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
   )
 
   useEffect(() => {
+    if (!mode?.startsWith("game")) return
     // console.log('about to change story', storyGameUtils, `activity: ${activity}`)
     const votedSentence = storyGameUtils.votedSentence;
     const titleDifferent = storyGameUtils?.title !== title
     const summaryDifferent = storyGameUtils?.summary !== summary
     const activityDifferent = (storyGameUtils.activity === "" || storyGameUtils.activity) && storyGameUtils.activity !== activity
-    if (!mode?.startsWith("game") || 
+    if (
         storyGameUtils?.source === "this-writer" || storyGameUtils.voting ||
         !(votedSentence || titleDifferent || summaryDifferent || activityDifferent)
     ) return
@@ -173,6 +174,7 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
       {
         ['creating', 'practicing', 'reading'].includes(activity) && story &&
         <Story 
+          mode={mode}
           isLeadAuthor={isLeadAuthor}
           selectedWords={selectedWords} words={words}
           info={info} setInfo={setInfo}
@@ -193,6 +195,7 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
       {
         activity === 'submitting' && 
         <Submission 
+          mode = {mode}
           isLeadAuthor={isLeadAuthor}
           title={title} setTitle={setTitle}
           story={story}

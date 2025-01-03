@@ -3,7 +3,7 @@ import "./Submission.css"
 import { Button } from "@mui/material"
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
-const Submission = ({isLeadAuthor, title, setTitle, story, checked, setChecked, handleSubmit}) => {
+const Submission = ({mode , isLeadAuthor, title, setTitle, story, checked, setChecked, handleSubmit}) => {
   const existingTitle = useRef(title)
   return (
     <div className="submission">
@@ -33,7 +33,7 @@ const Submission = ({isLeadAuthor, title, setTitle, story, checked, setChecked, 
       <p id="text-container">
         {story.map(sentenceObj => sentenceObj.sentence).join(' ')}
       </p>
-      { isLeadAuthor &&
+      { (isLeadAuthor || !mode) &&
         <Button
         className="submission--btn"
         variant="contained" color='primary' disableElevation

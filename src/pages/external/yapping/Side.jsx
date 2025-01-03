@@ -20,15 +20,16 @@ const Side = ({ stories, setWords, words, selectedWords, setSelectedWords, okAtt
     <div className={`side ${activity? '': "side-wide"}`}>
         <div>
           {{creating: story?.length < 3, practicing: okAttempt?.split('.')?.length < 3 }[activity] &&
-            <>
-              <p style={{color: "white"}}>{activity === 'practicing' ? 'Use the right word(s) from this set!' : selectedWords?.length === 0 && 'Pick the word(s) you are about to use!'}
+              <p style={{lineHeight: "3em"}}>
+                {activity === 'practicing' ? 
+                              'Use the right word(s) from this set!' : 
+                selectedWords?.length === 0 && 'Pick the word(s) you are about to use!'}
               </p> 
-            </> 
           }
         </div>
         <>
           {
-            <div className='side-pool word-pool'>
+            <div className='side-pool word-pool' style={{marginBottom: ".3em"}}>
             {(activity === 'practicing' ? wordSetToDisplay : words).map((word, i) => (
               <span 
                 onClick={() => { if (activity !== 'practicing') { setWords(words.filter((w, index) => index !== i)); setSelectedWords(prev => [...prev, words[i]]) } }} key={i}>

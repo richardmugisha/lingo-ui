@@ -5,4 +5,6 @@ export const
     TARGET_PERFECT_LEVEL = 8,
 
     AVERAGE_READING_SPEED_PER_CHAR = 68,  //milliseconds in 14 languages
-    READING_BONUS_TIME = 3000 //milli
+    READING_BONUS_TIME = 3000, //milli,
+
+    STORY_MINIMUM_NUMBER_OF_SENTENCES = 5

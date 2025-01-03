@@ -1,12 +1,13 @@
-.side-wide {
+.side-wide.story-catalog {
     align-items: center;
+    gap: 3em;
 }
 
 .side-wide .titles {
     flex-direction: row !important;
     flex-wrap: wrap;
     display: flex;
-    max-height: 65%;
+    max-height: 15em;
 }
 
 .side-wide .story--span {

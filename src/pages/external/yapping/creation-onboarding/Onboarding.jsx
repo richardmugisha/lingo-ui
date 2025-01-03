@@ -4,7 +4,6 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { Button } from '@mui/material';
 
 const Onboarding = ({words, mode, isLeadAuthor, setAiHelp, setAiOptionsDisplay, aiOptionsDisplay, aiHelp, title, setTitle, setActivity, summary, setSummary }) => {
-  console.log("we are onboarding")
   return (
     <div className='story-onboarding'>
       <h3>You are about to write a short story <br />using these words / expressions found in the deck</h3>
@@ -21,10 +20,10 @@ const Onboarding = ({words, mode, isLeadAuthor, setAiHelp, setAiOptionsDisplay, 
           </textarea>
       </span>
       {/*where the section would go if wasn't commented out*/}
-      {isLeadAuthor &&
+      {(isLeadAuthor || !mode) &&
         <Button
           variant="contained" color='primary' disableElevation
-          onClick={() => setActivity('countdown')}
+          onClick={() => setActivity(mode ? "countdown": "creating")}
         >
           Start
         </Button>

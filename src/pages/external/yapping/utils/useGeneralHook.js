@@ -73,8 +73,6 @@ const useGeneralHook = (
   }, [aiHelp, summary, title])
 
     const handleSubmit = () => {
-        // console.log(deckId);
-        setActivity("uploading");
         if (mode?.startsWith("game")) return;
         axios
           .post(`${API_BASE_URL}/cards/story-time/${deckId}`, { userId: !checked ? userId : null, story, title, words })
@@ -113,7 +111,6 @@ const useGeneralHook = (
             message: 'Thank you for selecting.\nIf you are satisfied with your selection, press > to write your next sentence',
           });
           
-          console.log(!currSentence.blanked)
           if (!currSentence.blanked) return () => window.addEventListener('keydown', handleApproval);
           // window.addEventListener('keydown', handleApproval);
           // return () => window.addEventListener('keydown', handleApproval);
@@ -129,7 +126,6 @@ const useGeneralHook = (
       }, [currSentence.blanked])
     
       const handleApproval = useCallback((e) => {
-        console.log(e)
         if ( e.type==="click" || e.key === 'ArrowRight') {
           partApproval();
           window.removeEventListener('keydown', handleApproval);
