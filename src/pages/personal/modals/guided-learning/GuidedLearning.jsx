@@ -9,59 +9,9 @@ import CardLearn from '../card-learn/CardLearn'
 import { useSelector } from 'react-redux'
 import usePageRefreshHandle from '../../../../utils/usePageRefreshHandle'
 
-const CHUNK_SIZE = 10       // Number of words to learn at a time
-const CHUNK_TARGET_MASTERY_LEVEL = 4; // level to reach before going to the next chunk
-const TARGET_PERFECT_LEVEL = 8
+import formatRouter from "./utils/formatRouter"
 
-const formatRouter = (level) => {
-  switch (level % TARGET_PERFECT_LEVEL) {
-    case 1: return  {
-      quizLength: 'short',
-      route: 'quiz-short-guess',
-      quizType: 'example'
-    }
-    case 2: return {
-      quizLength: 'long',
-      route: 'quiz-long-guess',
-      quizType: 'meaning'
-    }
-    case 3: return {
-      quizLength: 'long',
-      route: 'quiz-long-guess',
-      quizType: 'example'
-    }
-    case 4: return {
-      quizLength: 'short',
-      route: 'quiz-short-mcq',
-      quizType: 'meaning'
-    }
-    case 5: return {
-      quizLength: 'short',
-      route: 'quiz-short-mcq',
-      quizType: 'example'
-    }
-    case 6: return {
-      quizLength: 'long',
-      route: 'quiz-long-mcq',
-      quizType: 'meaning'
-    }
-    case 7: return {
-      quizLength: 'long',
-      route: 'quiz-long-mcq',
-      quizType: 'example'
-    }
-    case 8: return {
-      quizLength: 'short',
-      route: 'quiz-long-mcq',
-      quizType: 'synonym'
-    }
-    default: return {
-      quizLength: 'short',
-      route: 'quiz-short-guess',
-      quizType: 'meaning'
-    } 
-  }
-}
+import { CHUNK_SIZE, CHUNK_TARGET_MASTERY_LEVEL, TARGET_PERFECT_LEVEL } from "../../../../constants"
 
 const GuidedLearning = () => {
   const { _id: deckId, deckName, words, learning } = useSelector(state => state.deck.openDeck)
@@ -73,7 +23,7 @@ const GuidedLearning = () => {
     handleRefresh(deckId)
   }, [deckId])  
 
-
+  console.log(learning)
   useEffect(() => {
     if (userDecision) {
       setCraming(learning.level % CHUNK_TARGET_MASTERY_LEVEL === 0)
