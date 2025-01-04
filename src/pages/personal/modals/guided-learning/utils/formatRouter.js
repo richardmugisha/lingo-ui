@@ -1,4 +1,5 @@
 
+import { TARGET_PERFECT_LEVEL } from "../../../../../constants"
 
 export default (level) => {
     switch (level % TARGET_PERFECT_LEVEL) {

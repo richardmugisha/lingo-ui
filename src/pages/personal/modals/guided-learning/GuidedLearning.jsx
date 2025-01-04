@@ -11,7 +11,7 @@ import usePageRefreshHandle from '../../../../utils/usePageRefreshHandle'
 
 import formatRouter from "./utils/formatRouter"
 
-import { CHUNK_SIZE, CHUNK_TARGET_MASTERY_LEVEL, TARGET_PERFECT_LEVEL } from "../../../../constants"
+import {  CHUNK_SIZE, CHUNK_TARGET_MASTERY_LEVEL, TARGET_PERFECT_LEVEL } from "../../../../constants";
 
 const GuidedLearning = () => {
   const { _id: deckId, deckName, words, learning } = useSelector(state => state.deck.openDeck)
