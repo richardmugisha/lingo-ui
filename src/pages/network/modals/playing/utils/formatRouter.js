@@ -1,34 +1,41 @@
 export default (lev) => {
     const level = lev % 6
-    if (level === 0 ) return {
-      quizLength: 'short',
-      route: 'quiz-short-mcq',
-      quizType: 'meaning'
+    switch (level) {
+      case 0: return {
+              quizLength: 'short',
+              route: 'quiz-short-mcq',
+              quizType: 'meaning'
+            }
+      case 1: return {
+              quizLength: 'short',
+              route: 'quiz-short-mcq',
+              quizType: 'example'
+            }
+      case 2: return {
+              quizLength: 'long',
+              route: 'quiz-long-mcq',
+              quizType: 'meaning'
+            }
+      case 3:  return {
+              quizLength: 'long',
+              route: 'quiz-long-mcq',
+              quizType: 'example'
+            }
+      case 4:  return {
+              quizLength: 'short',
+              route: 'quiz-short-mcq',
+              quizType: 'synonym'
+            }
+      case 5: return {
+              quizLength: 'short',
+              route: 'quiz-short-mcq',
+              quizType: 'antonym'
+            }
+      default: return {
+              quizLength: 'short',
+              route: 'quiz-short-mcq',
+              quizType: 'meaning'
+            }
     }
-    if (level === 1) return {
-      quizLength: 'short',
-      route: 'quiz-short-mcq',
-      quizType: 'example'
-    }
-    if (level === 2) return {
-      quizLength: 'long',
-      route: 'quiz-long-mcq',
-      quizType: 'meaning'
-    }
-    if (level === 3) return {
-      quizLength: 'long',
-      route: 'quiz-long-mcq',
-      quizType: 'example'
-    }
-    if (level === 4) return {
-      quizLength: 'short',
-      route: 'quiz-long-mcq',
-      quizType: 'synonym'
-    }
-    if (level === 5) return {
-      quizLength: 'short',
-      route: 'quiz-short-mcq',
-      quizType: 'meaning'
-    }
-  }
+}
 

@@ -13,8 +13,8 @@ const CHUNK_SIZE = 10       // Number of words to learn at a time
 const CHUNK_TARGET_MASTERY_LEVEL = 4; // level to reach before going to the next chunk
 const TARGET_PERFECT_LEVEL = 8
 
-const formatRouter = (leve) => {
-  const level = 4;
+const formatRouter = (lev) => {
+  const level = lev % TARGET_PERFECT_LEVEL
   if (level < 1 ) return {
     quizLength: 'short',
     route: 'quiz-short-guess',
@@ -60,7 +60,6 @@ const formatRouter = (leve) => {
     route: 'quiz-long-mcq',
     quizType: 'synonym'
   }
-  else return formatRouter(level % TARGET_PERFECT_LEVEL)
 }
 
 const GuidedLearning = () => {
