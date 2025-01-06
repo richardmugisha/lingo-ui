@@ -50,7 +50,7 @@ const Story = (props) => {
             <article className="draft-story">
               {
                 story.map((currSentence, thisIndex) => (
-                  <span className={`draft-sentence ${currSentence.sentence === "\n" && "new-line"}`}>
+                  <span className={`draft-sentence ${currSentence.sentence === "\n" && "new-line"}`} key={thisIndex}>
                     { 
                       (thisIndex === sentenceIndex) ? 
                         attempt.map((word, i) => {

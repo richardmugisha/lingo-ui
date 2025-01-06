@@ -17,12 +17,17 @@ import Info from '../../../components/Info'
 const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => {
   const handleRefresh = usePageRefreshHandle()
   const { learning, _id: deckId, words: cards } = useSelector((state) => state.deck.openDeck);
-  const [words, setWords] = useState(cards) //(learning?.words?.map((wordObj) => wordObj.word)?.slice(0, 30) || []); // 30 words
+  // const [words, setWords] = useState(cards) //(learning?.words?.map((wordObj) => wordObj.word)?.slice(0, 30) || []); // 30 words
+  const [words, setWords] = useState(cards?.map((wordObj) => wordObj.word)?.slice(0, 30) || []); // 30 words
 
   // useEffect(() => {
   //   if (words.length) return
   //   setWords(cards.map((cardObj) => cardObj['related words'][Math.floor(Math.random() * cardObj['related words'].length)]).slice(0, 30))
   // }, [learning])
+  useEffect(() => {
+    if (words.length) return
+    setWords(cards.map(cards?.map((wordObj) => wordObj.word)?.slice(0, 30) || []))
+  }, [learning])
 
   useEffect(() => {
     handleRefresh(deckId)
