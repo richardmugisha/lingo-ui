@@ -1,6 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import { removeKeywords } from './sentenceAnalyzer';
 import useTextToSpeech from './useTextToSpeech';
+import { Button } from '@mui/material';
+import { STORY_MINIMUM_NUMBER_OF_SENTENCES } from "../../../../constants/"
+
 
 
 export default ({ 
@@ -85,6 +88,35 @@ export default ({
     }
   ,[currSentence])
 
+  const FinishButton = () => {
+    const chosenButton = {
+      text: "", whereTo: ""
+    }
+    if (activity === "creating") {
+      const passedMinCheck = story?.length >= STORY_MINIMUM_NUMBER_OF_SENTENCES; // The story has the minimum number of sentences
+      const wordsFinished = words.length === 0 && story?.length > 0 // words finished, but there is some story
+      const notWriting = !currSentence.sentence;
+      if ((passedMinCheck || wordsFinished) && (isLeadAuthor || !mode) && notWriting) {
+        chosenButton.text = "Submit story"
+        chosenButton.chosenActivity = "submitting"
+      }
+    } 
+    else if (activity === "reading") {
+      chosenButton.text = "Practice again"
+      chosenButton.chosenActivity = ""
+    }
+  
+    if (chosenButton.text) return (
+      <Button
+        variant="contained" color='primary' disableElevation 
+        onClick={() => setActivity(chosenButton.chosenActivity)}
+      >
+        {chosenButton.text}
+      </Button>
+    )
+    return null
+  }
+
   return {
     attempt, setAttempt, updateAttempt,
     correctSentence,
@@ -92,7 +124,8 @@ export default ({
     setCurrSentence, story, handleApproval, handlePartSelection, callUponAi, 
     selectedWords, isLeadAuthor, mode, words,
     sentenceIndex, setSentenceIndex, 
-    info
+    info,
+    FinishButton
   }
 
 }

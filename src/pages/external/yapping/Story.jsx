@@ -1,6 +1,5 @@
 
 import { Button } from '@mui/material';
-import { STORY_MINIMUM_NUMBER_OF_SENTENCES } from "../../../constants/"
 import useStory from './utils/useStory';
 
 const Story = (props) => {
@@ -11,9 +10,9 @@ const Story = (props) => {
     activity, setActivity, currSentence, 
     setCurrSentence, story, handleApproval, handlePartSelection, callUponAi, 
     selectedWords, isLeadAuthor, mode, words, sentenceIndex, setSentenceIndex,
-    info
+    info, FinishButton
   } = useStory(props)
-  console.log(sentenceIndex)
+  
   return (
     <div className="story">
         {
@@ -51,7 +50,7 @@ const Story = (props) => {
             <article className="draft-story">
               {
                 story.map((currSentence, thisIndex) => (
-                  <span className="draft-sentence">
+                  <span className={`draft-sentence ${currSentence.sentence === "\n" && "new-line"}`}>
                     { 
                       (thisIndex === sentenceIndex) ? 
                         attempt.map((word, i) => {
@@ -102,17 +101,7 @@ const Story = (props) => {
                 </Button> 
               )  
             }
-            {
-                ((story?.length >= STORY_MINIMUM_NUMBER_OF_SENTENCES || (story?.length > 0 && words.length === 0)) ||
-                (!currSentence.sentence || activity === "practicing" && sentenceIndex === story.length) && 
-                (isLeadAuthor || !mode)) &&
-                <Button
-                  variant="contained" color='primary' disableElevation 
-                  onClick={() => setActivity(activity === "creating" ? "submitting": "")}
-                >
-                  {activity === "creating" ? "Submit story" : "Practice again"}
-                </Button>
-            }
+            <FinishButton />
           </>
         }
         

@@ -19,8 +19,8 @@ const Side = ({ stories, setWords, words, selectedWords, setSelectedWords, okAtt
   return (
     <div className={`side ${activity? '': "side-wide"}`}>
         <div>
-          {{creating: story?.length < 3, practicing: okAttempt?.split('.')?.length < 3 }[activity] &&
-              <p style={{lineHeight: "3em"}}>
+          {{creating: story?.length < 3, practicing: okAttempt?.split('.')?.length < 2 }[activity] &&
+              <p>
                 {activity === 'practicing' ? 
                               'Use the right word(s) from this set!' : 
                 selectedWords?.length === 0 && 'Pick the word(s) you are about to use!'}
@@ -29,7 +29,7 @@ const Side = ({ stories, setWords, words, selectedWords, setSelectedWords, okAtt
         </div>
         <>
           {
-            <div className='side-pool word-pool' style={{marginBottom: ".3em"}}>
+            <div className='side-pool word-pool'>
             {(activity === 'practicing' ? wordSetToDisplay : words).map((word, i) => (
               <span 
                 onClick={() => { if (activity !== 'practicing') { setWords(words.filter((w, index) => index !== i)); setSelectedWords(prev => [...prev, words[i]]) } }} key={i}>
@@ -40,7 +40,7 @@ const Side = ({ stories, setWords, words, selectedWords, setSelectedWords, okAtt
           }
           {
             selectedWords.length > 0 &&
-            <div className='side-pool word-pool'>
+            <div className='side-pool word-pool selected'>
               {(selectedWords).map((word, i) => (
                 <span key={word+i}>{word}</span>
               ))}

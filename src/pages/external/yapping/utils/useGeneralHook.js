@@ -29,10 +29,8 @@ const useGeneralHook = (
     .then((res) => {
       const { stories } = res.data;
       setStories(() => {
-          // setActivity(stories.length === 0 ? 'creating': 'practicing'); 
           return stories
       })
-      // console.log(stories, res);
     })
     .catch((e) => console.log(e.msg));
   }, [deckId])
@@ -50,10 +48,6 @@ const useGeneralHook = (
 
   const handleSummarySubmit = useCallback((e) => {
     e.preventDefault();
-    // const summaryInput = document.getElementById('Yapping--summary').value;
-    // const titleInput = document.getElementById('Yapping--title').value;
-    // document.getElementById('Yapping--form').style.display = 'none'
-    // setSummary(summaryInput); setTitle(titleInput);
     if (aiHelp === 'Ai co-editor') {
       setInfo({exists: true, type: 'info', message: 'You can start writing the story. Hit Enter whenever you need a sentence from your assistant.'})
       return
@@ -61,9 +55,7 @@ const useGeneralHook = (
     axios.post(API_BASE_URL + '/cards/story-time/' + deckId, {userId, story, title, words, aiAssistance: aiHelp, summary: summaryInput})
          .then(({ data }) => {
             const story = data.story;
-            // console.log(story)
             setStories((prev) => {
-              // setActivity('practicing');
               setActivity('');
               setInfo({ type: 'success', message: 'Your story was created successfully! => ' + story.title, exists: true })
               return [...prev, story]
@@ -141,7 +133,14 @@ const useGeneralHook = (
 
       const callUponAi = useCallback((e) => {
         const key = e.key;
-        if (key === 'Enter') {
+        if (["Tab", "Enter"].includes(key)) e.preventDefault();
+        if (key === 'Tab') return setCurrSentence(prev => ({...prev, sentence: prev.sentence + "\t"}))
+        if (key === 'Enter') return setCurrSentence(prev => {
+          console.log(prev)
+          if (prev.sentence) return {...prev, sentence: prev.sentence + "\n"}; 
+          setStory(prev => [...prev, {sentence: "\n", blanked: "\n"}]); return prev
+        }) 
+        if (false) {
           if (!summary) {
             return setInfo({exists: true, type: 'warning', message: 'Enable your ai assistant to use it!'})
           }

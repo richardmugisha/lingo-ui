@@ -14,7 +14,7 @@
 
 .side > div:first-child > h1, .side > div:first-child > h3 {
     color: #345C70;
-    margin-bottom: .8em;
+    /* margin-bottom: .8em; */
 }
 
 .side > div:first-child > p {
@@ -25,6 +25,7 @@
     display: flex;
     flex-direction: column;
     max-height: 90dvh;
+    gap: 1em
 }
 
 .side-pool {
@@ -73,8 +74,8 @@
 .Yapping--info-danger { background-color: rgb(250, 115, 105) }
 
 h1 { font-size: xx-large;}
-.side .side-pool, textarea {
-    border: 1px solid ;
+
+textarea {
     padding: 1em;
 }
 
@@ -88,7 +89,7 @@ h1 { font-size: xx-large;}
 
 #text-container {
     text-align: start;
-    margin-block: 1em;
+    /* margin-block: 1em; */
     padding: 1em;
     background-color: beige;
     /* width: min(90vw, 1000px); */
@@ -113,7 +114,7 @@ textarea {
     font-weight: 500;
     color: #345C70;
     position: relative;
-    margin-top: 2em;
+    /* margin-top: 2em; */
 }
 
 .side span.story--span {
@@ -125,20 +126,23 @@ textarea {
 }
 
 .word-pool span {
-    background-color: rgb(184, 49, 28);
-    padding: .5em 1em;
-    color: white;
+    border: 1px solid rgba(184, 49, 28, .3);
+    padding: .2em 1em;
+    color: rgb(184, 49, 28);
     border-radius: 1em;
     cursor: pointer;
     text-wrap: nowrap;
 }
 
-.side .selected {
-    background-color: orange;
+.word-pool.selected span {
+    border: 1px solid rgba(24, 213, 24, 0.5);
+    color: green;
 }
 
 .side span:hover {
-    background-color: rgb(212, 87, 42);
+    background-color: rgb(184, 49, 28);
+    border: 1px solid whitesmoke;
+    color: whitesmoke;
 }
 
 .story > div {
@@ -169,11 +173,11 @@ textarea {
     border: 1px solid;
     border-radius: 1em;
     padding: 1em;
-    margin: 1em;
+    /* margin: 1em; */
 }
 
 .story input.attempt-input {
-    margin: .2em;
+    /* margin: .2em; */
     padding: .5em;
     border: 1px solid;
     border-radius: .5em;
@@ -220,15 +224,17 @@ textarea {
 
 .story article.draft-story {
     width: min(1000px, 90vw); /* Define container width */
-    line-height: 2; /* Adjust line height for readability */
+    line-height: 2.3; /* Adjust line height for readability */
     background-color :#f7eee4; /* Background color for container */
-    padding: 1em;
+    padding: 1em 2em;
     border: 1px solid #f7ce22;
     box-shadow: 0 0 1em #555 inset;
     overflow-y: auto;
     overflow-x: hidden;
     flex: 1 1 auto;
     text-align: start;
+    font-size: 1.2em !important;
+    /* text-indent: 5em; */
 }
 
 .story article.draft-story .draft-sentence{
@@ -239,8 +245,9 @@ textarea {
     padding: .2em;
     box-decoration-break: clone;
     font-family: Tahoma, sans-serif;
+    white-space: pre-wrap;
 }
-
+.story article.draft-story .draft-sentence.new-line {visibility: hidden}
 .story article.draft-story input.draft-sentence {
     font-size: inherit;
     color: inherit;
@@ -249,7 +256,7 @@ textarea {
     outline: none;
 }
 .story article.draft-story span.draft-sentence input {
-    font-size: medium;
+    font-size: inherit;
     color: inherit;
     field-sizing: content;
 }

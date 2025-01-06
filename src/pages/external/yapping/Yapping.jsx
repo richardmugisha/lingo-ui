@@ -121,7 +121,7 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
   return (
     <div className='Yapping'>
       {
-        {creating: story?.length < 3, practicing: okAttempt?.split('.')?.length < 3 }[activity] || !activity ?
+        {creating: story?.length < 3, practicing: okAttempt?.split('.')?.length < 2 }[activity] || !activity ?
         <h1>Story time</h1> : <></>
       }
       {info.exists && (
