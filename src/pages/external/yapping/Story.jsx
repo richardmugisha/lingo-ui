@@ -92,7 +92,7 @@ const Story = (props) => {
               }
             </article>
             {
-              (activity === "creating" && currSentence.blanked &&
+              (activity === "creating" &&
                 <Button 
                   variant="contained" color='primary' disableElevation 
                   onClick={handleApproval}

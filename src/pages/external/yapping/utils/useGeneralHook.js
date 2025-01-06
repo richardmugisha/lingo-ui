@@ -112,10 +112,10 @@ const useGeneralHook = (
     
       const partApproval = useCallback(() => {
         setInfo({ exists: false });
-        setStory((prev) => [...prev, currSentence] );
+        setStory((prev) => [...prev, {...currSentence, blanked: currSentence.blanked || currSentence.sentence}] );
         setCurrSentence({sentence: '', blanked: ''});
         setSelectedWords([])
-      }, [currSentence.blanked])
+      }, [currSentence])
     
       const handleApproval = useCallback((e) => {
         if ( e.type==="click" || e.key === 'ArrowRight') {
