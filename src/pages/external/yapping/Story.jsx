@@ -60,7 +60,7 @@ const Story = (props) => {
                             <input type='text'  value={['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? word.slice(0, word.length - 1) : word}
                               className='attempt-input'
                               onChange={e => updateAttempt(e, i)}
-                            />
+                            />&nbsp;
                             {['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? <label>{word[word.length - 1]} </label> : ''}
                           </span>
                           }

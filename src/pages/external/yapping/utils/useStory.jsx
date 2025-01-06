@@ -41,7 +41,10 @@ export default ({
         {cancel(); cheerSound.pause()}
   }, [voices]);
 
-  const sayIt = useCallback((script) => activity === 'creating' ? script.join(' ') : script && speak(script, voice), [activity, voice]);
+  const sayIt = useCallback((script) => {
+    const scriptToSpeak = activity === 'creating' ? script.join(' ') : script
+    setTimeout(() => speak(scriptToSpeak, voice), 5000)
+  }, [activity, voice]);
 
   useEffect(() => {
     if (activity === "creating") return;

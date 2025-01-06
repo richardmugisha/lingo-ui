@@ -164,7 +164,7 @@ const useGeneralHook = (
           if (current) {
             setTitle(current.title);
             setStory(current.story);
-            setWords(current.words)
+            // setWords(current.words)
             //console.log(current.story[0])
             setCurrSentence({...current.story[0], index: 0})
           }

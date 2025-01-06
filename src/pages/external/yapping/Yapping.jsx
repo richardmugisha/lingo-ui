@@ -25,9 +25,9 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
   //   setWords(cards.map((cardObj) => cardObj['related words'][Math.floor(Math.random() * cardObj['related words'].length)]).slice(0, 30))
   // }, [learning])
   useEffect(() => {
-    if (words.length) return
-    setWords(cards.map(cards?.map((wordObj) => wordObj.word)?.slice(0, 30) || []))
-  }, [learning])
+    if (words.length) return;
+    setWords(cards?.map(wordObj => wordObj.word)?.slice(0, 30) || [])
+  }, [cards])
 
   useEffect(() => {
     handleRefresh(deckId)
@@ -68,7 +68,6 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
 
   useEffect(() => {
     if (!mode?.startsWith("game")) return
-    // console.log('about to change story', storyGameUtils, `activity: ${activity}`)
     const votedSentence = storyGameUtils.votedSentence;
     const titleDifferent = storyGameUtils?.title !== title
     const summaryDifferent = storyGameUtils?.summary !== summary
@@ -89,7 +88,6 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
   }, [storyGameUtils])
 
   useEffect(() => {
-    // console.log(activity, storyGameUtils)
     if (!mode?.startsWith("game")) return
     if (currSentence.sentence && storyGameUtils.source !== "this-writer") {
       setStoryGameUtils(prev => ({...prev, source: "this-writer"})) // so that when story changes, can be exported to game
@@ -110,14 +108,12 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
   }, [currSentence, activity])
 
   useEffect(() => {
-    // console.log(title, summary, mode, storyGameUtils)
     if (mode?.startsWith("game") && (title || summary) && (storyGameUtils.title !== title || storyGameUtils.summary !== summary)) {
       setStoryGameUtils(prev => ({...prev, title, summary}))
     }
   }, [title, summary])
 
   useEffect(() => {
-    // console.log(mode, story, storyGameUtils)
     if (!mode?.startsWith("game")) return;
     if (storyGameUtils.source !== "this-writer") return;
     setStoryGameUtils(prev => ({...prev, currSentence: story[story.length - 1]}))

@@ -17,7 +17,7 @@ export const getKeywords = (fullSentenceSplit, blankedSentenceSplit, currSentenc
         const currBlank = blankedSentenceSplit[blankIndex]
         if (currWord !== currBlank) {
             let cont = currWord
-            console.log(blankedSentenceSplit[blankIndex + 1], blankIndex+1)
+            // console.log(blankedSentenceSplit[blankIndex + 1], blankIndex+1)
             if (blankIndex + 1 === blankedSentenceSplit.length) cont = fullSentenceSplit.slice(sentIndex, fullSentenceSplit.length).join(' ')
             else {
                 while ( !(blankedSentenceSplit[blankIndex+1] === fullSentenceSplit[sentIndex + 1] || sentIndex < fullSentenceSplit.length && ['_', '-', '['].includes(blankedSentenceSplit[blankIndex + 1][0]) )) {
