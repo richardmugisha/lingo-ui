@@ -82,6 +82,7 @@ h1 { font-size: xx-large;}
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 1em;
     flex: 1;
 }
 
@@ -179,17 +180,18 @@ textarea {
     background-color: rgb(242, 242, 227);
 }
 
-.side-pool::-webkit-scrollbar, textarea::-webkit-scrollbar, #text-container::-webkit-scrollbar {
+.side-pool::-webkit-scrollbar, textarea::-webkit-scrollbar, #text-container::-webkit-scrollbar, article.draft-story::-webkit-scrollbar {
     width: 5px; /* Set your desired width */
+    height: 5px;
 }
   
-.side-pool::-webkit-scrollbar-thumb, textarea::-webkit-scrollbar-thumb, #text-container::-webkit-scrollbar-thumb {
+.side-pool::-webkit-scrollbar-thumb, textarea::-webkit-scrollbar-thumb, #text-container::-webkit-scrollbar-thumb, article.draft-story::-webkit-scrollbar-thumb {
     background-color: rgb(66, 157, 185);
     border-radius: 6px; /* Set half of the scrollbar width to create a circular thumb */
 }
   
   /* Optional: You can style the track to add some visual cues */
-.side-pool::-webkit-scrollbar-track, textarea::-webkit-scrollbar-track, #text-container::-webkit-scrollbar-track {
+.side-pool::-webkit-scrollbar-track, textarea::-webkit-scrollbar-track, #text-container::-webkit-scrollbar-track, article.draft-story::-webkit-scrollbar-track {
     background-color: #cce1e4; /* Set your desired track color */
 }
 
@@ -215,3 +217,64 @@ textarea {
         height: 70%;
     }
   }
+
+.story article.draft-story {
+    width: min(1000px, 90vw); /* Define container width */
+    line-height: 2; /* Adjust line height for readability */
+    background-color :#f7eee4; /* Background color for container */
+    padding: 1em;
+    border: 1px solid #f7ce22;
+    box-shadow: 0 0 1em #555 inset;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1 1 auto;
+    text-align: start;
+}
+
+.story article.draft-story .draft-sentence{
+    display: inline; /* Treat spans as inline text */
+    background-color: #e7eaf6; /* Optional: Different background for spans */
+    margin-right: .5em;
+    border-radius: .3em;
+    padding: .2em;
+    box-decoration-break: clone;
+    font-family: Tahoma, sans-serif;
+}
+
+.story article.draft-story input.draft-sentence {
+    font-size: inherit;
+    color: inherit;
+    field-sizing: content;
+    border: none;
+    outline: none;
+}
+.story article.draft-story span.draft-sentence input {
+    font-size: medium;
+    color: inherit;
+    field-sizing: content;
+}
+.story article.draft-story span.draft-sentence input:focus {
+    animation: glow 1s  forwards infinite;
+}
+.story article.draft-story span.draft-sentence input::selection {
+    background-color: lightblue;
+}
+
+.story article.draft-story .draft-sentence:nth-of-type(odd) {
+    background: #c1dddd;
+}
+.story article.draft-story .draft-sentence:nth-of-type(even) {
+    background: #f5ddcf;
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 .2em #f7ce22;
+    }
+    50% {
+        box-shadow: 0 0 1em orange;
+    }
+    100% {
+        box-shadow: 0 0 .2em #f7ce22;
+    }
+}
