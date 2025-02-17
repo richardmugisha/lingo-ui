@@ -4,23 +4,25 @@ import axios from 'axios';
 import API_BASE_URL from "../../../../../serverConfig";
 
 const useGeneralHook = (
-  mode,
-  aiHelp, setAiHelp,
-  selected, setSelected,
-  currSentence, setCurrSentence, 
-  activity, setActivity, 
-  info, setInfo , 
-  deckId, 
-  checked, 
-  words, setWords,
-  setSelectedWords,
-  story, setStory,
-  title, setTitle, 
-  stories, setStories,
-  summary
-  ) => {
+  {
+    mode,
+    aiHelp, setAiHelp,
+    selected, setSelected,
+    currSentence, setCurrSentence, 
+    activity, setActivity, 
+    info, setInfo , 
+    deckId, 
+    checked, 
+    words, setWords,
+    selectedWords, setSelectedWords,
+    story, setStory,
+    title, setTitle, 
+    stories, setStories,
+    summary, attempt, setAttempt, correctSentence
+  }) => {
 
   const [userId] = useState(JSON.parse(localStorage.getItem('user')).userId);
+  const [winSound] = useState(new Audio("/sounds/win.wav"))
 
   useEffect(() => {
     if (!deckId || mode?.startsWith("game")) return
@@ -37,7 +39,7 @@ const useGeneralHook = (
 
   useEffect(() => {
     let timerId;
-    if (info.exists) {
+    if (info?.exists) {
       timerId = setTimeout(() => {
         setInfo({exists: false})
       }, 10000);
@@ -45,6 +47,36 @@ const useGeneralHook = (
 
     return () => clearTimeout(timerId)
   }, [info])
+
+  const updateAttempt = ({word, fillIndex, fillingMode}) => {
+      // const copyOfAttemptSplit = [...attempt]
+      // const wordAtThatIndex = copyOfAttemptSplit[indexOfAttemptedWord]
+      // let attemptedWord = e.target.value
+      // const wordLastCharacter = wordAtThatIndex[wordAtThatIndex.length - 1]
+      // const endsWithPunctuation = ['.', ',', ';', ']', '"', '!', '?', ')'].includes(wordAtThatIndex)
+      // attemptedWord += (endsWithPunctuation ? wordLastCharacter : '')
+      // copyOfAttemptSplit[indexOfAttemptedWord] = attemptedWord
+  
+      const blank = attempt.find(w => w.startsWith('____'))
+      const newAttempt = [...attempt];
+      const wordIndex =fillIndex || attempt.indexOf(blank) 
+      const correctWord = correctSentence[wordIndex];
+      if (correctWord === word || 
+            (['.', ',', ';', ']', '"', '!', '?', ')'].includes(correctWord[correctWord.length - 1]) && 
+              correctWord.slice(0, correctWord.length-1) === word
+            )
+          ) {
+        newAttempt[wordIndex] = correctSentence[wordIndex];
+        setAttempt(newAttempt)
+        winSound.play()
+      }
+      // if (attemptedWord === correctSentence[indexOfAttemptedWord]) {
+      // }
+      else if (fillingMode === "typing") {
+        newAttempt[fillIndex] = word;
+        setAttempt(newAttempt)
+      }
+    }
 
   const handleSummarySubmit = useCallback((e) => {
     e.preventDefault();
@@ -67,7 +99,7 @@ const useGeneralHook = (
     const handleSubmit = () => {
         if (mode?.startsWith("game")) return;
         axios
-          .post(`${API_BASE_URL}/cards/story-time/${deckId}`, { userId: !checked ? userId : null, story, title, words })
+          .post(`${API_BASE_URL}/cards/story-time/${deckId}`, { userId: !checked ? userId : null, story, title, words: selectedWords })
           .then((res) => {
             const { story } = res.data;
             console.log(story);
@@ -81,15 +113,34 @@ const useGeneralHook = (
           })
           .catch((e) => console.log(e.msg));
     };
+
+    const handleBlanksGen = ({ currSentence, words}) => {
+      const sentChunks = currSentence.sentence.split(" ");
+      const usedWords = []
+      const blanked = sentChunks.map(sentChunk => {
+        for (const word of words) {
+          const threshold = word.length / 2 > 4 ? word.length / 2 : 5
+          if ( sentChunk.slice(0, threshold).includes(word.slice(0, threshold))) {
+            usedWords.push(word);
+            return '-'.repeat(5)
+          }
+        }
+        return sentChunk
+      }).join(" ")
+
+      return { blanked, usedWords }
+    }
     
       useEffect(() => {
         // console.log(activity, currSentence)
-        if (activity === 'practicing' || !currSentence.sentence) return
+        if (activity === 'practicing' || !currSentence?.sentence) return
         if ( ['.', '?', '!'].includes(currSentence.sentence[currSentence.sentence.length - 1]) ) {
-          setInfo({ exists: true, type: 'warning', message: 'Select the part of this sentence that resembles one of the words in your deck',
-          });
+          // setInfo({ exists: true, type: 'warning', message: 'Select the part of this sentence that resembles one of the words in your deck',});
+          const { blanked, usedWords } = handleBlanksGen({currSentence, words})
+          partApproval({ ...currSentence, blanked})
+          setSelectedWords(prev => [...prev, ...usedWords])
         }
-      }, [currSentence.sentence, activity]);
+      }, [currSentence?.sentence, activity]);
     
       const handlePartSelection = useCallback(() => {
         if (activity === 'practicing' || !currSentence.sentence) return
@@ -103,19 +154,19 @@ const useGeneralHook = (
             message: 'Thank you for selecting.\nIf you are satisfied with your selection, press > to write your next sentence',
           });
           
-          if (!currSentence.blanked) return () => window.addEventListener('keydown', handleApproval);
+          // if (!currSentence.blanked) return () => window.addEventListener('keydown', handleApproval);
           // window.addEventListener('keydown', handleApproval);
           // return () => window.addEventListener('keydown', handleApproval);
         }
       }
     ,[currSentence, setCurrSentence, activity]);
     
-      const partApproval = useCallback(() => {
-        setInfo({ exists: false });
+      const partApproval = (currSentence) => {
+        // setInfo({ exists: false });
         setStory((prev) => [...prev, {...currSentence, blanked: currSentence.blanked || currSentence.sentence}] );
         setCurrSentence({sentence: '', blanked: ''});
-        setSelectedWords([])
-      }, [currSentence])
+        // setSelectedWords([])
+      }
     
       const handleApproval = useCallback((e) => {
         if ( e.type==="click" || e.key === 'ArrowRight') {
@@ -158,6 +209,7 @@ const useGeneralHook = (
       
     
       useEffect(() => {
+        if (!stories?.length) return;
           // console.log(stories.length, selected, !selected)
           if (stories.length && selected > -1)  setActivity('practicing'); 
           const current = stories[selected];
@@ -170,7 +222,7 @@ const useGeneralHook = (
           }
       }, [selected, stories]);
 
-      return { handlePartSelection, handleSubmit, handleSummarySubmit, callUponAi, handleApproval
+      return { handlePartSelection, handleSubmit, handleSummarySubmit, callUponAi, handleApproval, updateAttempt
       }
 }
 

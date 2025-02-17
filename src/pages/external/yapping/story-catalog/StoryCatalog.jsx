@@ -2,6 +2,7 @@
 import './StoryCatalog.css'
 import { Button } from "@mui/material"
 import { Add as AddIcon } from '@mui/icons-material';
+import { useEffect } from 'react';
 
 const StoryCatalog = ({ stories, setActivity, setTitle, setSummary, setStory, selected, setSelected }) => {
   const resetStory = () => {
@@ -10,6 +11,8 @@ const StoryCatalog = ({ stories, setActivity, setTitle, setSummary, setStory, se
       setSummary("");
       setStory([]);
     }
+  
+  useEffect(() => setSelected(-1), [])
 
   return (
     <div className='side side-wide story-catalog'>

@@ -5,7 +5,7 @@ import useStory from './utils/useStory';
 const Story = (props) => {
   
   const {
-    attempt, setAttempt, updateAttempt,
+    attempt, setAttempt,
     correctSentence, okAttempt, 
     activity, setActivity, currSentence, 
     setCurrSentence, story, handleApproval, handlePartSelection, callUponAi, 
@@ -19,7 +19,7 @@ const Story = (props) => {
           ['creating', 'practicing', 'reading'].includes(activity) &&
           <>
             <p className='sentence'>{
-                activity === 'creating' ? 
+                activity === 'creating-null' ? // making sure this doesn't happen because I plan to remove this on creating
                 currSentence.sentence && 
                 currSentence.sentence.split(' ')
                 .map((word, index) => 
@@ -59,7 +59,7 @@ const Story = (props) => {
                           <span key={word + i}>
                             <input type='text'  value={['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? word.slice(0, word.length - 1) : word}
                               className='attempt-input'
-                              onChange={e => updateAttempt(e, i)}
+                              onChange={ e => props.updateAttempt({word: e.target.value, fillIndex: i, fillingMode: "typing"}) }
                             />&nbsp;
                             {['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? <label>{word[word.length - 1]} </label> : ''}
                           </span>
@@ -74,15 +74,14 @@ const Story = (props) => {
                 ))
               }
               {
-                activity === "creating" && selectedWords.length > 0 &&
-                
+                activity === "creating" &&// selectedWords.length > 0 &&
                 <input type="text" className="draft-sentence"
-                  placeholder={`Type your sentence here using these words: ${selectedWords}`} name="" id="" autoFocus
+                  placeholder="Type your story here using the provided words" name="" id="" autoFocus
                   value={activity === 'creating' ? currSentence.sentence: attempt.join(' ') }
                   onChange={(e) => {
                     if (activity === 'creating') setCurrSentence((prev) => ({...prev, sentence: e.target.value}))
                     else if (activity === 'practicing') setAttempt(e.target.value.split(' '))
-                  }
+                    }
                   }
                   onKeyDown={callUponAi}
                   onMouseUp={() => handlePartSelection(currSentence, setCurrSentence)}
@@ -91,16 +90,6 @@ const Story = (props) => {
                 
               }
             </article>
-            {
-              (activity === "creating" &&
-                <Button 
-                  variant="contained" color='primary' disableElevation 
-                  onClick={handleApproval}
-                >
-                Submit sentence
-                </Button> 
-              )  
-            }
             <FinishButton />
           </>
         }

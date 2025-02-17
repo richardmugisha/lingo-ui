@@ -5,7 +5,6 @@ import { Button } from '@mui/material';
 import { STORY_MINIMUM_NUMBER_OF_SENTENCES } from "../../../../constants/"
 
 
-
 export default ({ 
     mode, isLeadAuthor,
     selectedWords, words,
@@ -18,12 +17,13 @@ export default ({
     aiOptionsDisplay, setAiOptionsDisplay, 
     setChecked, checked, handlePartSelection, 
     handleSubmit, setCurrSentence,
-    callUponAi, handleApproval
+    callUponAi, handleApproval,
+    attempt, setAttempt,
+    correctSentence, setCorrectSentence
   }) => {
     
-  const [attempt, setAttempt] = useState(currSentence.blanked?.split(' '))
-  const [correctSentence, setCorrectSentence] = useState(currSentence.sentence?.split(' '))
-  const [winSound] = useState(new Audio("/sounds/win.wav"))
+  // const [attempt, setAttempt] = useState(currSentence.blanked?.split(' '))
+  // const [correctSentence, setCorrectSentence] = useState(currSentence.sentence?.split(' '))
   const [cheerSound] = useState(new Audio("/sounds/cheer.wav"))
   const [sentenceIndex, setSentenceIndex] = useState(0);
 
@@ -33,6 +33,10 @@ export default ({
 
   useEffect(() => {
     if (activity == "creating") setSentenceIndex(story.length)
+    else {
+      setAttempt(currSentence.blanked?.split(' '));
+      setCorrectSentence(currSentence.sentence?.split(' '))
+    }
   }, [story])
 
   useEffect(() => {
@@ -47,7 +51,7 @@ export default ({
   }, [activity, voice]);
 
   useEffect(() => {
-    if (activity === "creating") return;
+    if (activity === "creating" || !attempt.length) return;
     const firstInput = document.getElementsByClassName('attempt-input')[0]
     firstInput?.focus()
     if (firstInput?.value?.startsWith('__')) firstInput.select()
@@ -67,19 +71,6 @@ export default ({
     }
   }, [attempt])
 
-  const updateAttempt = (e, indexOfAttemptedWord) => {
-    const copyOfAttemptSplit = [...attempt]
-    const wordAtThatIndex = copyOfAttemptSplit[indexOfAttemptedWord]
-    let attemptedWord = e.target.value
-    const wordLastCharacter = wordAtThatIndex[wordAtThatIndex.length - 1]
-    const endsWithPunctuation = ['.', ',', ';', ']', '"', '!', '?', ')'].includes(wordAtThatIndex)
-    attemptedWord += (endsWithPunctuation ? wordLastCharacter : '')
-    copyOfAttemptSplit[indexOfAttemptedWord] = attemptedWord
-    if (attemptedWord === correctSentence[indexOfAttemptedWord]) {
-      winSound.play()
-    }
-    setAttempt(copyOfAttemptSplit)
-  }
 
   useEffect(() => {
       if (!(activity === 'practicing')) return
@@ -121,7 +112,7 @@ export default ({
   }
 
   return {
-    attempt, setAttempt, updateAttempt,
+    attempt, setAttempt,
     correctSentence,
     okAttempt, activity, setActivity, currSentence, 
     setCurrSentence, story, handleApproval, handlePartSelection, callUponAi, 

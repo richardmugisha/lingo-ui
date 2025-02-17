@@ -1,11 +1,12 @@
 import React, { useState, useEffect} from 'react';
 
-import { Button } from "@mui/material"
-import { Add as AddIcon } from '@mui/icons-material';
-
 import shuffledNumbers from '../../../utils/shuffleArray';
 
-const Side = ({ stories, setWords, words, selectedWords, setSelectedWords, okAttempt, currSentence, setSelected, setActivity, activity, setTitle, story, setStory, selected, correctWordSet }) => {
+const Side = (
+  { stories, setWords, words, selectedWords, setSelectedWords, okAttempt, 
+    currSentence, setSelected, setActivity, activity, setTitle, story, setStory, selected, correctWordSet, updateAttempt
+  }) => {
+
   const [wordSetToDisplay, setWordSetToDisplay] = useState([])
   
   useEffect(() => {
@@ -19,7 +20,7 @@ const Side = ({ stories, setWords, words, selectedWords, setSelectedWords, okAtt
   return (
     <div className={`side ${activity? '': "side-wide"}`}>
         <div>
-          {{creating: story?.length < 3, practicing: okAttempt?.split('.')?.length < 2 }[activity] &&
+          {{creating: false, practicing: okAttempt?.split('.')?.length < 2 }[activity] &&
               <p>
                 {activity === 'practicing' ? 
                               'Use the right word(s) from this set!' : 
@@ -30,21 +31,15 @@ const Side = ({ stories, setWords, words, selectedWords, setSelectedWords, okAtt
         <>
           {
             <div className='side-pool word-pool'>
-            {(activity === 'practicing' ? wordSetToDisplay : words).map((word, i) => (
+            {(activity === 'practicing' ? wordSetToDisplay : words.filter(word => !selectedWords.includes(word))).map((word, i) => (
               <span 
-                onClick={() => { if (activity !== 'practicing') { setWords(words.filter((w, index) => index !== i)); setSelectedWords(prev => [...prev, words[i]]) } }} key={i}>
+                className={correctWordSet.includes(word) ? "right-word" : "wrong-word"}
+                onClick={e => activity === 'practicing' && updateAttempt({word}) } 
+                key={i}>
                 {word}
               </span>
             ))}
           </div>
-          }
-          {
-            selectedWords.length > 0 &&
-            <div className='side-pool word-pool selected'>
-              {(selectedWords).map((word, i) => (
-                <span key={word+i}>{word}</span>
-              ))}
-            </div> 
           }
         </>
       </div>

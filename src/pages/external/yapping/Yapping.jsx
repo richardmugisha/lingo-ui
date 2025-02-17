@@ -47,10 +47,14 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
   const [okAttempt, setOkAttempt] = useState("")
   const [isLeadAuthor, setIsLeadAuthor] = useState(isGameCreator)
 
+  const [attempt, setAttempt] = useState([])
+  const [correctSentence, setCorrectSentence] = useState([])
+  const [correctWordSet, setCorrectWordSet] = useState([])
+
   const [info, setInfo] = useState({ type: '', message: '', exists: false });
 
-  const { handlePartSelection, handleSubmit, handleSummarySubmit, callUponAi, handleApproval} = useGeneralHook(
-    mode,
+  const { handlePartSelection, handleSubmit, handleSummarySubmit, callUponAi, handleApproval, updateAttempt} = useGeneralHook(
+    {mode,
     aiHelp, setAiHelp,
     selected, setSelected,
     currSentence, setCurrSentence, 
@@ -59,11 +63,12 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
     deckId, 
     checked, 
     words, setWords,
-    setSelectedWords,
+    selectedWords, setSelectedWords,
     story, setStory,
     title, setTitle, 
     stories, setStories,
-    summary
+    summary, attempt, setAttempt, correctSentence
+  }
   )
 
   useEffect(() => {
@@ -114,6 +119,15 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
   }, [title, summary])
 
   useEffect(() => {
+    if (activity === 'practicing') 
+      setCorrectWordSet(
+        getKeywords(
+          currSentence.sentence?.split(' '), 
+          currSentence.blanked?.split(' ').filter(word => !['.', ',', ';', ']', '"', ')', '}', '?', '!'].includes(word)))
+      )
+  }, [currSentence])
+
+  useEffect(() => {
     if (!mode?.startsWith("game")) return;
     if (storyGameUtils.source !== "this-writer") return;
     setStoryGameUtils(prev => ({...prev, currSentence: story[story.length - 1]}))
@@ -155,11 +169,12 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
         words={words} setWords={setWords} 
         selectedWords={selectedWords} setSelectedWords={setSelectedWords}
         okAttempt={okAttempt}
-        currSentence={currSentence.sentence}
+        currSentence={currSentence}
         setSelected={setSelected} selected={selected}
         setActivity={setActivity} activity={activity} 
         story={story} setStory={setStory}
-        correctWordSet={activity === 'practicing' && getKeywords(currSentence.sentence?.split(' '), currSentence.blanked?.split(' ').filter(word => !['.', ',', ';', ']', '"', ')', '}', '?', '!'].includes(word)))}
+        correctWordSet={correctWordSet}
+        updateAttempt={updateAttempt}
         />
       }
       { activity==='onboarding' &&
@@ -192,6 +207,9 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
           handleSubmit={handleSubmit} 
           callUponAi={callUponAi}
           handleApproval={handleApproval}
+          attempt={attempt} setAttempt={setAttempt}
+          correctSentence={correctSentence} setCorrectSentence={setCorrectSentence}
+          updateAttempt={updateAttempt}
         />
       }
       {
