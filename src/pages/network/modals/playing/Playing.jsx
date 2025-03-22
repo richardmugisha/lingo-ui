@@ -7,6 +7,7 @@ import { initializeWebSocketConn } from "../../../../api/quiz-game/websocket"
 import WaitingRoom from "../waiting-room/WaitingRoom";
 
 import Yapping from "../../../external/yapping/Yapping";
+import Chat from "../../../external/yapping/chat-manager/Chat"
 
 import PlayingManager from "./components/playing-manager/PlayingManager";
 
@@ -29,7 +30,7 @@ const Playing = () => {
     const [players, setPlayers] = useState([])
     const [error, setError] = useState(null)
     const [status, setStatus] = useState(isCreator ? "creating" : "joining") // creating | joining | waiting | countdown | playing
-    const [storyGameUtils, setStoryGameUtils] = useState({activity: "onboarding"})
+    const [storyGameUtils, setStoryGameUtils] = useState({activity: "onboarding", words: deck.words?.map(wordObj => wordObj.word) || []})
 
     useEffect(() => {
       if (socketHasInitRef.current) return;
@@ -53,7 +54,7 @@ const Playing = () => {
           socket.send(
             JSON.stringify({
               method: "create",
-              payload: { playerID, playerName, avatar, typeOfGame },
+              payload: { playerID, playerName, avatar, typeOfGame, words: deck.words.map(wordObj => wordObj.word) },
             })
           );
         } else if (playerID && randomGame) {
@@ -80,10 +81,13 @@ const Playing = () => {
           setPlayers(payload.players)
           setStatus("waiting");
           setTypeOfGame(prev => payload.typeOfGame || prev)
+          setStoryGameUtils(prev => ({...prev, words: payload.words}))
         } else if (method === "waiting-room-update") {
           if (typeOfGame === "story") {
+            console.log(payload.words)
             if (payload.storyGameUtils?.title) setStoryGameUtils(prev => ({...prev, title: payload.storyGameUtils.title}))
             if (payload.storyGameUtils?.summary) setStoryGameUtils(prev => ({...prev, summary: payload.storyGameUtils.summary}))
+            setStoryGameUtils(prev => ({...prev, playerCount: payload.players.length}))
           } 
           setPlayers(prevPlayers => {
             if (payload.players?.length && prevPlayers.length !== payload.players?.length) return payload.players;
@@ -102,7 +106,6 @@ const Playing = () => {
 
       socket.addEventListener("message", handleMessage)
       
-      // console.log('being triggered')
       return () => {
         if (socket.readyState === WebSocket.OPEN) {
           console.log("closing socket")
@@ -140,26 +143,32 @@ const Playing = () => {
       socket.send(JSON.stringify({method: "command", payload: {command: "start", gameID}}))
     }
 
-    const StoryView = <Yapping isGameCreator={isCreator} mode={"game-onboarding"} 
+    const StoryView = <Yapping isGameCreator={isCreator} mode={"game-onboarding"} typeOfGame={typeOfGame}
                                 storyGameUtils={storyGameUtils} setStoryGameUtils={setStoryGameUtils}
                       />
+
+    const ChatView = <Chat 
+                        isGameCreator={isCreator} 
+                        mode={"chat"} storyGameUtils={storyGameUtils} 
+                        setStoryGameUtils={setStoryGameUtils}
+                    />
 
     return (
       <>
       {
         ["waiting", "creating", "joining"].includes(status) && storyGameUtils.activity === "onboarding" ?
         <>
-          { typeOfGame === "story" && StoryView}
+          { ["story", "chat"].includes(typeOfGame) && StoryView}
           <WaitingRoom typeOfGame={typeOfGame} players={players?.length ? players : []} isCreator={isCreator} gameID={gameID} handleStart={handleStart} error={error} playerID={playerID}/>
         </> :
         <> 
         {
           (status === "countdown" || storyGameUtils.activity === "countdown") ? <Counter status={status} setStatus={setStatus} storyGameUtils={storyGameUtils} setStoryGameUtils={setStoryGameUtils} /> :
-          deck.words.length ? 
+          (deck.words || storyGameUtils.words).length ? 
             <PlayingManager isCreator={isCreator} typeOfGame={typeOfGame} socket={socket} 
               deck={deck} gameID={gameID} playerID={playerID}
               storyGameUtils={storyGameUtils} setStoryGameUtils={setStoryGameUtils}
-              StoryView={StoryView}
+              StoryView={StoryView} ChatView={ChatView}
             /> 
             : <>Error getting the game set!</>  
         }

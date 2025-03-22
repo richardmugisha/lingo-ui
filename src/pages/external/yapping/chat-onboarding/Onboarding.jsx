@@ -6,15 +6,15 @@ import { Button } from '@mui/material';
 const Onboarding = ({words, mode, playerCount, isLeadAuthor, setAiHelp, setAiOptionsDisplay, aiOptionsDisplay, aiHelp, title, setTitle, setActivity, summary, setSummary }) => {
   return (
     <div className='story-onboarding'>
-      <h3>You are about to write a short story <br />using these words / expressions found in the deck</h3>
+      <h3>You are about to have a chat <br />using these words / expressions found in the deck</h3>
       <div className='side-pool word-pool'>{words.map((word, i) => <span key={i}> {word} </span>)}</div>
       <span>
           <input
-            type="text" name="" id="" placeholder='Title of the story' className='title' value={title || ""}
+            type="text" name="" id="" placeholder='Topic of the conversation' className='title' value={title || ""}
             onChange={(e) => setTitle(e.target.value)}
           />
           <textarea 
-            name="" id="Yapping--summary" placeholder='Brainstorm the summary here'
+            name="" id="Yapping--summary" placeholder='Draft an overview to guide the conversation'
             value={summary || ""} onChange={e => setSummary(e.target.value)}
             >
           </textarea>

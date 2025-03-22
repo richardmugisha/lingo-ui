@@ -50,7 +50,7 @@ const Story = (props) => {
             <article className="draft-story">
               {
                 story.map((currSentence, thisIndex) => (
-                  <span className={`draft-sentence ${currSentence.sentence === "\n" && "new-line"}`} key={thisIndex}>
+                  <span className={`draft-sentence ${currSentence.sentence !== "\n" ? "": "new-line"}`} key={thisIndex} style={{opacity: thisIndex > sentenceIndex ? .1: 1}}>
                     { 
                       (thisIndex === sentenceIndex) ? 
                         attempt.map((word, i) => {
@@ -76,7 +76,7 @@ const Story = (props) => {
               {
                 activity === "creating" &&// selectedWords.length > 0 &&
                 <input type="text" className="draft-sentence"
-                  placeholder="Type your story here using the provided words" name="" id="" autoFocus
+                  placeholder={story.length ? "": "Type your story here using the provided words"} name="" id="" autoFocus
                   value={activity === 'creating' ? currSentence.sentence: attempt.join(' ') }
                   onChange={(e) => {
                     if (activity === 'creating') setCurrSentence((prev) => ({...prev, sentence: e.target.value}))

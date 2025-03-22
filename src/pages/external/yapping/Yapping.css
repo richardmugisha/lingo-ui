@@ -1,10 +1,11 @@
 .Yapping {
     display: flex;
     gap: 1.5em;
-    width: 100%;
+    width: 95dvw;
     height: 100%;
     flex-direction: column;
     align-items: center;
+    padding: 1.5em !important;
 }
 
 .story {
@@ -240,22 +241,22 @@ textarea {
   }
 
 .story article.draft-story {
-    width: min(1000px, 90vw); /* Define container width */
+    width: min(700px, 90vw); /* Define container width */
     line-height: 2.3; /* Adjust line height for readability */
-    background-color :#f7eee4; /* Background color for container */
+    background-color :#f7eee461; 
     padding: 1em 2em;
-    border: 1px solid #f7ce22;
-    box-shadow: 0 0 1em #555 inset;
+    /* border: 1px solid #f7ce22; */
+    /* box-shadow: 0 0 1em #555; */
     overflow-y: auto;
     overflow-x: hidden;
     flex: 1 1 auto;
     text-align: start;
-    font-size: 1.2em !important;
+    font-size: 1.1em !important;
     /* text-indent: 5em; */
 }
 
 .story article.draft-story .draft-sentence{
-    display: inline; /* Treat spans as inline text */
+    display: inline; 
     background-color: #e7eaf6; /* Optional: Different background for spans */
     margin-right: .5em;
     border-radius: .3em;

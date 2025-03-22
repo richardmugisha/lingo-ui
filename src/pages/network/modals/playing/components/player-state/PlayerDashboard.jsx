@@ -24,7 +24,7 @@ const PlayerState = ({ playerInfo, thisPlayer }) => {
     const playerRankLabels = {1: '1st', 2: '2nd', 3: '3rd'}
     const defaultAvatar = "https://res.cloudinary.com/dtkxmg1yk/image/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/v1733702185/Flashcards/avatars/brandon-zacharias-ITo4f_z3wNM-unsplash_dkbftg.jpg"
   return (
-    <div className="player-state" key={playerID}>
+    <div className="player-state" key={playerID + playerName}>
         <div className="score">{playerScore}</div>
         <img src={playerAvatar || defaultAvatar} alt="player avatar" className="avatar"/>
         <div className="name-and-rank">

@@ -20,3 +20,18 @@ code {
   padding: 0;
   box-sizing: border-box;
 }
+
+*::-webkit-scrollbar, *::-webkit-scrollbar, *::-webkit-scrollbar, *::-webkit-scrollbar {
+  width: 5px; /* Set your desired width */
+  height: 5px;
+}
+
+*::-webkit-scrollbar-thumb, *::-webkit-scrollbar-thumb, *::-webkit-scrollbar-thumb, *::-webkit-scrollbar-thumb {
+  background-color: rgb(66, 157, 185);
+  border-radius: 6px; /* Set half of the scrollbar width to create a circular thumb */
+}
+
+/* Optional: You can style the track to add some visual cues */
+*::-webkit-scrollbar-track, *::-webkit-scrollbar-track, *::-webkit-scrollbar-track, *::-webkit-scrollbar-track {
+  background-color: #cce1e4; /* Set your desired track color */
+}

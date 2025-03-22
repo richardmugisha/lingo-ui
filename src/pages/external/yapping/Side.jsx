@@ -17,6 +17,8 @@ const Side = (
     }
   }, [correctWordSet])
 
+  console.log("words: ", words)
+
   return (
     <div className={`side ${activity? '': "side-wide"}`}>
         <div>

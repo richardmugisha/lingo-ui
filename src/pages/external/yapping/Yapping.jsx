@@ -3,6 +3,7 @@ import './Yapping.css';
 import Side from './Side';
 import StoryCatalog from './story-catalog/StoryCatalog';
 import Onboarding from './creation-onboarding/Onboarding';
+import ChatOnboarding  from './chat-onboarding/Onboarding';
 import Story from './Story';
 import Submission from './story-submission/Submission';
 
@@ -14,20 +15,20 @@ import usePageRefreshHandle from "../../../utils/usePageRefreshHandle"
 
 import Info from '../../../components/Info'
 
-const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => {
+const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator, typeOfGame }) => {
   const handleRefresh = usePageRefreshHandle()
-  const { learning, _id: deckId, words: cards } = useSelector((state) => state.deck.openDeck);
+  const { learning: deck, _id: deckId, words: cards } = useSelector((state) => state.deck.openDeck);
   // const [words, setWords] = useState(cards) //(learning?.words?.map((wordObj) => wordObj.word)?.slice(0, 30) || []); // 30 words
-  const [words, setWords] = useState(cards?.map((wordObj) => wordObj.word)?.slice(0, 30) || []); // 30 words
+  const [words, setWords] = useState( storyGameUtils?.words || deck.words?.map((wordObj) => wordObj.word)?.slice(0, 20) || [] ); // 20 words
 
   // useEffect(() => {
   //   if (words.length) return
   //   setWords(cards.map((cardObj) => cardObj['related words'][Math.floor(Math.random() * cardObj['related words'].length)]).slice(0, 30))
   // }, [learning])
   useEffect(() => {
-    if (words.length) return;
-    setWords(cards?.map(wordObj => wordObj.word)?.slice(0, 30) || [])
-  }, [cards])
+    if (mode?.startsWith("game")) return;
+    setWords(deck.words?.map(wordObj => wordObj.word)?.slice(0, 20) || [])
+  }, [deck])
 
   useEffect(() => {
     handleRefresh(deckId)
@@ -76,6 +77,8 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
     const votedSentence = storyGameUtils.votedSentence;
     const titleDifferent = storyGameUtils?.title !== title
     const summaryDifferent = storyGameUtils?.summary !== summary
+    if (storyGameUtils.activity === "onboarding" && storyGameUtils.words) setWords(storyGameUtils.words)
+    console.log(storyGameUtils)
     const activityDifferent = (storyGameUtils.activity === "" || storyGameUtils.activity) && storyGameUtils.activity !== activity
     if (
         storyGameUtils?.source === "this-writer" || storyGameUtils.voting ||
@@ -91,6 +94,9 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
     if (activityDifferent) setActivity(storyGameUtils.activity)
     if (storyGameUtils.activity === "") setStories(prev => [...prev, storyGameUtils.story])
   }, [storyGameUtils])
+
+  
+  console.log(words)
 
   useEffect(() => {
     if (!mode?.startsWith("game")) return
@@ -150,7 +156,7 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
           <input type="submit" value='Start' className='Yapping--button'/>
         </form>
       }
-      {activity ? <h3>Title: {title || '---No title yet!---'}</h3> : <></>}
+      {(activity && title) ? <h3>Title: {title}</h3> : <></>}
       {
         !activity ?
         <StoryCatalog 
@@ -177,9 +183,21 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
         updateAttempt={updateAttempt}
         />
       }
-      { activity==='onboarding' &&
+      { activity==='onboarding' && (
+        !typeOfGame || typeOfGame === "story" ? 
         <Onboarding 
           isLeadAuthor={isLeadAuthor}
+          playerCount = {storyGameUtils?.playerCount || 0}
+          words={words} mode={mode}
+          setAiHelp={setAiHelp} aiHelp={aiHelp}
+          title={title} setTitle={setTitle}
+          aiOptionsDisplay={aiOptionsDisplay} setAiOptionsDisplay={setAiOptionsDisplay}
+          setActivity={setActivity}
+          summary={summary} setSummary={setSummary}
+        /> :
+        <ChatOnboarding 
+          isLeadAuthor={isLeadAuthor}
+          playerCount = {storyGameUtils?.playerCount || 0}
           words={words} mode={mode}
           setAiHelp={setAiHelp} aiHelp={aiHelp}
           title={title} setTitle={setTitle}
@@ -187,6 +205,8 @@ const Yapping = ({ mode, storyGameUtils, setStoryGameUtils, isGameCreator }) => 
           setActivity={setActivity}
           summary={summary} setSummary={setSummary}
         />
+      )
+        
       }
       {
         ['creating', 'practicing', 'reading'].includes(activity) && story &&

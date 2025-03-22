@@ -5,7 +5,7 @@ import formatRouter from "../../utils/formatRouter"
 
 import { useState, useEffect } from "react";
 
-const PlayingManager = ({ typeOfGame, socket, deck, gameID, playerID, storyGameUtils, setStoryGameUtils, StoryView }) => {
+const PlayingManager = ({ typeOfGame, socket, deck, gameID, playerID, storyGameUtils, setStoryGameUtils, StoryView, ChatView }) => {
     // console.log("....Playing")
     if (!socket) return
     const [afterUpdateFunc, setAfterUpdateFunc ] = useState(null)
@@ -69,7 +69,9 @@ const PlayingManager = ({ typeOfGame, socket, deck, gameID, playerID, storyGameU
             formatRouter={formatRouter} setUserDecision={''} 
             handlePlay={handlePlay}
           /> :
-          StoryView
+          typeOfGame === "story" ?
+          StoryView :
+          ChatView
           // <Yapping isGameCreator={isCreator} mode={"game-creating"} storyGameUtils={storyGameUtils} setStoryGameUtils={setStoryGameUtils}/>
         }
         {

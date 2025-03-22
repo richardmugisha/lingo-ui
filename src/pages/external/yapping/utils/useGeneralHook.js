@@ -115,7 +115,7 @@ const useGeneralHook = (
     };
 
     const handleBlanksGen = ({ currSentence, words}) => {
-      const sentChunks = currSentence.sentence.split(" ");
+      const sentChunks = currSentence.sentence.toLowerCase().trim().split(" ");
       const usedWords = []
       const blanked = sentChunks.map(sentChunk => {
         for (const word of words) {
