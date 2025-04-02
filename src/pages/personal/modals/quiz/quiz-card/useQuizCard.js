@@ -13,8 +13,9 @@ import { AVERAGE_READING_SPEED_PER_CHAR, READING_BONUS_TIME as BONUS_TIME } from
 const enteringAudio = new Audio('/sounds/woosh.wav')
 const tickAudio = new Audio('/sounds/tick-tock.wav')
 
-const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order, deckLearnChunk, mode, formatRouter, handlePlay) => {
-    const { _id: deckId, words: deck } = useSelector(state => state.deck.openDeck)
+const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order, deckLearnChunk, mode, formatRouter, handlePlay, deckId, deck) => {
+    // const { _id: deckId, words: deck } = useSelector(state => state.deck.openDeck)
+    // console.log(deckId, deck)
     const [card, setCard] = useState(deckLearnChunk[0]);
     const [correctOption, setCorrectOption] = useState(null);
     const [selectedItem, setSelectedItem] = useState({});
@@ -96,7 +97,7 @@ const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order
             formatted.label0 + formatted.label1 + formatted.options?.reduce((acc, curr) => acc + (quizLength === 'long' ? curr[quizType] : curr.word), '') :
             labels[quizLength][quizType]  + formatted.question + formatted.answer
           setCardTime(totalChars.length * AVERAGE_READING_SPEED_PER_CHAR + BONUS_TIME)
-          console.log(formatted, '......formatted')
+          //console.log(formatted, '......formatted')
           setCardFormat(prev => ({...format, ...formatted}))
         }
         setOptionArray(formatted.options)
@@ -115,7 +116,7 @@ const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order
             clearInterval(interval); return prev
           }
           const percentage = prev + stepTime * 100 * 1000 / cardTime 
-          // console.log(`percentage: ${percentage}`)
+          // //console.log(`percentage: ${percentage}`)
           if (percentage > 100) {
             if ( !(hasPlayed.current || quizDone) ) handleItemClick({value: 'no selection because of timeout'}, false);  // true on automatic for toks, otherwise, false
             clearInterval(interval)

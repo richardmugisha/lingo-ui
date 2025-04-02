@@ -3,28 +3,28 @@ import { Button } from '@mui/material';
 import useStory from './utils/useStory';
 
 const Story = (props) => {
-  
+
   const {
+    storySettings, setStorySettings,
     attempt, setAttempt,
-    correctSentence, okAttempt, 
-    activity, setActivity, currSentence, 
-    setCurrSentence, story, handleApproval, handlePartSelection, callUponAi, 
-    selectedWords, isLeadAuthor, mode, words, sentenceIndex, setSentenceIndex,
+    correctSentence, 
+    handlePartSelection, callUponAi, 
     info, FinishButton
   } = useStory(props)
   
+
   return (
     <div className="story">
         {
-          ['creating', 'practicing', 'reading'].includes(activity) &&
+          ['create', 'practice', 'read'].includes(storySettings.mode) &&
           <>
             <p className='sentence'>{
-                activity === 'creating-null' ? // making sure this doesn't happen because I plan to remove this on creating
-                currSentence.sentence && 
-                currSentence.sentence.split(' ')
+                storySettings.mode === 'creating-null' ? // making sure this doesn't happen because I plan to remove this on creating
+                storySettings.sentenceInPractice.sentence && 
+                storySettings.sentenceInPractice.sentence.split(' ')
                 .map((word, index) => 
-                    <label key={word + currSentence.sentence[index - 1] + currSentence.sentence[index + 1]}>
-                      <span style={{background: currSentence.blanked && !currSentence.blanked.includes(word) && 'yellow'}}>{word}</span>
+                    <label key={word + storySettings.sentenceInPractice.sentence[index - 1] + storySettings.sentenceInPractice.sentence[index + 1]}>
+                      <span style={{background: storySettings.sentenceInPractice.blanked && !storySettings.sentenceInPractice.blanked.includes(word) && 'yellow'}}>{word}</span>
                       &nbsp;
                     </label>
                 ) 
@@ -49,10 +49,10 @@ const Story = (props) => {
             </p>
             <article className="draft-story">
               {
-                story.map((currSentence, thisIndex) => (
-                  <span className={`draft-sentence ${currSentence.sentence !== "\n" ? "": "new-line"}`} key={thisIndex} style={{opacity: thisIndex > sentenceIndex ? .1: 1}}>
+                storySettings.details.map((currSentence, thisIndex) => (
+                  <span className={`draft-sentence ${currSentence.sentence !== "\n" ? "": "new-line"}`} key={thisIndex} style={{opacity: thisIndex > storySettings.sentenceIndex ? .1: 1}}>
                     { 
-                      (thisIndex === sentenceIndex) ? 
+                      (thisIndex == storySettings.sentenceIndex) ? 
                         attempt.map((word, i) => {
                           return word === correctSentence[i] ?
                           <label key={word + i}>{word} </label>: 
@@ -67,24 +67,25 @@ const Story = (props) => {
                       ) 
                       :
                       (
-                        thisIndex < sentenceIndex ? currSentence.sentence : currSentence.blanked
+                        thisIndex < storySettings.sentenceIndex ? currSentence.sentence : currSentence.blanked
                       )
                     }
                   </span>
                 ))
               }
+              
               {
-                activity === "creating" &&// selectedWords.length > 0 &&
+                storySettings.state.mode === "create" &&// selectedWords.length > 0 &&
                 <input type="text" className="draft-sentence"
-                  placeholder={story.length ? "": "Type your story here using the provided words"} name="" id="" autoFocus
-                  value={activity === 'creating' ? currSentence.sentence: attempt.join(' ') }
+                  placeholder={storySettings.details.length ? "": "Type your story here using the provided words"} name="" id="" autoFocus
+                  value={storySettings.state.mode === 'create' ? storySettings.state.sentenceInProgress?.sentence: attempt.join(' ') }
                   onChange={(e) => {
-                    if (activity === 'creating') setCurrSentence((prev) => ({...prev, sentence: e.target.value}))
-                    else if (activity === 'practicing') setAttempt(e.target.value.split(' '))
+                    if (storySettings.state.mode === 'create') setStorySettings((prev) => prev.rebuild({ sentenceInProgress: { sentence: e.target.value } }))
+                    else if (storySettings.state.mode === 'practice') setAttempt(e.target.value.split(' '))
                     }
                   }
                   onKeyDown={callUponAi}
-                  onMouseUp={() => handlePartSelection(currSentence, setCurrSentence)}
+                  // onMouseUp={() => handlePartSelection()}
                   readOnly={info.exists && info.type === 'warning'}
                 />
                 
