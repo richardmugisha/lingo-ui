@@ -2,21 +2,24 @@ import { useRef } from "react";
 import "./Submission.css"
 import { Button } from "@mui/material"
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import StorySetup from "../utils/storySettings";
 
-const Submission = ({mode , isLeadAuthor, title, setTitle, story, checked, setChecked, handleSubmit}) => {
-  const existingTitle = useRef(title)
+const Submission = ({storySettings, setStorySettings, externalSource,
+                    gameInfo, setGameInfo, userID,
+                    checked, setChecked, handleSubmit}) => {
+  const existingTitle = useRef(storySettings.title)
   return (
     <div className="submission">
       <h3><AutoAwesomeIcon />Final touches</h3>
       <>
         {
-            existingTitle.current ?
-            <h3>Title: {existingTitle.current}</h3> :
+            !(existingTitle.current || gameInfo.creator !== userID) &&
+            // <h3>Title: {storySettings.title}</h3> :
             <span>
               <label htmlFor="">Complete the title</label>
               <input
                   type="text" name="" id="" placeholder='Title of the story' className='title'
-                  onChange={(e) => setTitle(e.target.value)}
+                  onChange={(e) => setStorySettings(prev => prev.rebuild({ title: e.target.value }))}
               />
             </span>
         }
@@ -31,13 +34,13 @@ const Submission = ({mode , isLeadAuthor, title, setTitle, story, checked, setCh
       </span>
       <h4>Your story</h4>
       <p id="text-container">
-        {story.map(sentenceObj => sentenceObj.sentence).join(' ')}
+        {storySettings.details.map(sentenceObj => sentenceObj.sentence).join(' ')}
       </p>
-      { (isLeadAuthor || !mode) &&
+      { !externalSource && storySettings.title &&
         <Button
         className="submission--btn"
         variant="contained" color='primary' disableElevation
-        onClick={handleSubmit}
+        onClick={() => gameInfo ? setStorySettings(prev => prev.rebuild({step: "uploading"})) : handleSubmit()}
       >
         Submit Story
       </Button>

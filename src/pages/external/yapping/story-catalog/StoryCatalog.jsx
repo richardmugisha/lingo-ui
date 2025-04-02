@@ -1,34 +1,59 @@
 
 import './StoryCatalog.css'
 import { Button } from "@mui/material"
-import { Add as AddIcon } from '@mui/icons-material';
-import { useEffect } from 'react';
+import { Add as AddIcon, Summarize } from '@mui/icons-material';
+import { useEffect, useState } from 'react';
 
-const StoryCatalog = ({ stories, setActivity, setTitle, setSummary, setStory, selected, setSelected }) => {
+import { fetchAllStories } from '../../../../api/http';
+
+
+const StoryCatalog = ({ deckId, setStorySettings, gameInfo }) => {
+
   const resetStory = () => {
-      setActivity('onboarding');
-      setTitle('');
-      setSummary("");
-      setStory([]);
+      setStorySettings( prev => prev.rebuild({ 
+        title: "", summary: "",
+        mode: "create", step: "onboarding", details: [], 
+        sentenceInProgress: {sentence: "", blanked: ""},
+        sentenceIndex: 0,
+      }) )
     }
   
-  useEffect(() => setSelected(-1), [])
+  // useEffect(() => setSelected(-1), [])
 
+  const [ stories, setStories ] = useState(gameInfo?.stories || [])
+
+  useEffect(() => {
+    if (!deckId || gameInfo) return
+    fetchAllStories(deckId).then(setStories)
+                    .catch((e) => console.log(e.msg));
+  }, [deckId])
+
+  setStorySettings(prev => {
+    //console.log(prev.mode, prev.step);
+    return prev
+  })
+  
   return (
     <div className='side side-wide story-catalog'>
-      {stories?.length ?
+      {stories.length ?
         <>
           <div>
-            <p>Pick a story to practice with</p>
+            <p>Pick a story to practice with </p>
           </div>
           <div className='side-pool titles'>
               {stories?.map((story, i) => (
                   <span
                       key={i}
-                      onClick={() => {
-                          setSelected(i);
-                      }}
-                      className={`story--span ${selected === story.title ? 'selected' : ''}`}
+                      onClick={() => gameInfo ||
+                          setStorySettings( prev => prev.rebuild(
+                            {
+                              ...story,
+                              mode: "practice",
+                              step: "practice",
+                            }
+                          ))
+                      }
+                      className="story--span"
                   >
                   {story.title}
                   </span>

@@ -9,7 +9,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 
 import axios from 'axios';
-import API_BASE_URL from '../serverConfig'
+import { httpEndpoint } from '../serverConfig'
 const token = localStorage.getItem('token');
 const user = localStorage.getItem('user')
 import { useState, useEffect } from 'react';
@@ -19,7 +19,7 @@ function App() {
   const [userAuthed, setUserAuthed] = useState((token && user) ? true : false); 
   useEffect(() => {
     if (token) {
-      axios.get(`${API_BASE_URL}/protected-route`, {
+      axios.get(`${ httpEndpoint }/protected-route`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       .then(res => {
@@ -28,7 +28,7 @@ function App() {
         }
       )
       .catch((error) => {
-        console.log('error: ', error)
+        //console.log('error: ', error)
         if (error.message !== 'Network Error') setUserAuthed(false);
         if (error.message === 'Invalid or expired token') localStorage.removeItem('user')
       });

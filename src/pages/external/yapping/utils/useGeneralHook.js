@@ -1,41 +1,28 @@
 import { useCallback, useEffect, useState } from "react";
 
 import axios from 'axios';
-import API_BASE_URL from "../../../../../serverConfig";
+import { httpEndpoint } from "../../../../../serverConfig";
+
+import fetchAll from "../../../../api/http/story/fetchAll";
+
+import StorySetup from "./storySettings";
 
 const useGeneralHook = (
   {
+    storySettings, setStorySettings,
     mode,
-    aiHelp, setAiHelp,
-    selected, setSelected,
-    currSentence, setCurrSentence, 
-    activity, setActivity, 
     info, setInfo , 
     deckId, 
     checked, 
-    words, setWords,
+    words,
     selectedWords, setSelectedWords,
-    story, setStory,
-    title, setTitle, 
-    stories, setStories,
+    story, title,
     summary, attempt, setAttempt, correctSentence
   }) => {
 
   const [userId] = useState(JSON.parse(localStorage.getItem('user')).userId);
   const [winSound] = useState(new Audio("/sounds/win.wav"))
 
-  useEffect(() => {
-    if (!deckId || mode?.startsWith("game")) return
-    axios
-    .get(`${API_BASE_URL}/cards/story-time/${deckId}`)
-    .then((res) => {
-      const { stories } = res.data;
-      setStories(() => {
-          return stories
-      })
-    })
-    .catch((e) => console.log(e.msg));
-  }, [deckId])
 
   useEffect(() => {
     let timerId;
@@ -49,14 +36,7 @@ const useGeneralHook = (
   }, [info])
 
   const updateAttempt = ({word, fillIndex, fillingMode}) => {
-      // const copyOfAttemptSplit = [...attempt]
-      // const wordAtThatIndex = copyOfAttemptSplit[indexOfAttemptedWord]
-      // let attemptedWord = e.target.value
-      // const wordLastCharacter = wordAtThatIndex[wordAtThatIndex.length - 1]
-      // const endsWithPunctuation = ['.', ',', ';', ']', '"', '!', '?', ')'].includes(wordAtThatIndex)
-      // attemptedWord += (endsWithPunctuation ? wordLastCharacter : '')
-      // copyOfAttemptSplit[indexOfAttemptedWord] = attemptedWord
-  
+    
       const blank = attempt.find(w => w.startsWith('____'))
       const newAttempt = [...attempt];
       const wordIndex =fillIndex || attempt.indexOf(blank) 
@@ -70,46 +50,22 @@ const useGeneralHook = (
         setAttempt(newAttempt)
         winSound.play()
       }
-      // if (attemptedWord === correctSentence[indexOfAttemptedWord]) {
-      // }
+      
       else if (fillingMode === "typing") {
         newAttempt[fillIndex] = word;
         setAttempt(newAttempt)
       }
     }
 
-  const handleSummarySubmit = useCallback((e) => {
-    e.preventDefault();
-    if (aiHelp === 'Ai co-editor') {
-      setInfo({exists: true, type: 'info', message: 'You can start writing the story. Hit Enter whenever you need a sentence from your assistant.'})
-      return
-    }
-    axios.post(API_BASE_URL + '/cards/story-time/' + deckId, {userId, story, title, words, aiAssistance: aiHelp, summary: summaryInput})
-         .then(({ data }) => {
-            const story = data.story;
-            setStories((prev) => {
-              setActivity('');
-              setInfo({ type: 'success', message: 'Your story was created successfully! => ' + story.title, exists: true })
-              return [...prev, story]
-            });
-            setAiHelp('')
-          })
-  }, [aiHelp, summary, title])
-
     const handleSubmit = () => {
+        const { title, summary, details } = storySettings;
         if (mode?.startsWith("game")) return;
         axios
-          .post(`${API_BASE_URL}/cards/story-time/${deckId}`, { userId: !checked ? userId : null, story, title, words: selectedWords })
+          .post(`${ httpEndpoint }/cards/story-time/${deckId}`, { userId: !checked ? userId : null, details, title, words: selectedWords })
           .then((res) => {
             const { story } = res.data;
-            console.log(story);
-            setStories((prev) => {
-              // setActivity('practicing');
-              setActivity('');
-              setInfo({ type: 'success', message: 'Your story was created successfully! => ' + story.title, exists: true })
-              return [...prev, story]
-            });
-            setAiHelp('')
+            setInfo({ type: 'success', message: 'Your story was created successfully! => ' + story.title, exists: true })
+            setStorySettings(new StorySetup({ step: "catalog" }))
           })
           .catch((e) => console.log(e.msg));
     };
@@ -132,40 +88,24 @@ const useGeneralHook = (
     }
     
       useEffect(() => {
-        // console.log(activity, currSentence)
-        if (activity === 'practicing' || !currSentence?.sentence) return
+        if (!storySettings?.sentenceInProgress) return
+        const currSentence = storySettings.sentenceInProgress
+        if (storySettings.mode === 'practice' || !currSentence?.sentence) return
         if ( ['.', '?', '!'].includes(currSentence.sentence[currSentence.sentence.length - 1]) ) {
-          // setInfo({ exists: true, type: 'warning', message: 'Select the part of this sentence that resembles one of the words in your deck',});
           const { blanked, usedWords } = handleBlanksGen({currSentence, words})
           partApproval({ ...currSentence, blanked})
           setSelectedWords(prev => [...prev, ...usedWords])
         }
-      }, [currSentence?.sentence, activity]);
-    
-      const handlePartSelection = useCallback(() => {
-        if (activity === 'practicing' || !currSentence.sentence) return
-        if ( !['.', '?', '!'].includes(currSentence.sentence[currSentence.sentence.length - 1]) ) return;
-        const part = window.getSelection().toString();
-        if (part) {
-          setCurrSentence( prev => ({...prev, blanked : prev.blanked ? prev.blanked.replace(part, '-'.repeat(part.length)) : prev.sentence.replace(part, '-'.repeat(part.length)) }) )
-          setInfo({
-            exists: true,
-            type: 'warning',
-            message: 'Thank you for selecting.\nIf you are satisfied with your selection, press > to write your next sentence',
-          });
-          
-          // if (!currSentence.blanked) return () => window.addEventListener('keydown', handleApproval);
-          // window.addEventListener('keydown', handleApproval);
-          // return () => window.addEventListener('keydown', handleApproval);
-        }
-      }
-    ,[currSentence, setCurrSentence, activity]);
+      }, [storySettings.sentenceInProgress]);
     
       const partApproval = (currSentence) => {
-        // setInfo({ exists: false });
-        setStory((prev) => [...prev, {...currSentence, blanked: currSentence.blanked || currSentence.sentence}] );
-        setCurrSentence({sentence: '', blanked: ''});
-        // setSelectedWords([])
+
+        setStorySettings(prev => prev.rebuild({
+          details: [...prev.details, {...currSentence, blanked: currSentence.blanked || currSentence.sentence}],
+          sentenceInProgress: { sentence: "", blanked: ""},
+          sentenceIndex: prev.details.length + 1
+        }))
+        
       }
     
       const handleApproval = useCallback((e) => {
@@ -176,7 +116,6 @@ const useGeneralHook = (
       }, [partApproval]);
       
       useEffect(() => {
-        // window.addEventListener('keydown', handleApproval);
         return () => {
           window.removeEventListener('keydown', handleApproval);
         };
@@ -185,44 +124,26 @@ const useGeneralHook = (
       const callUponAi = useCallback((e) => {
         const key = e.key;
         if (["Tab", "Enter"].includes(key)) e.preventDefault();
-        if (key === 'Tab') return setCurrSentence(prev => ({...prev, sentence: prev.sentence + "\t"}))
-        if (key === 'Enter') return setCurrSentence(prev => {
-          console.log(prev)
-          if (prev.sentence) return {...prev, sentence: prev.sentence + "\n"}; 
-          setStory(prev => [...prev, {sentence: "\n", blanked: "\n"}]); return prev
+        if (key === 'Tab')  return setStorySettings(prev => prev.rebuild({ 
+                              sentenceInProgress: { sentence: prev.state.sentenceInProgress.sentence + "\t" },
+                      }))
+        if (key === 'Enter') 
+          return setStorySettings(prev => {
+            if (prev.sentenceInProgress.sentence) 
+              return prev.rebuild({
+                        sentenceInProgress: { sentence: prev.state.sentenceInProgress.sentence + "\n" },
+                      })
+            return prev.rebuild({
+                    details: [...prev.details, {sentence: "\n", blanked: "\n"}], 
+                    sentenceInProgress: { sentence: "", blank: "" },
+                    sentenceIndex: prev.details.length + 1
+                  })
         }) 
-        if (false) {
-          if (!summary) {
-            return setInfo({exists: true, type: 'warning', message: 'Enable your ai assistant to use it!'})
-          }
-          else { // the summary exists
-            axios.post(API_BASE_URL + '/cards/story-time/' + deckId, {userId, story: story.map(sent => sent.sentence).join(' '), title, words, aiAssistance: aiHelp, summary})
-                 .then(({data}) => {
-                    const {title, aiSentence} = data.story;
-                    if (title) setTitle(title)
-                    if (aiSentence) setCurrSentence(aiSentence)
-                 })
-                 .catch(error => console.log(error))
-          }
-        }
+        
       }, [summary, title, story])
       
     
-      useEffect(() => {
-        if (!stories?.length) return;
-          // console.log(stories.length, selected, !selected)
-          if (stories.length && selected > -1)  setActivity('practicing'); 
-          const current = stories[selected];
-          if (current) {
-            setTitle(current.title);
-            setStory(current.story);
-            // setWords(current.words)
-            //console.log(current.story[0])
-            setCurrSentence({...current.story[0], index: 0})
-          }
-      }, [selected, stories]);
-
-      return { handlePartSelection, handleSubmit, handleSummarySubmit, callUponAi, handleApproval, updateAttempt
+      return { handleSubmit, callUponAi, handleApproval, updateAttempt
       }
 }
 
