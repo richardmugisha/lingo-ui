@@ -30,6 +30,7 @@ const Options = () => {
               <Button startIcon={<SchoolIcon />} variant="contained" disableElevation color='primary' onClick={() => navigate(`../learning/?deck=${deckId}`)}>Non-guided learning</Button>
               <Button startIcon={<QuizIcon />} variant="contained" disableElevation color='primary' onClick={() => navigate(`../quiz/?deck=${deckId}`)}>Take a quiz</Button>
               <Button startIcon={<Create />} variant="contained" disableElevation color='primary' onClick={() => navigate(`../../../more/story-time/?deck=${deckId}`)}>Story Time</Button>
+              <Button startIcon={<Create />} variant="contained" disableElevation color='primary' onClick={() => navigate(`../../../more/chat-time/?deck=${deckId}`)}>Chat Time</Button>
             </>:
             <></>
           }

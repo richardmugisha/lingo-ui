@@ -19,13 +19,13 @@ import Info from '../../../components/Info'
 
 import StorySetup from './utils/storySettings';
 
-const Yapping = ({ gameInfo, setGameInfo, userID, mode }) => {
+const Yapping = ({ gameInfo, setGameInfo, userID }) => {
   const handleRefresh = usePageRefreshHandle()
   const { learning: deck, _id: deckId, words: cards } = useSelector((state) => state.deck.openDeck);
   const [words, setWords] = useState(deck.words?.map((wordObj) => wordObj.word)?.slice(0, 20) || [] ); // 20 words
 
   useEffect(() => {
-    if (mode?.startsWith("game")) return;
+    // if (mode?.startsWith("game")) return;
     setWords(deck.words?.map(wordObj => wordObj.word)?.slice(0, 20) || [])
   }, [deck])
 
@@ -33,7 +33,7 @@ const Yapping = ({ gameInfo, setGameInfo, userID, mode }) => {
     handleRefresh(deckId)
   }, [deckId])  
 
-  const [ storySettings, setStorySettings ] = useState(new StorySetup(gameInfo?.data || {mode: "create", step: "catalog", words, details: []})) 
+  const [ storySettings, setStorySettings ] = useState(new StorySetup(gameInfo?.data || {mode: "create", step: "onboarding", words, details: []})) 
 
   const areObjValuesDifferent = (obj1, obj2, keys) => {
     if (Object.keys(obj1).length && Object.keys(obj2).length) return keys.map(k => obj1[k] !== obj2[k]).some(v => v)
@@ -74,7 +74,7 @@ const Yapping = ({ gameInfo, setGameInfo, userID, mode }) => {
   const { handleSubmit, callUponAi, updateAttempt } = useGeneralHook(
     {
     storySettings, setStorySettings,
-    mode, info, setInfo,
+    info, setInfo,
     deckId, checked, 
     words, setWords,
     selectedWords, setSelectedWords,
@@ -124,16 +124,15 @@ const Yapping = ({ gameInfo, setGameInfo, userID, mode }) => {
       { storySettings.mode === "create" && storySettings.step ==='onboarding' &&
         (
           // gameInfo?.type === "story"?
-          <Onboarding 
+          // <Onboarding 
+          //   storySettings={storySettings} setStorySettings={setStorySettings}
+          //   gameInfo={gameInfo} userID={userID}
+          // /> 
+          // :
+          <ChatOnboarding 
             storySettings={storySettings} setStorySettings={setStorySettings}
             gameInfo={gameInfo} userID={userID}
-          /> 
-          // :
-          // <ChatOnboarding 
-          //   storySettings={storySettings} setStorySettings={setStorySettings}
-          //   playerCount = {0}
-          //   mode={mode}
-          // />
+          />
         )
       }
       {
@@ -154,7 +153,6 @@ const Yapping = ({ gameInfo, setGameInfo, userID, mode }) => {
           storySettings={storySettings} setStorySettings={setStorySettings}
           gameInfo={gameInfo} setGameInfo={setGameInfo}
           userID={userID}
-          mode = {mode}
           checked={checked} setChecked={setChecked}
           handleSubmit={handleSubmit}
         />

@@ -11,6 +11,7 @@ section {
   min-width: 15em;
   max-height: 20em;
   padding: 1em .2em;
+  max-width: 30dvw;
 }
 
 section p.actor-line {
@@ -26,8 +27,10 @@ section p.actor-line {
 }
 
 .participants-grid {
-  gap: 1em;
+  padding: 1em;
   display: flex;
+  gap: 1em;
+  flex-wrap: wrap;
 } 
 
 section > h2 {
