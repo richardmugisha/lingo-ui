@@ -8,7 +8,6 @@ import { StoreSharp } from '@mui/icons-material';
 
 export default ({ 
     storySettings, setStorySettings,
-    mode, isLeadAuthor,
     info, setInfo, 
     okAttempt, setOkAttempt,
     handlePartSelection,
@@ -48,7 +47,6 @@ export default ({
     firstInput?.focus()
     if (firstInput?.value?.startsWith('__')) firstInput.select()
     if (attempt?.join(' ') === correctSentence.join(' ')) {
-      console.error(attempt)
       const approvedAttempt = okAttempt + ' ' + attempt.join(' ')
       setOkAttempt(approvedAttempt);
       
@@ -84,7 +82,7 @@ export default ({
       const passedMinCheck = storySettings.details?.length >= STORY_MINIMUM_NUMBER_OF_SENTENCES; // The story has the minimum number of sentences
       const wordsFinished = storySettings.words.length === 0 && StoreSharp.story?.length > 0 // words finished, but there is some story
       const notWriting = !storySettings.sentenceInProgress.sentence;
-      if ((passedMinCheck || wordsFinished) && (isLeadAuthor || !mode) && notWriting) {
+      if ((passedMinCheck || wordsFinished) && (!storySettings.mode) && notWriting) {
         chosenButton.text = "Submit story"
         chosenButton.chosenActivity = "submit"
       }

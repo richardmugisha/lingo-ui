@@ -19,7 +19,7 @@ import Info from '../../../components/Info'
 
 import StorySetup from './utils/storySettings';
 
-const Yapping = ({ gameInfo, setGameInfo, userID, mode, storyGameUtils, setStoryGameUtils, isGameCreator, typeOfGame }) => {
+const Yapping = ({ gameInfo, setGameInfo, userID, mode }) => {
   const handleRefresh = usePageRefreshHandle()
   const { learning: deck, _id: deckId, words: cards } = useSelector((state) => state.deck.openDeck);
   const [words, setWords] = useState(deck.words?.map((wordObj) => wordObj.word)?.slice(0, 20) || [] ); // 20 words
@@ -33,14 +33,14 @@ const Yapping = ({ gameInfo, setGameInfo, userID, mode, storyGameUtils, setStory
     handleRefresh(deckId)
   }, [deckId])  
 
-  const [ storySettings, setStorySettings ] = useState( new StorySetup(gameInfo.data || {}) )
+  const [ storySettings, setStorySettings ] = useState(new StorySetup(gameInfo?.data || {mode: "create", step: "catalog", words, details: []})) 
 
   const areObjValuesDifferent = (obj1, obj2, keys) => {
     if (Object.keys(obj1).length && Object.keys(obj2).length) return keys.map(k => obj1[k] !== obj2[k]).some(v => v)
   }
 
   useEffect(() => {
-    if ( areObjValuesDifferent(gameInfo.data, storySettings, ["title", "summary", "step", "sentenceIndex"])) {
+    if ( gameInfo && areObjValuesDifferent(gameInfo.data, storySettings, ["title", "summary", "step", "sentenceIndex"])) {
       setGameInfo(prev => {
         const copyOfGameInfo = { ...prev }
         if (storySettings.step === "submit" && copyOfGameInfo.status === "in progress") {
@@ -56,7 +56,7 @@ const Yapping = ({ gameInfo, setGameInfo, userID, mode, storyGameUtils, setStory
   }, [storySettings])
 
   useEffect(() => {
-    if (gameInfo.source !== userID) {
+    if (gameInfo?.source !== userID) {
       console.log("altered story")
       setStorySettings( new StorySetup(gameInfo.data || {}))
     }
@@ -123,23 +123,23 @@ const Yapping = ({ gameInfo, setGameInfo, userID, mode, storyGameUtils, setStory
       }
       { storySettings.mode === "create" && storySettings.step ==='onboarding' &&
         (
-          gameInfo.type === "story"?
+          // gameInfo?.type === "story"?
           <Onboarding 
             storySettings={storySettings} setStorySettings={setStorySettings}
             gameInfo={gameInfo} userID={userID}
-          /> :
-          <ChatOnboarding 
-            storySettings={storySettings} setStorySettings={setStorySettings}
-            playerCount = {storyGameUtils?.playerCount || 0}
-            mode={mode}
-          />
+          /> 
+          // :
+          // <ChatOnboarding 
+          //   storySettings={storySettings} setStorySettings={setStorySettings}
+          //   playerCount = {0}
+          //   mode={mode}
+          // />
         )
       }
       {
         ['create', 'practice', 'read'].includes(storySettings.mode) && ['create', 'practice', 'read'].includes(storySettings.step) &&
         <Story 
           storySettings={storySettings} setStorySettings={setStorySettings}
-          mode={mode}
           info={info} setInfo={setInfo}
           okAttempt={okAttempt} setOkAttempt={setOkAttempt}
           callUponAi={callUponAi}

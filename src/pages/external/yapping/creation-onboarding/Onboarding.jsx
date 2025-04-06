@@ -24,7 +24,7 @@ const Onboarding = (
             >
           </textarea>
       </span>
-      {!gameInfo || gameInfo.creator === userID && Object.keys(gameInfo.players) &&
+      {(!gameInfo || gameInfo.creator === userID && Object.keys(gameInfo.players)) &&
         <Button
           variant="contained" color='primary' disableElevation
           onClick={() => setStorySettings(prev => prev.rebuild({ step: "create" }))}
