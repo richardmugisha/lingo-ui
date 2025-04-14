@@ -12,6 +12,7 @@ section {
   max-height: 20em;
   padding: 1em .2em;
   max-width: 30dvw;
+  cursor: pointer;
 }
 
 section p.actor-line {

@@ -60,12 +60,13 @@
     background-color: #C0D7DA;
     color: #345C70;
     width: 170px;
-    height: 150px;
+    min-height: 150px;
     margin: 20px 5px 0 15px;
     padding: 10px;
     box-shadow: 0 3px 0 rgba(11, 14, 15, 0.482);
     border-radius: 20px;
     display: flex;
+    word-wrap: break-word;
     flex-direction: column;
     justify-content: space-between;
     font-size: x-large;
@@ -168,7 +169,7 @@
     display: flex;
     justify-content: space-between;
     font-size: small;
-    width: 100%;
+    max-width: 100%;
   }
 
   .deck--meta > div {

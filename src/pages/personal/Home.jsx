@@ -117,7 +117,7 @@ export default () => {
     <div className="personal">
       
         <div className="head">
-          <div className="shelf">Your decks</div>
+          <div className="shelf">Your topics</div>
           <div className="new-deck" onClick={() => navigate('new-deck')}>New Card Deck</div>
         </div>
 
@@ -162,7 +162,7 @@ export default () => {
               <div className="deck--meta deck--language-and-owner">
                 <div>{deck.deckLang.slice(0, 2)}</div>{deck.creator === userId && <div>Yours</div>}
               </div>
-              {deck.deckName}
+              {deck.deckName?.split("_")?.join(" ")}
               <div className="deck--meta deck--mastery-and-length">
                 <div>Mastery: 
                   {

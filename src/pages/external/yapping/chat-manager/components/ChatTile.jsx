@@ -1,18 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
+
 import './ChatTile.css';
 
-const ChatTile = ({ user, isActive, isLocalUser, stream }) => {
- 
+const ChatTile = ({ user, isActive, audioElement}) => {
+//  console.log(audioElement, "at least")
 
   return (
     <span className="chat-tile">
       <div 
-        className="voice-indicator" 
-        style={isActive ? { 
-          transform: `scale(${1.7})`,
-          transition: 'transform 0.1s ease-out',
-          borderColor: "red"
-        } : {}}
+        className={`${isActive ? "voice-indicator" : ""}`} 
       >
         <div className={`avatar`}>
           <img src={user.avatar} alt={user.name} />
@@ -26,4 +22,4 @@ const ChatTile = ({ user, isActive, isLocalUser, stream }) => {
   );
 };
 
-export default ChatTile; 
+export default ChatTile

@@ -91,7 +91,7 @@ const Yapping = ({ gameInfo, setGameInfo, userID }) => {
       )
   }, [storySettings?.sentenceInPractice])
 
-
+  console.log(storySettings, gameInfo.data)
   return (
     <div className='Yapping'>
       {
@@ -101,7 +101,7 @@ const Yapping = ({ gameInfo, setGameInfo, userID }) => {
       {info.exists && (
         <Info info={info} id='Yapping--info' />
       )}
-      {(storySettings.mode && storySettings.title) ? <h3>Title: {storySettings.title}</h3> : <></>}
+      {(storySettings.mode && storySettings.title || gameInfo.data?.title) ? <h3>Title: {storySettings.title || gameInfo.data?.title}</h3> : <></>}
       {
         storySettings.step === "catalog" ?
         <StoryCatalog 
@@ -123,12 +123,12 @@ const Yapping = ({ gameInfo, setGameInfo, userID }) => {
       }
       { storySettings.mode === "create" && storySettings.step ==='onboarding' &&
         (
-          // gameInfo?.type === "story"?
-          // <Onboarding 
-          //   storySettings={storySettings} setStorySettings={setStorySettings}
-          //   gameInfo={gameInfo} userID={userID}
-          // /> 
-          // :
+          gameInfo?.type === "story"?
+          <Onboarding 
+            storySettings={storySettings} setStorySettings={setStorySettings}
+            gameInfo={gameInfo} userID={userID}
+          /> 
+          :
           <ChatOnboarding 
             storySettings={storySettings} setStorySettings={setStorySettings}
             gameInfo={gameInfo} userID={userID}
@@ -136,7 +136,7 @@ const Yapping = ({ gameInfo, setGameInfo, userID }) => {
         )
       }
       {
-        ['create', 'practice', 'read'].includes(storySettings.mode) && ['create', 'practice', 'read'].includes(storySettings.step) &&
+        ['create', 'practice', 'read'].includes(storySettings.mode) && ['create', 'practice', 'read'].includes(storySettings.step) && (!gameInfo || gameInfo.type === "story") &&
         <Story 
           storySettings={storySettings} setStorySettings={setStorySettings}
           info={info} setInfo={setInfo}

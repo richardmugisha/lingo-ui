@@ -23,8 +23,8 @@ const StoryCatalog = ({ deckId, setStorySettings, gameInfo }) => {
   const [ stories, setStories ] = useState(gameInfo?.stories || [])
 
   useEffect(() => {
-    if (!deckId || gameInfo) return
-    fetchAllStories(deckId).then(setStories)
+    if (!deckId || gameInfo?.type === "story") return
+    fetchAllStories(deckId, gameInfo.type).then(setStories)
                     .catch((e) => console.log(e.msg));
   }, [deckId])
 
@@ -44,12 +44,12 @@ const StoryCatalog = ({ deckId, setStorySettings, gameInfo }) => {
               {stories?.map((story, i) => (
                   <span
                       key={i}
-                      onClick={() => gameInfo ||
+                      onClick={() => gameInfo?.type === "story" ||
                           setStorySettings( prev => prev.rebuild(
                             {
                               ...story,
                               mode: "practice",
-                              step: "practice",
+                              step: gameInfo?.type === "story" ? "practice" : "temporary step",
                             }
                           ))
                       }
