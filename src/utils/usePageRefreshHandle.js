@@ -1,21 +1,21 @@
-import { fetchDeck } from "../api/http"
+import { fetchOneTopic } from "../api/http"
 import { useDispatch } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import { openDeck } from "../features/personal/deck/deckSlice";
+import { chooseTopic } from "../features/personal/topic/topicSlice";
 
 export default () => {
     const [searchParams] = useSearchParams();
     const dispatch = useDispatch()
 
-    return (deckId) => {
-        if (!deckId) {
-            const deckIdHere = searchParams.get('deck')
-            if (deckIdHere) {
-                fetchDeck(deckIdHere)
-                .then(deck => dispatch(openDeck(deck)))
-                return deckIdHere
+    return (topicID) => {
+        if (!topicID) {
+            const topicIDhere = searchParams.get('topic')
+            if (topicIDhere) {
+                fetchOneTopic(topicIDhere)
+                .then(topic => dispatch(chooseTopic(topic)))
+                return topicIDhere
             }
         }
-        else return deckId
+        else return topicID
     }
 }

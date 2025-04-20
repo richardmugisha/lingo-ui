@@ -8,9 +8,8 @@ import Onboarding from './creation-onboarding/Onboarding';
 import ChatOnboarding  from './chat-onboarding/Onboarding';
 import Story from './Story';
 import Submission from './story-submission/Submission';
-
 import useGeneralHook from './utils/useGeneralHook';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getKeywords } from './utils/sentenceAnalyzer';
 
 import usePageRefreshHandle from "../../../utils/usePageRefreshHandle"
@@ -21,19 +20,21 @@ import StorySetup from './utils/storySettings';
 
 const Yapping = ({ gameInfo, setGameInfo, userID }) => {
   const handleRefresh = usePageRefreshHandle()
-  const { learning: deck, _id: deckId, words: cards } = useSelector((state) => state.deck.openDeck);
-  const [words, setWords] = useState(deck.words?.map((wordObj) => wordObj.word)?.slice(0, 20) || [] ); // 20 words
+  const { learning, _id: topicId, words:cards } = useSelector((state) => state.topic);
+  const [words, setWords] = useState(learning.words.map((wordObj) => wordObj.word).slice(0, 20) || [] ); // 20 words
 
-  useEffect(() => {
-    // if (mode?.startsWith("game")) return;
-    setWords(deck.words?.map(wordObj => wordObj.word)?.slice(0, 20) || [])
-  }, [deck])
+  console.log(learning)
 
-  useEffect(() => {
-    handleRefresh(deckId)
-  }, [deckId])  
+  // useEffect(() => {
+  //   // if (mode?.startsWith("game")) return;
+  //   setWords(learning.words.map(wordObj => wordObj.word)?.slice(0, 20))
+  // }, [learning])
 
-  const [ storySettings, setStorySettings ] = useState(new StorySetup(gameInfo?.data || {mode: "create", step: "onboarding", words, details: []})) 
+  // useEffect(() => {
+  //   handleRefresh(topicId)
+  // }, [topicId])  
+
+  const [ storySettings, setStorySettings ] = useState(new StorySetup(gameInfo?.data || {mode: "create", step: "catalog", words, details: []})) 
 
   const areObjValuesDifferent = (obj1, obj2, keys) => {
     if (Object.keys(obj1).length && Object.keys(obj2).length) return keys.map(k => obj1[k] !== obj2[k]).some(v => v)
@@ -75,7 +76,7 @@ const Yapping = ({ gameInfo, setGameInfo, userID }) => {
     {
     storySettings, setStorySettings,
     info, setInfo,
-    deckId, checked, 
+    topicId, checked, 
     words, setWords,
     selectedWords, setSelectedWords,
     attempt, setAttempt, correctSentence
@@ -91,21 +92,21 @@ const Yapping = ({ gameInfo, setGameInfo, userID }) => {
       )
   }, [storySettings?.sentenceInPractice])
 
-  console.log(storySettings, gameInfo.data)
+  // console.log(storySettings, gameInfo?.data)
   return (
     <div className='Yapping'>
       {
         {create: storySettings.details?.length < 3, practice: okAttempt?.split('.')?.length < 2 }[storySettings.mode] || !storySettings.mode ?
-        <h1>Story time</h1> : <></>
+        <h1>{gameInfo?.type || "story"} time</h1> : <></>
       }
       {info.exists && (
         <Info info={info} id='Yapping--info' />
       )}
-      {(storySettings.mode && storySettings.title || gameInfo.data?.title) ? <h3>Title: {storySettings.title || gameInfo.data?.title}</h3> : <></>}
+      {(storySettings.mode && storySettings.title || gameInfo?.data?.title) ? <h3>Title: {storySettings.title || gameInfo?.data?.title}</h3> : <></>}
       {
         storySettings.step === "catalog" ?
         <StoryCatalog 
-          deckId = {deckId}
+          topicId = {topicId}
           setStorySettings={setStorySettings}
           gameInfo={gameInfo}
         /> :

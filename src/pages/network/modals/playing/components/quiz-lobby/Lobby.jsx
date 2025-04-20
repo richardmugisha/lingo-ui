@@ -2,41 +2,41 @@
 
 import React, { useEffect, useState } from 'react'
 import "./Lobby.css"
-import fetchAll from '../../../../../../api/http/deck/fetchAll'
+import fetchAll from '../../../../../../api/http/topic/fetchAll'
 import WebSocketService from '../../../../../../api/ws'
-import fetchOne from '../../../../../../api/http/deck/fetchOne'
+import fetchOne from '../../../../../../api/http/topic/fetchOne'
 
-const Lobby = ({deck, setGameInfo, gameInfo}) => {
-    console.log(deck)
-    const [decks, setDecks] = useState([])
+const Lobby = ({topic, setGameInfo, gameInfo}) => {
+    console.log(topic)
+    const [topics, setTopics] = useState([])
 
     useEffect(() => {
         fetchAll().then(data => {
             console.log(data)
-            setDecks(data?.decks || [])
+            setTopics(data?.topics || [])
         })
     }, [])
 
-    const selectDeck = (_deck) => {
-        fetchOne(_deck._id).then(deck => {
-            setGameInfo(prev => ({...prev, data: {...gameInfo.data, deck}}))
-            WebSocketService.send("game/lobby", {...gameInfo, data: {...gameInfo.data, deck}})
+    const selectTopic = (_topic) => {
+        fetchOne(_topic._id).then(topic => {
+            setGameInfo(prev => ({...prev, data: {...gameInfo.data, topic}}))
+            WebSocketService.send("game/lobby", {...gameInfo, data: {...gameInfo.data, topic}})
         })
     }
 
   return (
     <div className='lobby'>
-        <h2>{ deck?.deckName ? "The quiz will be on this deck" : "Pick a deck for this quiz"}
+        <h2>{ topic?.topicName ? "The quiz will be on this topic" : "Pick a topic for this quiz"}
         </h2>
         {
-            deck.deckName ? 
-            <div className='deck'>{deck.deckName}</div> :
+            topic.topicName ? 
+            <div className='topic'>{topic.topicName}</div> :
         
             <ul>
                 {
-                    decks.map(deck => 
-                                <span className='deck' onClick={() => selectDeck(deck)}
-                                >{deck.deckName}</span>
+                    topics.map(topic => 
+                                <span className='topic' onClick={() => selectTopic(topic)}
+                                >{topic.topicName}</span>
                             )
                 }
             </ul>

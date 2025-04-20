@@ -19,7 +19,7 @@
     width: 90%;
 }
 
-.card-add-auto > div .deckName {
+.card-add-auto > div .name {
     display: block;
     text-align: start;
     font-size: larger;

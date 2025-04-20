@@ -1,8 +1,8 @@
 
 import { httpEndpoint } from "../../../../serverConfig";
-import axios from "axios";
+import AxiosWrapper from "../AxiosWrapper";
 
-export default async(title, summary, words, players, deck, writer) => {
-    const res = await axios.post(httpEndpoint + '/cards/chat-time/' + deck, { title, summary, words, players, writer })
+export default async(title, summary, words, players, topic, writer) => {
+    const res = await AxiosWrapper.post(httpEndpoint + '/cards/chat-time/' + topic, { title, summary, words, players, writer })
     return res.data.script
 }

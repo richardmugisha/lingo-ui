@@ -13,7 +13,7 @@ export default ({
     handlePartSelection,
     callUponAi,
     attempt, setAttempt,
-    correctSentence, setCorrectSentence
+    correctSentence, setCorrectSentence,
   }) => {
     
   const [cheerSound] = useState(new Audio("/sounds/cheer.wav"))
@@ -37,6 +37,7 @@ export default ({
   }, [voices]);
 
   const sayIt = useCallback((script) => {
+    return
     const scriptToSpeak = storySettings.mode === 'create' ? script.join(' ') : script
     setTimeout(() => speak(scriptToSpeak, voice), 5000)
   }, [storySettings.mode, voice]);
@@ -82,7 +83,9 @@ export default ({
       const passedMinCheck = storySettings.details?.length >= STORY_MINIMUM_NUMBER_OF_SENTENCES; // The story has the minimum number of sentences
       const wordsFinished = storySettings.words.length === 0 && StoreSharp.story?.length > 0 // words finished, but there is some story
       const notWriting = !storySettings.sentenceInProgress.sentence;
-      if ((passedMinCheck || wordsFinished) && (!storySettings.mode) && notWriting) {
+      console.log(passedMinCheck, wordsFinished, notWriting)
+      // if ((passedMinCheck || wordsFinished) && (!storySettings.mode) && notWriting) {
+      if ((passedMinCheck || wordsFinished) && notWriting) {
         chosenButton.text = "Submit story"
         chosenButton.chosenActivity = "submit"
       }

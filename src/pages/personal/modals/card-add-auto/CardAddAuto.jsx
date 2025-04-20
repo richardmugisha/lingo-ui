@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './CardAddAuto.css';
 
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import usePageRefreshHandle from '../../../../utils/usePageRefreshHandle';
 
@@ -11,43 +11,48 @@ import { Add as AddIcon, Clear as ClearIcon, Check as CheckIcon } from "@mui/ico
 
 import { useSearchWords } from './utils/useSearchWords';
 import useExtensionWords from './utils/useExtensionWords';
+import { fetchSuggestions } from '../../../../api/http';
 
 const CardAddAuto = () => {
   const handleRefresh = usePageRefreshHandle()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams();
+  const topicChain = searchParams.get("topics")
   
   const retrieveIds = () => {
-      const openDeck = useSelector(state => state.deck.openDeck)
-      if (openDeck?.deckName) return openDeck
-      if (handleRefresh()) return useSelector(state => state.deck.openDeck)
-      const newDeck = localStorage.getItem('new-deck--to-create')
-      if (!newDeck) return {}
-      const { deckName, deckLang } = JSON.parse(newDeck);
-      return {_id: '', deckLang, deckName}
+      const topic = useSelector(state => state.topic)
+      if (topic?.name) return topic
+      if (handleRefresh()) return useSelector(state => state.topic.topic)
+      const newTopic = localStorage.getItem('new-topic--to-create')
+      if (!newTopic) return {}
+      const { name, language } = JSON.parse(newTopic);
+      return {_id: '', language, name}
   }
 
-  const [openDeck] = useState(retrieveIds())
-  const {_id: deckId, deckLang, deckName } =  openDeck
+  const [topic] = useState(retrieveIds())
+  // const {_id: topic?._id, topic?.language, name } =  topic
 
   const [ isExtensionOpen, extensionWords ] = useExtensionWords()
 
   const [searchValue, setSearchValue] = useState('')
-  const [fetching, searchWords, status, setStatus] = useSearchWords(searchValue, deckLang)
+  const [fetching, searchWords, status, setStatus] = useSearchWords(searchValue, topic?.language)
   const [extraWords, setExtraWords] = useState(JSON.parse(localStorage.getItem('temporary'))?.words || [])
+  const [suggestedWords, setSuggestedWords] = useState([])
 
   const [searchingWord, setSearchingWord] = useState({word: '', context: ''})
   
   useEffect(() => {
-    //console.log(openDeck?.deckName)
-    if (!openDeck?.deckName) navigate('../new-deck')
-  }, [openDeck])
+    //console.log(topic?.name)
+    if (!topic?.name) navigate('../new-topic')
+  }, [topic])
 
   const handleDeleteExtraWord = (word) => {
     setExtraWords((prev) => {
       //console.log(prev)
       const updatedWords = prev.filter(extraWord => !(extraWord.word === word.word && extraWord.context === word.context));
+      const isWordInSuggestedList = suggestedWords.find(sugg => sugg.word === word.word && sugg.context === word.context)
       //console.log(updatedWords)
-      localStorage.setItem('temporary', JSON.stringify({ words: updatedWords }));
+      if (!isWordInSuggestedList) localStorage.setItem('temporary', JSON.stringify({ words: updatedWords })); // we don't want to do anything with the suggestedWords + no saving them
       //console.log(word, searchingWord)
       if (searchingWord?.word === word.word) { setSearchingWord({word: '', context: ''}); setSearchValue('') }
       return updatedWords;
@@ -64,6 +69,19 @@ const CardAddAuto = () => {
       );
     }
   }, [extensionWords])
+
+  useEffect(() => {
+      if (topic.words.length >= 10 || extraWords?.length) return
+      console.log(topicChain, topic.name, topic.words.map(wObj => ({word: wObj.word, context: wObj.example})))
+      fetchSuggestions(topicChain, topic.name, 10 - topic.words.length, 'words', topic.words.map(wObj => ({word: wObj.word, context: wObj.example})))
+        .then(suggestions => setExtraWords( prev => {
+          // console.log(suggestions)
+          prev = prev.concat(suggestions)
+          setSuggestedWords(suggestions)
+          // localStorage.setItem('temporary', JSON.stringify({words: prev}))
+          return prev
+        }))
+  }, [topic.words])
   
   const handleSearch = (e) => {
     //console.log(searchValue); 
@@ -75,14 +93,14 @@ const CardAddAuto = () => {
   return (
     <form action="" className='card-add-auto' onSubmit={handleSearch}>
       <div className='card-add-auto--top'>
-        <label htmlFor="deck name" className="deckName">{deckName}</label>
+        <label htmlFor="topic name" className="name">{topic.name}</label>
       </div>
       <input type='text' className='card-auto-search' autoFocus placeholder="Search for the word you want" 
         value={searchValue} 
         onChange={(e) => setSearchValue(e.target.value)}
       />
       { status === 'loading' && <p>...{status}</p> }
-      <SearchList setStatus={setStatus} handleDeleteExtraWord={handleDeleteExtraWord} searchingWord={searchingWord} setSearchingWord={setSearchingWord} searchWords={searchWords} searchValue={searchValue} deckId={deckId} deckName={deckName} status={status} deckLang={deckLang}/>
+      <SearchList setStatus={setStatus} handleDeleteExtraWord={handleDeleteExtraWord} searchingWord={searchingWord} setSearchingWord={setSearchingWord} searchWords={searchWords} searchValue={searchValue} topic={topic} status={status} />
       {
        ( status === 'idle' && extraWords?.length > 0) && 
         <div className='card-auto--extra-words'> 
@@ -90,6 +108,7 @@ const CardAddAuto = () => {
           <ul >
           {extraWords?.slice(0, 3).map((word, i) => 
                 <AddWordCard 
+                  key={i}
                   wordExists={true}
                   handleClick={() => { fetching(word.word); setSearchValue(word.word); setSearchingWord(word) }}
                   word={word.word}
@@ -120,16 +139,16 @@ const CardAddAuto = () => {
 
 export default CardAddAuto
 
-const SearchList = ({ setStatus, handleDeleteExtraWord, searchingWord, setSearchingWord, searchWords, searchValue, deckId, deckName, deckLang, status }) => {
+const SearchList = ({ setStatus, handleDeleteExtraWord, searchingWord, setSearchingWord, searchWords, searchValue, topic, status }) => {
   const fetch_Save = (word, whereTo, doWhat) => {
     let toAdd; let words;
     if (['load', 'load-save'].includes(doWhat)) {
       toAdd = JSON.parse(localStorage.getItem(whereTo));
-      words = toAdd?.[deckId || deckName]?.words || []
+      words = toAdd?.[topic?._id || topic?.name]?.words || []
       if (doWhat === 'load') return words
     }
 
-    localStorage.setItem(whereTo, JSON.stringify({...toAdd, [deckId || deckName]: {deckId, deckLang, words: [...words, word]}}));
+    localStorage.setItem(whereTo, JSON.stringify({...toAdd, [topic?._id || topic?.name]: {id: topic?._id, language: topic?.language, words: [...words, word]}}));
     setAddedWords([...addedWords, word]);
     handleDeleteExtraWord(word)
     setStatus('idle')
@@ -143,7 +162,7 @@ const SearchList = ({ setStatus, handleDeleteExtraWord, searchingWord, setSearch
       <ul className='card-auto--search-list'>
         { ['success', 'error'].includes(status) &&
           (
-            limitedSearchWords.map((word, i) => (
+            limitedSearchWords?.map((word, i) => (
               <AddWordCard 
                 key={word+i}
                 wordExists={true}
@@ -162,7 +181,7 @@ const SearchList = ({ setStatus, handleDeleteExtraWord, searchingWord, setSearch
         (['success', 'error'].includes(status) && searchValue) &&
         <>
           <div className="item-not-found">
-            {limitedSearchWords.length ? "Can't find what you are looking for? Add it to the wishlist here" :`OOps!!! The word is not yet in our evolving dictionary. Add it to the wishlist here`}
+            {limitedSearchWords?.length ? "Can't find what you are looking for? Add it to the wishlist here" :`OOps!!! The word is not yet in our evolving dictionary. Add it to the wishlist here`}
           </div>
           <AddWordCard 
                 // handleClick={() => !addedWords.includes('bibi') && fetch_Save('bibi', 'toAdd', 'load-save')}
@@ -209,7 +228,7 @@ const AddWordCard = ({wordExists, handleClick, word, context, setSearchingWord, 
             <div>{context}</div>
             :
             <input className='card-wish-input' 
-              type="text" placeholder='Type the context here'
+              type="text" placeholder='Provide context for the word here'
               value={context}
               onChange={e => setSearchingWord(prev => ({...prev, context: e.target.value}))}
             />

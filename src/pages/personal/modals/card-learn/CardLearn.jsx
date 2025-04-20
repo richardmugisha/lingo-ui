@@ -10,26 +10,26 @@ import { Button } from "@mui/material"
 
 import useTextToSpeech from '../../../external/yapping/utils/useTextToSpeech';
 
-const CardLearn = ({ deckLearningChunk, setCraming }) => {
-  const { openDeck: deck } = deckLearningChunk ? { openDeck: deckLearningChunk } : useSelector(state => state.deck);
+const CardLearn = ({ topicLearningChunk, setCraming }) => {
+  const { openTopic: topic } = topicLearningChunk ? { openTopic: topicLearningChunk } : useSelector(state => state.topic);
   const handleRefresh = usePageRefreshHandle()
 
   const [cardIndex, setCardIndex] = useState(0);
-  const [cards, setCards] = useState(deck ? deck.words : []);
+  const [cards, setCards] = useState(topic ? topic.words : []);
   const [cardMotion, setCardMotion] = useState('card-entering-left');
 
   // text to speech
   const [voice, setVoice] = useState(null);
   const { voices, speak, pause, resume, cancel } = useTextToSpeech();
 
-  useEffect(() => {
-    handleRefresh(deck._id)
-  }, [deck._id])  
+  // useEffect(() => {
+  //   handleRefresh(topic._id)
+  // }, [topic._id])  
 
   useEffect(() => {
     cancel()
-    setCards(deck ? deck.words : [])
-  }, [deck])
+    setCards(topic ? topic.words : [])
+  }, [topic])
 
   useEffect(() => {
     setVoice(voices[1]);
@@ -159,10 +159,10 @@ const CardLearn = ({ deckLearningChunk, setCraming }) => {
 
   return (
     <>
-      {deck ? (
+      {topic ? (
         <div className={`card-learn ${cardMotion}`}>
-          <div className='card-learn--top'>{deck.deckName} 
-            {deckLearningChunk && <Button variant="contained" disableElevation color='primary' onClick={() => {cancel(); setCraming(false)}}>Ready for a quiz</Button>
+          <div className='card-learn--top'>{topic.name} 
+            {topicLearningChunk && <Button variant="contained" disableElevation color='primary' onClick={() => {cancel(); setCraming(false)}}>Ready for a quiz</Button>
           }</div>
           {cards.length ? (
             <>
@@ -209,7 +209,7 @@ const CardLearn = ({ deckLearningChunk, setCraming }) => {
               <ProgressBar completed={Math.round((cardIndex + 1) * 100 / cards.length)} bgColor="black" />
             </>
           ) : (
-            <div style={{ height: '200px', textAlign: 'center' }}>-- empty deck --</div>
+            <div style={{ height: '200px', textAlign: 'center' }}>-- empty topic --</div>
           )}
         </div>
       ) : (

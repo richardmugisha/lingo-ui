@@ -14,7 +14,7 @@ import Button from '../../../network/modals/playing/components/game-button/Butto
 
 const Chat = ({ }) => {
   const { userId: userID, username } = JSON.parse(localStorage.getItem("user"))
-  const { learning: deck, _id: deckId, words: cards } = useSelector((state) => state.deck.openDeck);
+  const { learning, _id: topicId, words: cards } = useSelector((state) => state.topic);
   const [chatInfo, setChatInfo] = useState({
         type: "chat", creator: userID, status: "lobby",
         players: {
@@ -22,13 +22,12 @@ const Chat = ({ }) => {
           [participants[1].id]: participants[1],
           [participants[2].id]: participants[2],
         }, 
-        words: deck.words.map(wordObj => wordObj.word),
-        data: {step: "catalog"}})
-
+        words: learning.words.map(wordObj => wordObj.word),
+        data: {step: "catalog", words: learning.words.map(wordObj => wordObj.word)}})
   useEffect(() => {
     console.log('some', chatInfo.data)
     if (chatInfo.data.step === "create") {
-      scriptGen(chatInfo.data.title, chatInfo.data.summary, chatInfo.words, Object.values(chatInfo.players).map(p => p), deckId, userID)
+      scriptGen(chatInfo.data.title, chatInfo.data.summary, chatInfo.words, Object.values(chatInfo.players).map(p => p), topicId, userID)
       .then(script => setChatInfo(prev => ({...prev, data: {...script, step: "temporary step", mode: "practice"}})))
     }
     else if (chatInfo.data.step === "temporary step") {
@@ -75,7 +74,7 @@ const Chat = ({ }) => {
                 [participants[1].id]: participants[1],
                 [participants[2].id]: participants[2],
               }, 
-              words: deck.words.map(wordObj => wordObj.word),
+              words: learning.words.map(wordObj => wordObj.word),
               data: {step: "catalog"}
             })} 
         />

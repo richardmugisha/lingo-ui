@@ -13,7 +13,7 @@ const Submission = ({storySettings, setStorySettings, externalSource,
       <h3><AutoAwesomeIcon />Final touches</h3>
       <>
         {
-            !(existingTitle.current || gameInfo.creator !== userID) &&
+            !(existingTitle.current || gameInfo?.creator !== userID) &&
             // <h3>Title: {storySettings.title}</h3> :
             <span>
               <label htmlFor="">Complete the title</label>

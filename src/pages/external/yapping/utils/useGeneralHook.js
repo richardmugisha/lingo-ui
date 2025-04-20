@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import axios from 'axios';
+import AxiosWrapper from "../../../../api/http/AxiosWrapper";
 import { httpEndpoint } from "../../../../../serverConfig";
 
 import fetchAll from "../../../../api/http/story/fetchAll";
@@ -12,7 +12,7 @@ const useGeneralHook = (
     storySettings, setStorySettings,
     mode,
     info, setInfo , 
-    deckId, 
+    topicId, 
     checked, 
     words,
     selectedWords, setSelectedWords,
@@ -35,11 +35,11 @@ const useGeneralHook = (
     return () => clearTimeout(timerId)
   }, [info])
 
-  const updateAttempt = ({word, fillIndex, fillingMode}) => {
-    
-      const blank = attempt.find(w => w.startsWith('____'))
+  const updateAttempt = ({word, fillIndex, fillingMode, setWordLevelIndex}) => {
+      const newWord = word
+      const blank = fillingMode === "typing" ? attempt[fillIndex] : attempt.find(w => w.startsWith('____'))
       const newAttempt = [...attempt];
-      const wordIndex =fillIndex || attempt.indexOf(blank) 
+      const wordIndex = fillIndex || attempt.indexOf(blank) 
       const correctWord = correctSentence[wordIndex];
       if (correctWord === word || 
             (['.', ',', ';', ']', '"', '!', '?', ')'].includes(correctWord[correctWord.length - 1]) && 
@@ -52,7 +52,8 @@ const useGeneralHook = (
       }
       
       else if (fillingMode === "typing") {
-        newAttempt[fillIndex] = word;
+        setWordLevelIndex(fillIndex)
+        newAttempt[fillIndex] = newWord;
         setAttempt(newAttempt)
       }
     }
@@ -60,8 +61,8 @@ const useGeneralHook = (
     const handleSubmit = () => {
         const { title, summary, details } = storySettings;
         if (mode?.startsWith("game")) return;
-        axios
-          .post(`${ httpEndpoint }/cards/story-time/${deckId}`, { userId: !checked ? userId : null, details, title, words: selectedWords })
+        AxiosWrapper
+          .post(`${ httpEndpoint }/cards/story-time/${topicId}`, { userId: !checked ? userId : null, details, title, words: selectedWords })
           .then((res) => {
             const { story } = res.data;
             setInfo({ type: 'success', message: 'Your story was created successfully! => ' + story.title, exists: true })

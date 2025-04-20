@@ -13,7 +13,7 @@ const Side = (
   useEffect(() => {
     if (correctWordSet.length && storySettings.mode === 'practice') {
       const wordsToDisplay = shuffledNumbers(storySettings.words.length - 1).slice(0, 3).map((randIndex) => storySettings.words[randIndex]).concat(correctWordSet)
-      const randomizedOrder = shuffledNumbers(wordsToDisplay.length - 1).map(randomIndex => wordsToDisplay[randomIndex])
+      const randomizedOrder = [...new Set(shuffledNumbers(wordsToDisplay.length - 1).map(randomIndex => wordsToDisplay[randomIndex]) || [])]
       setWordSetToDisplay(randomizedOrder)
     }
   }, [correctWordSet])

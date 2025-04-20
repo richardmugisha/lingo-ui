@@ -29,3 +29,19 @@
     border-radius: 5px;
     color: rgb(0, 0, 0, .5);
 }
+
+.categories * {
+    background: #86A8B8;
+    padding: .5em 1em;
+    cursor: pointer;
+    border: none;
+    font-size: large;
+    border-radius: 1em;
+    color: white;
+    margin-inline: 1em;
+    text-decoration: none;
+}
+
+.categories .selected {
+    background-color: grey;
+}

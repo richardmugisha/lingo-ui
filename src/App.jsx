@@ -8,7 +8,7 @@ import More from './pages/external/More';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 
-import axios from 'axios';
+import AxiosWrapper from './api/http/AxiosWrapper';
 import { httpEndpoint } from '../serverConfig'
 const token = localStorage.getItem('token');
 const user = localStorage.getItem('user')
@@ -19,7 +19,7 @@ function App() {
   const [userAuthed, setUserAuthed] = useState((token && user) ? true : false); 
   useEffect(() => {
     if (token) {
-      axios.get(`${ httpEndpoint }/protected-route`, {
+      AxiosWrapper.get(`${ httpEndpoint }/protected-route`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       .then(res => {

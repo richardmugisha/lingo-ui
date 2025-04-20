@@ -14,11 +14,11 @@ const Options = () => {
   const navigate = useNavigate();
   const handleRefresh = usePageRefreshHandle()
 
-  const { _id: deckId, deckName, words } = useSelector(state => state.deck.openDeck)
+  const { _id: topicId, topicName, words } = useSelector(state => state.topic.openTopic)
 
   useEffect(() => {
-    handleRefresh(deckId)
-  }, [deckId])  
+    handleRefresh(topicId)
+  }, [topicId])  
 
   return (
     <div className='card'>

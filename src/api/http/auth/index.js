@@ -1,11 +1,10 @@
 
 import { httpEndpoint } from "..";
-import axios from "axios";
-
+import AxiosWrapper from "../AxiosWrapper";
 
 export const register = async ({username, email, password}) => {
     try {
-        await axios.post(`${ httpEndpoint }/auth/register`, { username, email, password });
+        await AxiosWrapper.post(`${ httpEndpoint }/auth/register`, { username, email, password });
         return
     } catch (error) {
         //console.log(error)
@@ -15,7 +14,7 @@ export const register = async ({username, email, password}) => {
 
 export const login = async ({email, password}) => {
     try {
-        const res = await axios.post(`${ httpEndpoint }/auth/login`, { email, password });
+        const res = await AxiosWrapper.post(`${ httpEndpoint }/auth/login`, { email, password });
         return res;
     } catch (error) {
         //console.log(error)

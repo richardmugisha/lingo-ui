@@ -1,11 +1,11 @@
 import { httpEndpoint } from "..";
-import axios from "axios";
+import AxiosWrapper from "../AxiosWrapper";
 
-export default async (deckId, type) => {
+export default async (topicId, type) => {
     try {
         const response = type === "story" ?
-                          await axios.get(`${ httpEndpoint }/cards/story-time/${deckId}`):
-                           await axios.get(`${ httpEndpoint }/cards/chat-time/${deckId}`)
+                          await AxiosWrapper.get(`${ httpEndpoint }/cards/story-time/${topicId}`):
+                           await AxiosWrapper.get(`${ httpEndpoint }/cards/chat-time/${topicId}`)
         const { stories } = response.data;
         console.log(stories, response.data)
         return stories

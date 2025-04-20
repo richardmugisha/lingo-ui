@@ -9,8 +9,8 @@ import shuffledNumbers from '../../../../../utils/shuffleArray';
 import { useSelector } from 'react-redux';
 
 const Quiz = () => {
-  const deck  = useSelector(state => state.deck.openDeck)
-  const order = shuffledNumbers(deck.words?.length - 1).slice(0, 10)
+  const topic  = useSelector(state => state.topic.openTopic)
+  const order = shuffledNumbers(topic.words?.length - 1).slice(0, 10)
 
   const [questionTypes, setQuestionTypes] = useState(['mcq', 'guess'])
   const [answerTypes, setAnswerTypes] = useState(['meaning', 'example', 'synonym', 'antonym']);
@@ -59,13 +59,13 @@ const Quiz = () => {
           <input className="quiz-submit" onClick={() => {handleSubmit()}} type='submit' value={'submit'} />
         </div> 
        :
-      deck.words?.length && 
+      topic.words?.length && 
       <QuizCard 
         importedFormat={format} importedQuizType={quizType} 
         importedQuizLength={quizLength} order={order} 
-        deckLearnChunk={{ words: order.map(i => deck.words[i]) }} 
+        topicLearnChunk={{ words: order.map(i => topic.words[i]) }} 
         autoMode={false} formatRouter={'placeholder'}
-        words={deck.words} deckId={deck._id || deck.deckId}
+        words={topic.words} topicId={topic._id || topic.topicId}
       />
   )
 }

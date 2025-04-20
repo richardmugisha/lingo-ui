@@ -1,5 +1,5 @@
 .card-add {
-    width: min(90vw, 600px);
+    min-width: min(90vw, 600px);
     min-height: 200px;
     margin: auto;
     background-color: #9BC5CB;
@@ -18,11 +18,13 @@
 
 .card-add > .head {
     display: flex;
+    gap: 2em;
 }
 
-.card-add > .head > div:first-child {
+.card-add > .head > h2 {
     text-transform: capitalize;
     background-color: transparent;
+    text-wrap: wrap;
 }
 
 .card-add  > .head button {

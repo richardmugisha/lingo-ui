@@ -11,7 +11,7 @@ const Onboarding = (
   }) => {
   return (
     <div className='story-onboarding'>
-      <h3>You are about to write a short story <br />using these words / expressions found in the deck</h3>
+      <h3>You are about to write a short story <br />using these words / expressions found in the topic</h3>
       <div className='side-pool word-pool'>{storySettings.words.map((word, i) => <span key={i}> {word} </span>)}</div>
       <span>
           <input

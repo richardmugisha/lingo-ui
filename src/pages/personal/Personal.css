@@ -3,6 +3,7 @@
   flex-direction: column;
   flex: 1;
   height: 100%;
+  padding: .5em 2em;
 }
   
 .head {
@@ -10,15 +11,22 @@
     justify-content: space-between;
     align-items: center;
     padding: 1em;
+    width: 95%;
+    text-wrap: noWrap;
+    font-size: x-large;
 }
-  
+
+.head div:has(button) {
+  display: flex;
+}
 .body {
     overflow-y: auto;
     width: 95%;
-    margin: auto;
+    padding: 1em;
     display: flex;
+    gap: 1em;
     flex-wrap: wrap;
-    flex-grow: 1;
+    /* flex-grow: 1; */
 }
   
 .bottom {
@@ -27,54 +35,68 @@
 }
   
 .shelf,
-.new-deck {
+button {
     text-transform: capitalize;
-    font-size: 27px;
-}
+  }
   
 .shelf {
     color: #86A8B8;
-}
+    display: flex;
+    gap: 3em;
+  }
   
-.new-deck {
+button {
+    cursor: pointer;
+    border: none;
+    color: #86A8B8;
+    background: transparent;
+    font-size: medium;
+  }
+  
+button.option {
+    border-radius: 5px;
+    padding: .2em .5em;
+    font-size: 27px;
     background-color: #86A8B8;
     color: #E0F5F8;
-    padding: 1%;
     margin-left: 20px;
-    border-radius: 5px;
-    cursor: pointer;
 }
   
-.new-deck:hover {
+button.option:hover {
     color: white;
     box-shadow: 0 0 15px #a7c2d0;
 }
   
 .body > span {
     display: flex;
-    margin: auto;
     font-size: 30px;
 }
-  
-.body > div:is(.deck-card) {
-    background-color: #C0D7DA;
-    color: #345C70;
-    width: 170px;
-    min-height: 150px;
-    margin: 20px 5px 0 15px;
-    padding: 10px;
-    box-shadow: 0 3px 0 rgba(11, 14, 15, 0.482);
+/* style={{width: "300px", padding: "1em", listStyle: "none", border: "2px solid lightblue", minHeight: "300px", height: "fit-content"}} */
+.body > .topic-card {
+    /* background-color: #C0D7DA; */
+    list-style: none;
+    /* color: #345C70; */
+    width: 300px;
+    min-height: 200px;
+    /* height: fit-content; */
+    padding: 1em;
+    /* box-shadow: 0 3px 0 rgba(11, 14, 15, 0.482); */
     border-radius: 20px;
+    border: 2px solid lightblue;
     display: flex;
     word-wrap: break-word;
     flex-direction: column;
     justify-content: space-between;
-    font-size: x-large;
+    /* font-size: x-large; */
     cursor: pointer;
     user-select: none;
 }
+
+.body .topic {
+  font-size: x-large;
+}
   
-.body .deck-card:hover {
+.body .topic-card:hover {
     color: white;
     scale: 1.01;
     /* box-shadow: 0 0 12px rgba(11, 14, 15, 0.482); */
@@ -151,7 +173,7 @@
   }
   
   @media (max-width: 420px) {
-    .new-deck {
+    button {
       padding: 5px;
       font-size: 1.2em;
     }
@@ -165,18 +187,18 @@
     }
   }
   
-  .deck--meta {
+  .topic--meta {
     display: flex;
     justify-content: space-between;
     font-size: small;
     max-width: 100%;
   }
 
-  .deck--meta > div {
+  .topic--meta > div {
     color: #86A8B8;
     font-weight: bold;
   }
 
-  .deck--meta > div:first-child {
+  .topic--meta > div:first-child {
     text-transform: uppercase;
   }

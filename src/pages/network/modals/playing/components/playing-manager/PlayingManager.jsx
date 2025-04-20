@@ -9,9 +9,9 @@ import formatRouter from "../../utils/formatRouter"
 import WebSocketService from "../../../../../../api/ws";
 
 import { useState, useEffect } from "react";
-import { openDeck } from "../../../../../../features/personal/deck/deckSlice";
+import { chooseTopic } from "../../../../../../features/personal/topic/topicSlice";
 
-const PlayingManager = ({ gameInfo, setGameInfo, userID, typeOfGame, deck, gameID, playerID, storyGameUtils, setStoryGameUtils, ChatView }) => {
+const PlayingManager = ({ gameInfo, setGameInfo, userID, typeOfGame, topic, gameID, playerID, storyGameUtils, setStoryGameUtils, ChatView }) => {
     // //console.log("....Playing")
     const [afterUpdateFunc, setAfterUpdateFunc ] = useState(null)
     const dispatch = useDispatch()
@@ -61,8 +61,8 @@ const PlayingManager = ({ gameInfo, setGameInfo, userID, typeOfGame, deck, gameI
       if (gameInfo.type !== "quiz") return
 
       const handleInProgress = (payload) => {
-        console.log("Payload received:", payload.data?.deck);
-        dispatch(openDeck({_id: payload.data.deck.deckId, words: payload.data.deck.words}))
+        console.log("Payload received:", payload.data?.topic);
+        dispatch(chooseTopic({_id: payload.data.topic.topicId, words: payload.data.topic.words}))
         setGameInfo(prev => payload);
         if (afterUpdateFunc) {
                 afterUpdateFunc();
@@ -92,9 +92,9 @@ const PlayingManager = ({ gameInfo, setGameInfo, userID, typeOfGame, deck, gameI
         {(gameInfo.type === "quiz" && gameInfo.status === "in progress") ?
           <QuizCard 
             importedFormat={'placeholder'} importedQuizType={'placeholder'}
-            importedQuizLength={'placeholder'} order={'placeholder'} deckLearnChunk={gameInfo.data.deck.learning} mode={"quiz-game"} 
+            importedQuizLength={'placeholder'} order={'placeholder'} topicLearnChunk={gameInfo.data.topic.learning} mode={"quiz-game"} 
             formatRouter={formatRouter} setUserDecision={''} 
-            handlePlay={handlePlay} deckId={gameInfo.data.deck._id} words={gameInfo.data.deck.words}
+            handlePlay={handlePlay} topicId={gameInfo.data.topic._id} words={gameInfo.data.topic.words}
           /> :
           gameInfo.type === "story" ?
           <StoryView gameInfo={gameInfo} setGameInfo={setGameInfo} userID={userID} /> :

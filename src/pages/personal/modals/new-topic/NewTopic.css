@@ -1,15 +1,15 @@
-.new-deck-page {
+.new-topic-page {
     background-color: #9BC5CB;
     color: #E0F5F8;
     padding: 10px;
 }
 
-.new-deck-page > h1 {
+.new-topic-page > h1 {
     width: 100%;
 }
 
 
-.new-deck-page > input {
+.new-topic-page > input {
     border-radius: 20px;
     border: none;
     height: 60px;
@@ -22,7 +22,7 @@
     box-shadow: 0 0 .2em white inset;
 }
 
-.new-deck-page .select-container {
+.new-topic-page .select-container {
     color: #345C70;
     display: flex;
     align-items: center;
@@ -30,15 +30,15 @@
     font-size: large;
 }
 
-.new-deck-page .buttons div {
+.new-topic-page .buttons div {
     text-transform: capitalize;
     cursor: pointer;
 }
 
-.deck--alert {
+.topic--alert {
     color: rgba(255, 0, 0, 0.658);
 }
 
-.deck--hide {
+.topic--hide {
     display: none;
 }

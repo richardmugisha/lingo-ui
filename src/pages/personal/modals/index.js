@@ -4,7 +4,7 @@ import CardAdd from "./card-add/CardAdd";
 import CardAddManual from "./card-add-manual/CardAddManual";
 import CardAddAuto from "./card-add-auto/CardAddAuto";
 import CardLearn from "./card-learn/CardLearn";
-import NewDeck from "./new-deck/NewDeck"
+import NewTopic from "./new-topic/NewTopic"
 import GuidedLearning from "./guided-learning/GuidedLearning";
 import Quiz from "./quiz/quiz-selector/Quiz";
 
@@ -15,7 +15,7 @@ export {
     CardAddManual,
     CardAddAuto,
     CardLearn,
-    NewDeck,
+    NewTopic,
     GuidedLearning,
     Quiz
 }

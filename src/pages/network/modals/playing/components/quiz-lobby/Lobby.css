@@ -9,7 +9,7 @@
     flex-wrap: wrap;
 }
 
-.deck {
+.topic {
     background-color: #C0D7DA;
     color: #345C70;
     width: 170px;
@@ -25,6 +25,6 @@
     user-select: none;
 }
 
-ul .deck {
+ul .topic {
     cursor: pointer;
 }

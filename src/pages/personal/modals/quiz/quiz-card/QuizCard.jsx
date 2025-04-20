@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 
 import Performance from '../../performance/Performance'
 import GuessCard from '../quiz-start/guess/GuessCard';
@@ -11,7 +10,7 @@ import './QuizCard.css';
 import useQuizCard from './useQuizCard';
 
 
-const QuizCard = ({importedFormat, importedQuizType, importedQuizLength, order, deckLearnChunk, mode, formatRouter, setUserDecision, handlePlay, deckId, words }) => {
+const QuizCard = ({importedFormat, importedQuizType, importedQuizLength, order, topicLearnChunk, mode, formatRouter, setUserDecision, handlePlay, topicId, words }) => {
     const   {
       correctOption, 
       selectedItem,
@@ -21,7 +20,7 @@ const QuizCard = ({importedFormat, importedQuizType, importedQuizLength, order, 
       btmProSize,
       cardFormat,
       cardMotion,
-      deck,
+      topic,
       colors,
       handleItemClick,
       blankedWordFinder,
@@ -30,11 +29,11 @@ const QuizCard = ({importedFormat, importedQuizType, importedQuizLength, order, 
       quizType,
       quizLength,
       wins
-    } = useQuizCard(importedFormat, importedQuizType, importedQuizLength, order, deckLearnChunk.words, mode, formatRouter, handlePlay, deckId, words)
+    } = useQuizCard(importedFormat, importedQuizType, importedQuizLength, order, topicLearnChunk.words, mode, formatRouter, handlePlay, topicId, words)
 
     return (
-         deck ?
-          (quizDone && wins.length) ? <Performance wins={wins} entireDeck={deck} deckLearnChunk={deckLearnChunk} mode={mode} setUserDecision={setUserDecision} /> :
+         topic ?
+          (quizDone && wins.length) ? <Performance wins={wins} entireTopic={topic} topicLearnChunk={topicLearnChunk} mode={mode} setUserDecision={setUserDecision} /> :
           <>
             { format?.topProgressbar && <ProgressBar completed = {Math.floor(topProSize)} bgColor = {colors(topProSize)} customLabel=' ' height='2px' transitionDuration='.2s'/> }
             {format?.content?.type === 'mcq' ?

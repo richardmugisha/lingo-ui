@@ -1,9 +1,9 @@
 import randomGen from "../../../../../../utils/randomGen"
 import shuffledNumbers from "../../../../../../utils/shuffleArray";
 
-export default async (deck, card, format, quizType, quizLength, blankedWordFinder) => {
+export default async (topic, card, format, quizType, quizLength, blankedWordFinder) => {
   if (!card || !format.content) return
-        const AlreadyPicked = deck.findIndex((item) => item._id === card._id);
+        const AlreadyPicked = topic.findIndex((item) => item._id === card._id);
         const handleRandomize = async (max, howMany, alreadyUsed) => {
           try {
             const result = await randomGen(max, howMany, alreadyUsed); 
@@ -22,10 +22,10 @@ export default async (deck, card, format, quizType, quizLength, blankedWordFinde
                         (quizType === 'example'? blankedWordFinder(card.example, card['blanked example']): card.word)
             
             const corrOpt = (quizLength === 'long' || quizType === 'example') ? card[quizType] : card.word
-            const dataArrHere = await handleRandomize(deck.length, deck.length >= 4 ? 3 : deck.length-1, AlreadyPicked)
+            const dataArrHere = await handleRandomize(topic.length, topic.length >= 4 ? 3 : topic.length-1, AlreadyPicked)
             const options = shuffledNumbers([...new Set([...dataArrHere, AlreadyPicked])])
                                     .map(cardIndexHere => {
-                                        return deck[cardIndexHere]
+                                        return topic[cardIndexHere]
                                     })  
 
             return { label0, label1, corrOpt, options}

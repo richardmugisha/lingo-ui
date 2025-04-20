@@ -1,9 +1,9 @@
 import { httpEndpoint } from "..";
-import axios from "axios";
+import AxiosWrapper from "../AxiosWrapper"; 
 
 export default async (personalSelectedItem) => {
     try {
-        const res = await axios.delete(`${ httpEndpoint }/cards/deck?deckIds=${personalSelectedItem}`);
+        const res = await AxiosWrapper.delete(`${ httpEndpoint }/cards/topics?topicIds=${personalSelectedItem}`);
         return res.data;
       } catch (error) {
         throw error;

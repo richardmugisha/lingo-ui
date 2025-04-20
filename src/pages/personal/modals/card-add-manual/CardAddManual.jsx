@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './CardAddManual.css';
-import axios from 'axios';
+import AxiosWrapper from '../../../../api/http/AxiosWrapper';
 import Spinner from 'react-spinner-material';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { push } from '../../../../features/personal/deck/deckSlice';
+import { push } from '../../../../features/personal/topic/topicSlice';
 import { useNavigate } from 'react-router-dom';
 
 import usePageRefreshHandle from '../../../../utils/usePageRefreshHandle';
@@ -14,13 +14,13 @@ const CardAddManual = () => {
   const dispatch = useDispatch()
   const handleRefresh = usePageRefreshHandle()
 
-  const { _id: deckId, deckName } = useSelector(state => state.deck.openDeck)
+  const { _id: topicId, topicName } = useSelector(state => state.topic.openTopic)
 
   const [userId ] = useState(JSON.parse(localStorage.getItem('user')).userId)
 
   useEffect(() => {
-    handleRefresh(deckId)
-  }, [deckId])  
+    handleRefresh(topicId)
+  }, [topicId])  
   
   const [status, setStatus] = useState('preSubmit');
   const [readytosubmit, setReadytosubmit] = useState(false);
@@ -68,14 +68,14 @@ const CardAddManual = () => {
     const { httpEndpoint } = { httpEndpoint }
     if (status === 'submitting') return
     setStatus('submitting'); //console.log('sub')
-    postingData(`${ httpEndpoint }/cards/${deckName}`, { userId, deckId, deckLang, mode: 'manual', content: {'root word': formContent['root word'], variations: formContent.variations}} )
+    postingData(`${ httpEndpoint }/cards/${topicName}`, { userId, topicId, topicLang, mode: 'manual', content: {'root word': formContent['root word'], variations: formContent.variations}} )
       .then((data) => {
         afterSubmitReset();
         setReadytosubmit(false)
-        //console.log(data.deck._id)
-        dispatch(push(data.deck))
-        dispatch(id(data.deck._id))
-        //console.log(data.deck._id)
+        //console.log(data.topic._id)
+        dispatch(push(data.topic))
+        dispatch(id(data.topic._id))
+        //console.log(data.topic._id)
       })
       .catch(e => {
         //console.log(e.message)
@@ -90,13 +90,13 @@ const CardAddManual = () => {
 
   const postingData = async(url, requestBody) => {
       try {
-        const response = await axios.post(url, requestBody);
+        const response = await AxiosWrapper.post(url, requestBody);
         setStatus('submitted');
         return response.data;
       } catch (err) {
-        const {error, deck} = err.response.data
-        //console.log(deck?._id)
-        if (deck?.id) dispatch(id(deck.id))
+        const {error, topic} = err.response.data
+        //console.log(topic?._id)
+        if (topic?.id) dispatch(id(topic.id))
         setStatus('error');
         throw new Error(`Error making POST REQUEST in manual card: ${error}`)
       }

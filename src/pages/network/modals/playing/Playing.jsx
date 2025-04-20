@@ -14,7 +14,7 @@ import Lobby from "./components/quiz-lobby/Lobby";
 const Playing = () => {
   const [searchParams] = useSearchParams();
   const [gameID] = useState(searchParams.get("gameID"));
-  const { _id: deckId, deckName, words, learning: deck } = !gameID ? useSelector((state) => state.deck.openDeck) : {};
+  const { _id: topicId, topicName, words, learning: topic } = !gameID ? useSelector((state) => state.topic.openTopic) : {};
 
   const { userId: userID, username, avatar } = JSON.parse(localStorage.getItem("user")) || {};
   const { userId: playerID, username: playerName } = JSON.parse(localStorage.getItem("user")) || {};
@@ -27,7 +27,7 @@ const Playing = () => {
   const [status, setStatus] = useState(isCreator ? "creating" : "joining");
   const [storyGameUtils, setStoryGameUtils] = useState({
     activity: "onboarding",
-    words: deck?.words?.map((wordObj) => wordObj.word) || [],
+    words: topic?.words?.map((wordObj) => wordObj.word) || [],
   });
 
   const [ gameInfo, setGameInfo ] = useState(null)
@@ -35,7 +35,7 @@ const Playing = () => {
   useEffect(() => {
     if (playerID) {
       if (gameID) WebSocketService.send("game/join", { userID, id: gameID, username, avatar });
-      else if (isCreator && deck) WebSocketService.send("game/create", { userID, username, avatar, type: typeOfGame, deck, words: deck.words?.map((wordObj) => wordObj.word) });
+      else if (isCreator && topic) WebSocketService.send("game/create", { userID, username, avatar, type: typeOfGame, topic, words: topic.words?.map((wordObj) => wordObj.word) });
       else if (randomGame) WebSocketService.send("game/join", { playerID, mode: "random", playerName, avatar });
     }
 
@@ -129,7 +129,7 @@ const Playing = () => {
       { gameInfo?.status === "lobby" && gameInfo?.data?.step === "onboarding" ? (
         <>
           {["story", "chat"].includes(gameInfo.type) ? <StoryView gameInfo={gameInfo} setGameInfo={setGameInfo} userID={userID}/> :
-            <Lobby deck={gameInfo?.data?.deck} setGameInfo={setGameInfo} gameInfo={gameInfo}/>
+            <Lobby topic={gameInfo?.data?.topic} setGameInfo={setGameInfo} gameInfo={gameInfo}/>
           }
           <WaitingRoom gameInfo={gameInfo} userID={userID} handleStart={handleStart} error={error} />
         </>
@@ -142,7 +142,7 @@ const Playing = () => {
               gameInfo={gameInfo} setGameInfo={setGameInfo} userID={userID}
               isCreator={isCreator}
               typeOfGame={typeOfGame}
-              deck={deck}
+              topic={topic}
               gameID={gameID}
               playerID={playerID}
               storyGameUtils={storyGameUtils}

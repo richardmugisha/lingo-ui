@@ -1,9 +1,10 @@
 import { httpEndpoint } from "../../../serverConfig";
-import axios from "axios";
+import AxiosWrapper from "./AxiosWrapper";
 
 export default async (requests) => {
     try {
-        const response = await axios.post({ httpEndpoint } + '/batch-request', { requests })
+        console.log("hitting the batch request")
+        const response = await AxiosWrapper.post(httpEndpoint + '/batch-request', { requests })
         return response.data
     } catch (error) {
         throw error

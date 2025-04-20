@@ -1,9 +1,9 @@
 
 import { Button } from '@mui/material';
 import useStory from './utils/useStory';
+import { useState } from 'react';
 
 const Story = (props) => {
-
   const {
     storySettings, setStorySettings,
     attempt, setAttempt,
@@ -11,6 +11,27 @@ const Story = (props) => {
     handlePartSelection, callUponAi, 
     info, FinishButton
   } = useStory(props)
+
+  const getSharedPrefix = (originalWord, comparisonWord) => {
+    let matchLength = 0;
+  
+    for (
+      let position = 0;
+      position < originalWord.length && position < comparisonWord.length;
+      position++
+    ) {
+      if (originalWord[position] !== comparisonWord[position]) break;
+      matchLength++;
+    }
+  
+    const sharedStart = originalWord.slice(0, matchLength);
+    const remainingPart = originalWord.slice(matchLength);
+  
+    return {
+      sharedStart,
+      remainingPart,
+    };
+  };
   
 
   return (
@@ -33,14 +54,8 @@ const Story = (props) => {
                 (word, index) => {
                   if (correctSentence[index] !== word) return (
                     <label key={word + index}>
-                      {
-                        word.split('').map((char, i) => {
-                          const numOfPastWords = correctSentence?.slice(0, index)?.join(' ').length
-                          const correctCondition = (correctSentence.join(' ')[numOfPastWords + i + 1] === char && char !== '_') || ['.', ',', ';', ']', '"', '!', '?', ')'].includes(char)
-                          return <span key={char + i} style={{color: correctCondition ? 'green' : 'red', textDecoration: correctCondition && 'underline'}}>{char}</span>
-                        })
-                      }
-                      &nbsp;
+                      <span style={{color: 'green', textDecoration: 'underline'}}>{getSharedPrefix(word, correctSentence[index])?.sharedStart}</span>
+                      <span style={{color: 'red'}}>{getSharedPrefix(word, correctSentence[index])?.remainingPart}</span>
                     </label>
                   )
                   }

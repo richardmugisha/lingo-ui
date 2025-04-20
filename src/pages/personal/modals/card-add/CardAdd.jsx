@@ -13,15 +13,15 @@ const CardAdd = () => {
   const navigate = useNavigate()
   const handleRefresh = usePageRefreshHandle()
 
-  const { openDeck: deck } = useSelector(state => state.deck)
+  const topic = useSelector(state => state.topic)
   const [cardIndex, setCardIndex] = useState(0);
-  const [cards, setCards ] = useState(deck.words)
+  const [cards, setCards ] = useState(topic.words)
 
   useEffect(() => {
-    handleRefresh(deck._id)
-  }, [deck._id])  
+    handleRefresh(topic._id)
+  }, [topic._id])  
 
-  useEffect(() => setCards(deck.words), [deck.words])
+  useEffect(() => setCards(topic.words), [topic.words])
   
   useEffect(() => {
     const handleKeyPress = (event) => {
@@ -38,18 +38,17 @@ const CardAdd = () => {
     };
   }, [cards?.length]); 
   
+  console.log("we are here", topic)
   
-  //console.log(deck)
-
   return (
     <>
-    { deck?.deckName ?
+    { topic?.name ?
     <div className='card-add'>
       <div className="head">
-        <div>{deck.deckName}</div>
-        {deck._id ? <>
-                          <button onClick={() => navigate(`manual/?deck=${deck._id}`)}>manual add</button>
-                          <button onClick={() => navigate(`auto/?deck=${deck._id}`)}>auto add</button>
+        <h2>{topic.name?.replaceAll("_", " ")}</h2>
+        {topic._id ? <>
+                          <button onClick={() => navigate(`manual/?topic=${topic._id}`)}>manual add</button>
+                          <button onClick={() => navigate(`auto/?topic=${topic._id}`)}>auto add</button>
                         </>:
                         <></>
         }
@@ -79,7 +78,7 @@ const CardAdd = () => {
                 <ProgressBar completed = {Math.round((cardIndex + 1) * 100 / cards.length)} bgColor = "black" /> 
             </div>
           </> :
-          <>--empty deck---</>
+          <>--empty topic---</>
       }
     </div> : <div style={{height: '200px', width: '200px', padding: '50px'}}><Spinner radius={100} color={"#b0b0ff"} stroke={2} visible={true} /></div> 
       }

@@ -1,14 +1,12 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { searchWords as searchWordsRequest } from "../../../../../api/http";
 
-import { httpEndpoint } from '../../../../../../serverConfig'
-
-export const useSearchWords = (trackedSearchValue, deckLang, delay=2000) => {
+export const useSearchWords = (trackedSearchValue, topicLang, delay=2000) => {
     const [searchWords, setSearchWords] = useState([])
     // const [debouncedValue, setDebouncedValue] = useState(searchValue)
     const [status, setStatus] = useState('idle') // idle  | loading | success | error
 
-    // ////console.log(deckLang)
+    // ////console.log(topicLang)
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -23,12 +21,12 @@ export const useSearchWords = (trackedSearchValue, deckLang, delay=2000) => {
         //console.log(searchValue)
         if (searchValue)  {
             setStatus('loading')
-            axios.get(`${ httpEndpoint }/words/search?language=${deckLang}&word=${searchValue}`)
-                .then(res => {
-                // //console.log(res.data.searchWords)
-                setSearchWords(res.data.searchWords)
-                setStatus('success')      
-            }) 
+            searchWordsRequest(topicLang, searchValue)
+                .then(data => {
+                    // //console.log(res.data.searchWords)
+                    setSearchWords(data.searchWords)
+                    setStatus('success')      
+                }) 
         }
         else {
             setSearchWords([])
@@ -38,9 +36,9 @@ export const useSearchWords = (trackedSearchValue, deckLang, delay=2000) => {
 
     // useEffect(() => {
     //     if (debouncedValue)  {
-    //         //console.log(deckLang)
+    //         //console.log(topicLang)
     //         setLoading(true)
-    //         axios.get(`${ httpEndpoint }/words/search?language=${deckLang}&word=${debouncedValue}`)
+    //         axios.get(`${ httpEndpoint }/words/search?language=${topicLang}&word=${debouncedValue}`)
     //             .then(res => {
     //             // ////console.log(res.data.searchWords)
     //             setSearchWords(res.data.searchWords)
@@ -52,7 +50,7 @@ export const useSearchWords = (trackedSearchValue, deckLang, delay=2000) => {
     //         setLoading(false)  
     //     }    
         
-    // }, [debouncedValue, deckLang])
+    // }, [debouncedValue, topicLang])
 
     return [fetching, searchWords, status, setStatus]
 

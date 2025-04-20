@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './Temp.css'
-import axios from 'axios';
+import AxiosWrapper from '../../../api/http/AxiosWrapper';
 import ProgressBar from "@ramonak/react-progress-bar";
 import Spinner from 'react-spinner-material';
 
@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux'
 const Temp = () => {
     const { idType, id } = useParams();
 
-    const { deckLang } = useSelector(state => state.deck)
+    const { topicLang } = useSelector(state => state.topic)
 
     const flag = idType !== 'no-type'
     const oneTimeRef = useRef(0);
@@ -51,9 +51,9 @@ const Temp = () => {
       try {
         const { httpEndpoint } = { httpEndpoint };
         const userId  = JSON.parse(localStorage.getItem('user')).userId
-        const response = await axios.post(`${ httpEndpoint }/cards/temporary`, {userId, idType, id, deckLang, selected})
-        const { id:deckId } = response.data;
-        //console.log(deckId)
+        const response = await AxiosWrapper.post(`${ httpEndpoint }/cards/temporary`, {userId, idType, id, topicLang, selected})
+        const { id:topicId } = response.data;
+        //console.log(topicId)
         setProcessed(prev => prev.filter(card => !selected.includes(card._id)))
         setChecked(false); setSelected([])
       } catch (error) {
@@ -79,7 +79,7 @@ const Temp = () => {
       {flag && 
       <div className="card-stealing" style={{height: '15%'}}>
         <div className='card-stealing--cards'>
-          <h3>Select cards to be copied from the temporary deck to your new deck</h3>
+          <h3>Select cards to be copied from the temporary topic to your new topic</h3>
           <p style={{cursor: 'pointer'}} onClick={() => select()}><input type="checkbox" checked={checked} onChange={() => 'nothing to do'}/> <span>select all</span></p>
           <button className="button-15" onClick={cardStealing}>confirm</button>
         </div>
@@ -105,7 +105,7 @@ const processing = async (setProgress, beforeProcess, setUnprocessed, setProcess
   setProgress(0)
   try {
     const { httpEndpoint } = { httpEndpoint };
-    axios.get(`${ httpEndpoint }/cards/app`)
+    AxiosWrapper.get(`${ httpEndpoint }/cards/app`)
       .then(res => {
         const {timePerCard:timesPerCard} = res.data;
         //console.log(timesPerCard);
@@ -117,11 +117,11 @@ const processing = async (setProgress, beforeProcess, setUnprocessed, setProcess
       .catch(error => {console.log(error.message)})
 
     const startTime = Date.now(); // Record start time
-    const response2 = await axios.get(`${ httpEndpoint }/cards/temporary/${tempId}`)
+    const response2 = await AxiosWrapper.get(`${ httpEndpoint }/cards/temporary/${tempId}`)
     const { unprocessed, processed } = response2.data;
     const elapsedTime = Date.now() - startTime; // Calculate elapsed time
     const processCardLength = beforeProcess.length - unprocessed.length;
-    await axios.patch(`${ httpEndpoint }/cards/app`, { timePerCard : elapsedTime / processCardLength }); // Send elapsed time to server
+    await AxiosWrapper.patch(`${ httpEndpoint }/cards/app`, { timePerCard : elapsedTime / processCardLength }); // Send elapsed time to server
     setUnprocessed(unprocessed)
     setProcessed(processed)
     setStatus('processed')
@@ -140,7 +140,7 @@ const fetchingExtensionData = (setSearching, setUnprocessed, setProcessed, setTe
         const { httpEndpoint } = { httpEndpoint };
         const userId  = JSON.parse(localStorage.getItem('user')).userId
         setSearching(true)
-        axios.patch(`${ httpEndpoint }/cards/temporary`, {userId, words : words || []})
+        AxiosWrapper.patch(`${ httpEndpoint }/cards/temporary`, {userId, words : words || []})
             .then(response => {
               const { unprocessed, processed, tempId } = response.data
               setUnprocessed(unprocessed)

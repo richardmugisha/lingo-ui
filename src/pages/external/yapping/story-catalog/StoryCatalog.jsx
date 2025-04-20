@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { fetchAllStories } from '../../../../api/http';
 
 
-const StoryCatalog = ({ deckId, setStorySettings, gameInfo }) => {
+const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
 
   const resetStory = () => {
       setStorySettings( prev => prev.rebuild({ 
@@ -23,10 +23,10 @@ const StoryCatalog = ({ deckId, setStorySettings, gameInfo }) => {
   const [ stories, setStories ] = useState(gameInfo?.stories || [])
 
   useEffect(() => {
-    if (!deckId || gameInfo?.type === "story") return
-    fetchAllStories(deckId, gameInfo.type).then(setStories)
+    if (!topicId || gameInfo?.type === "story") return
+    fetchAllStories(topicId, gameInfo?.type || "story").then(setStories)
                     .catch((e) => console.log(e.msg));
-  }, [deckId])
+  }, [topicId])
 
   setStorySettings(prev => {
     //console.log(prev.mode, prev.step);
@@ -49,7 +49,7 @@ const StoryCatalog = ({ deckId, setStorySettings, gameInfo }) => {
                             {
                               ...story,
                               mode: "practice",
-                              step: gameInfo?.type === "story" ? "practice" : "temporary step",
+                              step: (gameInfo?.type || "story") === "story" ? "practice" : "temporary step",
                             }
                           ))
                       }
@@ -61,12 +61,12 @@ const StoryCatalog = ({ deckId, setStorySettings, gameInfo }) => {
           </div>
           or
         </> :
-        <>No stories yet!</> 
+        <>No {pluralize(gameInfo?.type || "story")} yet!</> 
       }
       <Button startIcon={<AddIcon />} variant="contained" color='primary' disableElevation 
           onClick={resetStory}
       >
-          New story
+          New {gameInfo?.type || "story"}
       </Button>
           
     </div>
@@ -74,3 +74,9 @@ const StoryCatalog = ({ deckId, setStorySettings, gameInfo }) => {
 }
 
 export default StoryCatalog
+
+const pluralize = (word) => {
+  if (!word) return ""
+  if (word[word.length] === "y") return word.slice(0, word.length - 1) + "ies"
+  else return word + "s"
+}
