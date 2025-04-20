@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 const Personal = () => 
 
     <Routes>
-      <Route path='/' element={<Home page="topics"/>} />
+      <Route path='/' element={<Home page=""/>} />
       <Route path='/topics' element={<Home page="topics"/>} />
       <Route path='/words' element={<Home page="words"/>} />
       <Route path='/learning' element={<Home page="learning"/>} />
@@ -20,5 +20,3 @@ const Personal = () =>
 
 
 export default Personal;
-
-  

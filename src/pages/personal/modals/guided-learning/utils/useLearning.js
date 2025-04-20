@@ -7,26 +7,28 @@ export default (topic, words) => {
     const dispatch = useDispatch()
     const isDoneRef = useRef(false)
 
-    if (!isDoneRef.current) {
-        isDoneRef.current = true
-        if (!topic) console.error("Provide the topic to retrieve a learning plan for it")
-        if (!words?.length) console.error("This topic doesn't have words to learn")
-        if (!topic || !words?.length) return
-        updateLearning(dispatch, topic, words.slice(0, 10))
-        .catch(error => {
-            if (error.response?.status === 404) {
-                createLearning(topic, words)
-                    .then(() => updateLearning(dispatch, topic, words))
-                    .catch(err => console.error(err))
-            }
-        })
-    }
+   try {
+        if (!isDoneRef.current) {
+            isDoneRef.current = true
+            if (!topic) throw new Error("Provide the topic to retrieve a learning plan for it")
+            if (!words?.length) throw new Error("This topic doesn't have words to learn")
+            updateLearning(dispatch, topic, words.slice(0, 10))
+            .catch(error => {
+                if (error.response?.status === 404) {
+                    createLearning(topic, words)
+                        .then(() => updateLearning(dispatch, topic, words))
+                        .catch(err => console.error(err))
+                }
+            })
+        }
+   } catch (error) {
+        console.log(error.message)
+   }
 }
 
 const updateLearning = async (dispatch, topic, words) => {
-    if (!topic) console.error("Provide the topic to retrieve a learning plan for it")
-    if (!words?.length) console.error("This topic doesn't have words to learn")
-    if (!topic || !words?.length) return
+    if (!topic) throw new Error("Provide the topic to retrieve a learning plan for it")
+    if (!words?.length) throw new Error("This topic doesn't have words to learn")
     try {
         console.log(words.length)
         const data = await getLearning(topic, words.map(word => word._id))

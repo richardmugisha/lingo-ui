@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import AxiosWrapper from "../../../../api/http/AxiosWrapper";
 import { httpEndpoint } from "../../../../../serverConfig";
 
-import fetchAll from "../../../../api/http/story/fetchAll";
+import handleBlanksGen from "./handleBlanks";
 
 import StorySetup from "./storySettings";
 
@@ -71,31 +71,15 @@ const useGeneralHook = (
           .catch((e) => console.log(e.msg));
     };
 
-    const handleBlanksGen = ({ currSentence, words}) => {
-      const sentChunks = currSentence.sentence.toLowerCase().trim().split(" ");
-      const usedWords = []
-      const blanked = sentChunks.map(sentChunk => {
-        for (const word of words) {
-          const threshold = word.length / 2 > 4 ? word.length / 2 : 5
-          if ( sentChunk.slice(0, threshold).includes(word.slice(0, threshold))) {
-            usedWords.push(word);
-            return '-'.repeat(5)
-          }
-        }
-        return sentChunk
-      }).join(" ")
-
-      return { blanked, usedWords }
-    }
     
       useEffect(() => {
         if (!storySettings?.sentenceInProgress) return
         const currSentence = storySettings.sentenceInProgress
         if (storySettings.mode === 'practice' || !currSentence?.sentence) return
         if ( ['.', '?', '!'].includes(currSentence.sentence[currSentence.sentence.length - 1]) ) {
-          const { blanked, usedWords } = handleBlanksGen({currSentence, words})
+          const { blanked, usedExpressions } = handleBlanksGen(currSentence.sentence, words)
           partApproval({ ...currSentence, blanked})
-          setSelectedWords(prev => [...prev, ...usedWords])
+          setSelectedWords(prev => [...prev, ...usedExpressions])
         }
       }, [storySettings.sentenceInProgress]);
     

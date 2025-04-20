@@ -11,6 +11,8 @@ import { register, login } from '../../api/http';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../features/auth/authSlice';
 
+import { config } from '../../api/http';
+
 const Auth = ({ page, setUserAuthed }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -29,12 +31,12 @@ const Auth = ({ page, setUserAuthed }) => {
         await register({ username, email, password });
         navigate('..');
       } else {
-        const response = await login({ email, password });
+        const response = await login({ email: email || config?.email, password: password || config?.password });
         localStorage.setItem('token', response.data.token);
         dispatch(setUser(response.data.user))
         localStorage.setItem('user', JSON.stringify(response.data.user))
         setUserAuthed(true)
-        navigate('/portal/personal');
+        navigate('/portal/personal/topics');
       }
     } catch (error) {
       setLoading(false)

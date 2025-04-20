@@ -7,7 +7,7 @@ const languages = [{value: 'english', label: 'english'}, {value: 'french', label
 
 export const LanguageSelect = ({ selectedLanguage, setSelectedLanguage }) => <MuiAutoComplete label='Language' options={languages} selectedValue={selectedLanguage} setSelectedValue={setSelectedLanguage} nullOption={{label: '', value: ''}}/>
 
-const Filters = ({ useFilters, myCardsOnly, selectedLanguage, setMyCardsOnly, setSelectedLanguage, page, words }) => {
+const Filters = ({ useFilters, myCardsOnly, selectedLanguage, setMyCardsOnly, setSelectedLanguage, page, words, topicChain }) => {
 
   return (
           <>
@@ -20,18 +20,18 @@ const Filters = ({ useFilters, myCardsOnly, selectedLanguage, setMyCardsOnly, se
                   <LanguageSelect selectedLanguage={selectedLanguage} setSelectedLanguage={setSelectedLanguage} />
                 </>
               }
-              <Categories current={page} words={words} />
+              <Categories current={page} words={words} topicChain={topicChain} />
           </>
   )
 };
 
 export default Filters;
 
-const Categories = ({ current, words }) => {
+const Categories = ({ current, words, topicChain }) => {
   return (
     <div className='categories'>
       <Link to="../topics" className={current === "topics" ? "selected" : ""}>Topics</Link>
-      <Link to="../words" className={current === "words" ? "selected": ""}>Words</Link>
+      {topicChain.length > 0 && <Link to="../words" className={current === "words" ? "selected": ""}>Words</Link>}
       { words?.length > 0 &&
         <>
           <Link to="../stories" className={current === "stories" ? "selected": ""}>Stories</Link>

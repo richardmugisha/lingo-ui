@@ -14,6 +14,8 @@ import formatRouter from "./utils/formatRouter"
 import {  CHUNK_SIZE, CHUNK_TARGET_MASTERY_LEVEL, TARGET_PERFECT_LEVEL } from "../../../../constants";
 import useLearning from './utils/useLearning'
 
+import Notice from '../../../../components/notice/Notice'
+
 const GuidedLearning = () => {
   const { _id: topicId, name, words, learning } = useSelector(state => state.topic)
   useRef(useLearning(topicId, words))
@@ -42,14 +44,15 @@ const GuidedLearning = () => {
                 topicId={topicId} words={words}
           />
         ) :
-        <LearningDashboarb name={name} learning={learning} words={words} setUserDecision={setUserDecision}/>
+        learning?.words?.length > 0 ?
+        <LearningDashboarb name={name} learning={learning} words={words} setUserDecision={setUserDecision}/> :
+        <Notice noWords={true} />
   )
 }
 
 export default GuidedLearning
 
 const LearningDashboarb = ({ name, learning, words, setUserDecision }) => {
-  if (!learning?.words ) return
   const [chunkPerc] = useState(Math.round(learning?.words?.reduce((acc, curr) => acc + curr.level, 0) * 100 / (learning.words.length * TARGET_PERFECT_LEVEL) || 0))
   const [topicPerc] = useState(Math.floor( Math.floor(learning.level / CHUNK_TARGET_MASTERY_LEVEL) * words.length + learning.chunkIndex * CHUNK_TARGET_MASTERY_LEVEL + learning.level % CHUNK_TARGET_MASTERY_LEVEL * words.slice(learning.chunkIndex * CHUNK_SIZE, learning.chunkIndex * CHUNK_SIZE + CHUNK_SIZE).length * 100 / (words.length * TARGET_PERFECT_LEVEL) ) )
 

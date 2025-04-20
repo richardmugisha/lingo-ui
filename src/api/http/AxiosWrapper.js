@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 class AxiosWrapper {
-  constructor(throttleGap = 2000) {
+  constructor(throttleGap = 100) {
     this.lastCalled = {}; // { [url]: timestamp }
     this.throttleGap = throttleGap;
   }

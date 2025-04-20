@@ -10,9 +10,10 @@ import { Delete as DeleteIcon, FilterAlt as FilterIcon, Clear as Close } from '@
 import { MuiCheckbox } from '../../components/MuiComponents';
 import MinCard from '../../components/card/MinCard';
 import Info from '../../components/Info';
+import Notice from "../../components/notice/Notice"
 
 import { useNavigate } from 'react-router-dom';
-import { fetchOneTopic, fetchManyTopics, deleteTopics, apiBatchRequest, getWords } from '../../api/http'
+import { fetchManyTopics, deleteTopics, apiBatchRequest, getWords } from '../../api/http'
 
 import { CHUNK_SIZE, CHUNK_TARGET_MASTERY_LEVEL, TARGET_PERFECT_LEVEL } from '../../constants'
 
@@ -20,7 +21,7 @@ export default ({ page }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   
-  const { subTopics, words, _id: topicID } = useSelector((state) => state.topic || {});
+  const { subTopics, words, _id: topicID, learning } = useSelector((state) => state.topic || {});
   const userId = JSON.parse(localStorage.getItem('user')).userId;
   const [checked, setChecked] = useState(false);
   const [personalSelectedItem, setPersonalSelectedItem] = useState([]);
@@ -36,7 +37,6 @@ export default ({ page }) => {
   const [userLearning, setUserLearning] = useState({})
 
   useEffect(() => {
-    console.log(error)
     error && setInfo({ type: 'danger', message: error, exists: true });
   }, [error]);
 
@@ -71,6 +71,7 @@ export default ({ page }) => {
     } catch (error) {
       throw error;
     } finally {
+      dispatch(chooseTopic({ learning: {}}))
       setSearching(false)
     }
   }, [myCardsOnly, selectedLanguage.value])
@@ -79,30 +80,24 @@ export default ({ page }) => {
     getSubTopics(null)
       .then(({ topics }) => {
           if (topics) dispatch(storeSubTopics(topics))
-          dispatch(chooseTopic({ words: []}))
       })
       .catch(error => setError(error.message))
   }, [myCardsOnly, selectedLanguage]);
 
-  const onTopicClickHandle = async (topic) => {
+  const onTopicClickHandle = async (topic, topicHistory = topicChain) => {
     setPersonalSelectedItem([]);
-    setTopicChain(topic ? [...topicChain, topic] : [])
+    if (!page) navigate("topics")
     dispatch(chooseTopic(topic))
     setSearching(true)
     // navigate(`options/?topic=${topic._id}`)
     getSubTopics(topic?._id)
       .then(({ topics }) => {
-        console.log(topics)
+        setTopicChain(topic ? [...topicHistory, topic] : [])
         dispatch(dispatch(storeSubTopics(topics)))
       })
       .catch(error => setError(error.message))
       .finally(() => setSearching(false))
     
-    if (false) getWords("english", topic.words)
-      .then(data => {
-        console.log(data.words)
-        dispatch(chooseTopic({words: data.words || []}))
-      })
   };
 
   const deletingTopics = async () => {
@@ -125,11 +120,20 @@ export default ({ page }) => {
   }, [info]);
 
   useEffect(() => {
-    if (page !== "topics" && words.length) {
+    if (page === "") {
+      setTopicChain([])
+      getSubTopics(null)
+      .then(({ topics }) => {
+          if (topics) dispatch(storeSubTopics(topics))
+      })
+      .catch(error => setError(error.message))
+    }
+    else if (page !== "topics" && words.length) {
       setSearching(true)
-      getWords("english", words)
+      console.log("happening")
+      const wordIDs = words.map(word => typeof word === "string" ? word : word?._id);
+      getWords("english", wordIDs)
       .then(data => {
-        console.log(data.words)
         dispatch(chooseTopic({words: data.words || []}))
         setSearching(false)
         if (["chats", "stories"].includes(page)) {
@@ -140,6 +144,8 @@ export default ({ page }) => {
                 if (page === "stories") navigate(`../../more/story-time/?topic=${topicID}`)
                 if (page === "chats") navigate(`../../more/chat-time/?topic=${topicID}`)
             })
+            .catch((e) => setError(e.message))
+            .finally(() => setSearching(false))
         }
         else if (page === "learning") {
           navigate(`../guided-learning?topic=${topicID}`)
@@ -150,16 +156,15 @@ export default ({ page }) => {
 
   }, [page])
 
-  
+  console.log(words)
 
   const topicDisplay = (name) => {
     return name.replaceAll("_", " ").split(" ").map(subName => subName.slice(0, 5)).join(" ") + " / "
   }
 
   const handleTopicNavigation = (topic, index) => {
-    console.log(topicChain.slice(0, index))
-    
-    onTopicClickHandle(topic).then(() => setTopicChain(topicChain.slice(0, index + 1)))
+    dispatch(chooseTopic({words: []}))
+    onTopicClickHandle(topic, topicChain.slice(0, index))
   }
 
   return (
@@ -167,7 +172,7 @@ export default ({ page }) => {
         {!personalSelectedItem.length ? (
           <div className="personal--filters">
             <span className="filter-btn" onClick={() => setUseFilters(!useFilters)}>{useFilters ? <Close /> : <FilterIcon />} Filters</span>
-              <Filters useFilters={useFilters} myCardsOnly={myCardsOnly} selectedLanguage={selectedLanguage} setMyCardsOnly={setMyCardsOnly} setSelectedLanguage={setSelectedLanguage} page={page} words={words}/>
+              <Filters useFilters={useFilters} myCardsOnly={myCardsOnly} selectedLanguage={selectedLanguage} setMyCardsOnly={setMyCardsOnly} setSelectedLanguage={setSelectedLanguage} page={page} words={words} topicChain={topicChain}/>
           </div>
         ) : (
           <div className="personal--deleting-panel">
@@ -185,12 +190,11 @@ export default ({ page }) => {
         <div className="head">
           <div className="shelf">Your {page} 
             <div style={{ maxWidth: "400px"}}>
-                <button onClick={e => onTopicClickHandle()}>--/</button>
+                <button onClick={e => handleTopicNavigation()}>--/</button>
                 {topicChain.map((topic, index) => <button key={index} onClick={() => handleTopicNavigation(topic, index)}>{topicDisplay(topic.name)}</button>)}
             </div>
           </div>
           <div>
-            { words.length > 0 && page === "stories" && <button className='option' onClick={() => navigate(`../guided-learning?topic=${topicID}`)}>New story</button>}
             { words?.length > 0 && ["words", "topics"].includes(page) && <button className='option' onClick={() => navigate(`../learning`)}>▶️Learning</button>}
             {page === "topics" && <button className='option' onClick={() => navigate(`new-topic/?topics=${topicChain.map(topic => topic.name).join(" > ")}`)}>New {topicChain.length ? "sub topic" : "Topic"}</button>}
             {
@@ -206,7 +210,7 @@ export default ({ page }) => {
         <div className="body">
           {searching && <Spinner radius={120} color="#345C70" stroke={2} visible={true} />}
 
-          {(subTopics?.length && page === "topics")? subTopics.map((topic) => (
+          {(subTopics?.length && ["", "topics"].includes(page))? subTopics.map((topic) => (
             <li
               className="topic-card topic"
               style={{ backgroundColor: personalSelectedItem.includes(topic._id) ? '#2225' : '#C0D7DA' }}
@@ -245,7 +249,11 @@ export default ({ page }) => {
                                             // style={{width: "300px", padding: "1em", listStyle: "none", border: "2px solid lightblue", minHeight: "300px", height: "fit-content"}}
                                             ><MinCard wObj={wObj} /></li>)
             :
-            !searching && <p>This topic doesn't have {page === "topics" ? "topics" : "words"} yet! Populate it!</p>
+            !searching && 
+            <Notice 
+              page={page} 
+              noTopics={!subTopics?.length > 0 && !topicChain?.length > 0} noSubTopics={!subTopics?.length > 0 && topicChain?.length > 0} noWords={!words?.length > 0} noLearning={!learning || !Object.keys(learning).length > 0}/>
+            // <p>This topic doesn't have {page === "topics" ? "topics" : "words"} yet! Populate it!</p>
           }
         </div>
       

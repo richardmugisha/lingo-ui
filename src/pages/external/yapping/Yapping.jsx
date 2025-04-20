@@ -21,18 +21,18 @@ import StorySetup from './utils/storySettings';
 const Yapping = ({ gameInfo, setGameInfo, userID }) => {
   const handleRefresh = usePageRefreshHandle()
   const { learning, _id: topicId, words:cards } = useSelector((state) => state.topic);
-  const [words, setWords] = useState(learning.words.map((wordObj) => wordObj.word).slice(0, 20) || [] ); // 20 words
+  const [words, setWords] = useState(learning?.words?.map((wordObj) => wordObj.word).slice(0, 20) || [] ); // 20 words
 
   console.log(learning)
 
-  // useEffect(() => {
-  //   // if (mode?.startsWith("game")) return;
-  //   setWords(learning.words.map(wordObj => wordObj.word)?.slice(0, 20))
-  // }, [learning])
+  useEffect(() => {
+    // if (mode?.startsWith("game")) return;
+    setWords(learning.words?.map(wordObj => wordObj.word)?.slice(0, 20) || [])
+  }, [learning])
 
-  // useEffect(() => {
-  //   handleRefresh(topicId)
-  // }, [topicId])  
+  useEffect(() => {
+    handleRefresh(topicId)
+  }, [topicId])  
 
   const [ storySettings, setStorySettings ] = useState(new StorySetup(gameInfo?.data || {mode: "create", step: "catalog", words, details: []})) 
 

@@ -14,4 +14,4 @@ export { default as fetchAllStories } from "./story/fetchAll"
 
 export { register, login } from "./auth"
 
-export { httpEndpoint } from "../../../serverConfig"
+export { httpEndpoint, config } from "../../../serverConfig"

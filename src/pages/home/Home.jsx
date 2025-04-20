@@ -13,7 +13,7 @@ import Logo from './Logo';
 const Home = ({ userAuthed, setUserAuthed}) => {
 
   return userAuthed ? 
-    <Navigate to= "../portal/personal"/> :
+    <Navigate to= "../portal/personal/topics"/> :
     <div className='Home'>
       <div className='intro side'>
         <Logo />
