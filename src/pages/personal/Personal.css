@@ -45,15 +45,16 @@ button {
     gap: 3em;
   }
   
-button {
+button, .option {
     cursor: pointer;
     border: none;
     color: #86A8B8;
     background: transparent;
     font-size: medium;
+    text-decoration: none;
   }
   
-button.option {
+.option {
     border-radius: 5px;
     padding: .2em .5em;
     font-size: 27px;

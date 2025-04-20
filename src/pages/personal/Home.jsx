@@ -12,7 +12,7 @@ import MinCard from '../../components/card/MinCard';
 import Info from '../../components/Info';
 import Notice from "../../components/notice/Notice"
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { fetchManyTopics, deleteTopics, apiBatchRequest, getWords } from '../../api/http'
 
 import { CHUNK_SIZE, CHUNK_TARGET_MASTERY_LEVEL, TARGET_PERFECT_LEVEL } from '../../constants'
@@ -156,8 +156,6 @@ export default ({ page }) => {
 
   }, [page])
 
-  console.log(words)
-
   const topicDisplay = (name) => {
     return name.replaceAll("_", " ").split(" ").map(subName => subName.slice(0, 5)).join(" ") + " / "
   }
@@ -195,11 +193,11 @@ export default ({ page }) => {
             </div>
           </div>
           <div>
-            { words?.length > 0 && ["words", "topics"].includes(page) && <button className='option' onClick={() => navigate(`../learning`)}>▶️Learning</button>}
-            {page === "topics" && <button className='option' onClick={() => navigate(`new-topic/?topics=${topicChain.map(topic => topic.name).join(" > ")}`)}>New {topicChain.length ? "sub topic" : "Topic"}</button>}
+            { words?.length > 0 && ["words", "topics"].includes(page) && <Link className='option' to="../learning">▶️Learning</Link>}
+            {["topics", ""].includes(page)  && <Link className='option' to={`../new-topic/?topics=${topicChain.map(topic => topic.name).join(" > ")}`} >New {topicChain.length ? "sub topic" : "Topic"}</Link>}
             {
                 ["words"].includes(page) && topicChain.length > 0 && <>
-                <button className='option' onClick={() => navigate(`../adding/?topic=${topicID}&&topics=${topicChain.map(topic => topic.name).join(" > ")}`)}>populate</button>
+                <Link className='option' to={`../adding/?topic=${topicID}&&topics=${topicChain.map(topic => topic.name).join(" > ")}`}>populate</Link>
               </>
             }
           </div>
