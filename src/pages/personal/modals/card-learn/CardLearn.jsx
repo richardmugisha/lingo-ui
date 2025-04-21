@@ -185,7 +185,7 @@ const CardLearn = ({ topicLearningChunk, setCraming }) => {
                   {cards[cardIndex].antonym && <div>Antonym = {cards[cardIndex].antonym}</div>}
                   <br />
                   {
-                    cards[cardIndex]['related words']?.length &&
+                    cards[cardIndex]['related words']?.length > 0 &&
                     <>
                       <span>Related words : </span>
                       <ul className='card-learn--related'>

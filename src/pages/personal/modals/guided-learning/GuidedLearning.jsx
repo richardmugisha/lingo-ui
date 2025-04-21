@@ -14,7 +14,10 @@ import formatRouter from "./utils/formatRouter"
 import {  CHUNK_SIZE, CHUNK_TARGET_MASTERY_LEVEL, TARGET_PERFECT_LEVEL } from "../../../../constants";
 import useLearning from './utils/useLearning'
 
+import { topicChunkperc, wholeTopicPerc, wordMastery } from './utils/mastery'
+
 import Notice from '../../../../components/notice/Notice'
+import topic from '../../../../../../server/models/topic'
 
 const GuidedLearning = () => {
   const { _id: topicId, name, words, learning } = useSelector(state => state.topic)
@@ -53,8 +56,8 @@ const GuidedLearning = () => {
 export default GuidedLearning
 
 const LearningDashboarb = ({ name, learning, words, setUserDecision }) => {
-  const [chunkPerc] = useState(Math.round(learning?.words?.reduce((acc, curr) => acc + curr.level, 0) * 100 / (learning.words.length * TARGET_PERFECT_LEVEL) || 0))
-  const [topicPerc] = useState(Math.floor( Math.floor(learning.level / CHUNK_TARGET_MASTERY_LEVEL) * words.length + learning.chunkIndex * CHUNK_TARGET_MASTERY_LEVEL + learning.level % CHUNK_TARGET_MASTERY_LEVEL * words.slice(learning.chunkIndex * CHUNK_SIZE, learning.chunkIndex * CHUNK_SIZE + CHUNK_SIZE).length * 100 / (words.length * TARGET_PERFECT_LEVEL) ) )
+  const [chunkPerc] = useState(Math.round(topicChunkperc(learning.words)))
+  const [topicPerc] = useState(Math.round(wholeTopicPerc(learning, words))) //Math.floor( Math.floor(learning.level / CHUNK_TARGET_MASTERY_LEVEL) * words.length + learning.chunkIndex * CHUNK_TARGET_MASTERY_LEVEL + learning.level % CHUNK_TARGET_MASTERY_LEVEL * words.slice(learning.chunkIndex * CHUNK_SIZE, learning.chunkIndex * CHUNK_SIZE + CHUNK_SIZE).length * 100 / (words.length * TARGET_PERFECT_LEVEL) ) )
 
   const [currDisplay, setCurrDisplay] = useState(0)
   
@@ -90,7 +93,7 @@ const LearningDashboarb = ({ name, learning, words, setUserDecision }) => {
             <h3>Details for slice {learning.chunkIndex + 1}</h3>
             <div className='details'>
               {
-                learning.words.map((word, indexHere) => currDisplay > (1 + indexHere) && <ProgressBar key={word._id} completed = {Math.round(word.level * 100 / TARGET_PERFECT_LEVEL)} bgColor = 'gold' transitionDuration='.5s' customLabel={word.word} labelAlignment='left' height='1.5em' borderRadius='10px' animateOnRender='true'/>
+                learning.words.map((word, indexHere) => currDisplay > (1 + indexHere) && <ProgressBar key={(word._id || 0) + indexHere} completed = {Math.round(wordMastery(word.level) * 100)} bgColor = 'gold' transitionDuration='.5s' customLabel={word.word} labelAlignment='left' height='1.5em' borderRadius='10px' animateOnRender='true'/>
                 )
               }
             </div>

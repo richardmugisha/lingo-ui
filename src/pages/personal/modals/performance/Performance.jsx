@@ -27,42 +27,88 @@ const Performance = ({ wins, entireTopic, topicLearnChunk, mode, setUserDecision
   const perfRefs = [-1, 20, 40, 60, 80, 95, 99]
 
 
-  useEffect(()=>{
-    setCorrect(wins.filter(card => card.result > 0).length)
-    if (!["guided-learning"].includes(mode)) return 
-    const wordsMasteriesList = wins.map(win => ({word: win.word, level: win.level + win.result }))
-    let newWordSet = topicLearnChunk.words.map(word => word._id)
-    let { level, chunkIndex } = topicLearnChunk
-    let levelUp = false
-    if (wordsMasteriesList.every(word => word.level > topicLearnChunk.level)) {
-      level++
-      if ( level > 0 && level % CHUNK_TARGET_MASTERY_LEVEL === 0 ) {
-        if ((chunkIndex + 1) * CHUNK_SIZE < entireTopic.length) { // if moving to the next chunk, increment chunk index, and reset level to the baseline of the current level
-          chunkIndex++;
-          level -= CHUNK_TARGET_MASTERY_LEVEL
-        } else { // if done with round through the topic, start at chunk zero maintaining the level
-          chunkIndex = 0
+  useEffect(() => {
+    setCorrect(wins.filter(card => card.result > 0).length);
+  
+    if (mode !== "guided-learning") return;
+  
+    let chunkLevel = topicLearnChunk.chunkLevel;
+    let topicLevel = topicLearnChunk.topicLevel;
+    let chunkIndex = topicLearnChunk.chunkIndex;
+  
+    // Utility: Get chunk words and apply a level
+    const getChunkWordsAtLevel = (index, level) => {
+      return entireTopic
+        .slice(index * CHUNK_SIZE, index * CHUNK_SIZE + CHUNK_SIZE)
+        .map(word => ({ word: word._id, level }));
+    };
+  
+    // Compute new levels from wins
+    let wordsMasteriesList = wins.map(win => ({
+      word: win.word,
+      level: win.level + win.result
+    }));
+  
+    const levelUp = wordsMasteriesList.every(word => word.level > chunkLevel);
+  
+    if (levelUp) {
+      chunkLevel++;
+  
+      // If chunk is mastered, move to next chunk
+      if (chunkLevel % CHUNK_TARGET_MASTERY_LEVEL === 0) {
+        chunkIndex++;
+  
+        const completedOneLoop = chunkIndex === Math.ceil(entireTopic.length / CHUNK_SIZE);
+  
+        if (completedOneLoop) {
+          chunkIndex = 0;
+          topicLevel += CHUNK_TARGET_MASTERY_LEVEL; // Advance wave
         }
-        levelUp = true
-        newWordSet = entireTopic.slice(chunkIndex * CHUNK_SIZE, chunkIndex * CHUNK_SIZE + CHUNK_SIZE).map(word => word._id)
+  
+        // Reset chunk level to baseline (new topicLevel)
+        chunkLevel = topicLevel;
+        wordsMasteriesList = getChunkWordsAtLevel(chunkIndex, chunkLevel);
       }
+    } else {
+      // User failed a few → drop chunk level
+      chunkLevel = Math.max(0, chunkLevel - 1);
+      if (chunkLevel === 0 && topicLevel > 0) {
+        topicLevel -= 1;
+      }
+      
+      wordsMasteriesList = getChunkWordsAtLevel(chunkIndex, chunkLevel);
     }
-
-    console.log(wordsMasteriesList, topicLearnChunk);
-
-    (async (wordsMasteriesList, topicId, topicLearnChunk) => {
-      if (uploadingRight.current === false) return
+  
+    console.log({
+      wordsMasteriesList,
+      chunkLevel,
+      topicLevel,
+      chunkIndex,
+      CHUNK_TARGET_MASTERY_LEVEL,
+      CHUNK_SIZE
+    });
+  
+    (async () => {
+      if (!uploadingRight.current) return;
       uploadingRight.current = false;
+  
       try {
-        const result = await masteryUpdate(wordsMasteriesList, topicId, topicLearnChunk)
-        console.log(entireTopic)
-        updateLearning(dispatch, topicId, entireTopic )
-        // dispatch(chooseTopic(result.topic))
-        //console.log(result.msg, result.topic)
-      } catch (error) { console.log(error) }
-    })(wordsMasteriesList, topicLearnChunk.topic, {...topicLearnChunk, words: newWordSet, level, chunkIndex, levelUp})
-
-  }, [wins])
+        const result = await masteryUpdate({
+          ...topicLearnChunk,
+          words: wordsMasteriesList,
+          chunkLevel,
+          topicLevel,
+          chunkIndex
+        });
+  
+        updateLearning(dispatch, topicLearnChunk.topic, entireTopic);
+      } catch (error) {
+        console.error(error);
+      }
+    })();
+  }, [wins]);
+  
+  
 
   const perfGauge = (correct, wins) => {
     const perf = Math.round(correct * 100 /wins.length)

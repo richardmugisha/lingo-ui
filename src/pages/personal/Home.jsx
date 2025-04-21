@@ -16,6 +16,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { fetchManyTopics, deleteTopics, apiBatchRequest, getWords } from '../../api/http'
 
 import { CHUNK_SIZE, CHUNK_TARGET_MASTERY_LEVEL, TARGET_PERFECT_LEVEL } from '../../constants'
+import { wholeTopicPerc } from './modals/guided-learning/utils/mastery';
 
 export default ({ page }) => {
   const dispatch = useDispatch()
@@ -63,9 +64,9 @@ export default ({ page }) => {
     
   }, [])
 
-  const getSubTopics = useCallback(async (parent) => {
+  const getSubTopics = useCallback(async (parent, myLearning) => {
     try {
-      const data = await fetchManyTopics(userId, myCardsOnly, selectedLanguage.value, parent);
+      const data = await fetchManyTopics(userId, myCardsOnly, selectedLanguage.value, parent, myLearning);
       if (!data?.length) setMyCardsOnly(false)
       return data;
     } catch (error) {
@@ -85,6 +86,10 @@ export default ({ page }) => {
   }, [myCardsOnly, selectedLanguage]);
 
   const onTopicClickHandle = async (topic, topicHistory = topicChain) => {
+    if (page === "my-learning") {
+      dispatch(chooseTopic(topic))
+      return navigate(`../learning`)
+    }
     setPersonalSelectedItem([]);
     if (!page) navigate("topics")
     dispatch(chooseTopic(topic))
@@ -120,10 +125,11 @@ export default ({ page }) => {
   }, [info]);
 
   useEffect(() => {
-    if (page === "") {
+    if (["", "topics", "my-learning",].includes(page)) {
       setTopicChain([])
-      getSubTopics(null)
+      getSubTopics(null, page)
       .then(({ topics }) => {
+          if (page === "my-learning") console.log(topics)
           if (topics) dispatch(storeSubTopics(topics))
       })
       .catch(error => setError(error.message))
@@ -165,6 +171,8 @@ export default ({ page }) => {
     onTopicClickHandle(topic, topicChain.slice(0, index))
   }
 
+  console.log(subTopics)
+
   return (
     <div className="personal">
         {!personalSelectedItem.length ? (
@@ -187,10 +195,11 @@ export default ({ page }) => {
 
         <div className="head">
           <div className="shelf">Your {page} 
+            {page !== "fyp" && 
             <div style={{ maxWidth: "400px"}}>
                 <button onClick={e => handleTopicNavigation()}>--/</button>
                 {topicChain.map((topic, index) => <button key={index} onClick={() => handleTopicNavigation(topic, index)}>{topicDisplay(topic.name)}</button>)}
-            </div>
+            </div>}
           </div>
           <div>
             { words?.length > 0 && ["words", "topics"].includes(page) && <Link className='option' to="../learning">▶️Learning</Link>}
@@ -208,7 +217,7 @@ export default ({ page }) => {
         <div className="body">
           {searching && <Spinner radius={120} color="#345C70" stroke={2} visible={true} />}
 
-          {(subTopics?.length && ["", "topics"].includes(page))? subTopics.map((topic) => (
+          {(subTopics?.length && ["", "topics", "my-learning"].includes(page))? subTopics.map((topic) => (
             <li
               className="topic-card topic"
               style={{ backgroundColor: personalSelectedItem.includes(topic._id) ? '#2225' : '#C0D7DA' }}
@@ -229,9 +238,7 @@ export default ({ page }) => {
                 <div>Mastery: 
                   {
                     (() => {
-                        const currTopic = userLearning?.topics?.find(topicHere => topicHere.topicID === topic._id)
-                        const perc = currTopic ? Math.floor( Math.floor(currTopic.level / CHUNK_TARGET_MASTERY_LEVEL) * topic.words.length + currTopic.chunkIndex * CHUNK_TARGET_MASTERY_LEVEL + currTopic.level % CHUNK_TARGET_MASTERY_LEVEL * topic.words.slice(currTopic.chunkIndex * CHUNK_SIZE, currTopic.chunkIndex * CHUNK_SIZE + CHUNK_SIZE).length * 100 / (topic.words.length * TARGET_PERFECT_LEVEL) ) : 0
-                        return perc || 0
+                        return Math.round(wholeTopicPerc(topic.learning))
                       })()
                   }
                   %</div>
@@ -250,7 +257,10 @@ export default ({ page }) => {
             !searching && 
             <Notice 
               page={page} 
-              noTopics={!subTopics?.length > 0 && !topicChain?.length > 0} noSubTopics={!subTopics?.length > 0 && topicChain?.length > 0} noWords={!words?.length > 0} noLearning={!learning || !Object.keys(learning).length > 0}/>
+              noTopics={!subTopics?.length > 0 && !topicChain?.length > 0} noSubTopics={!subTopics?.length > 0 && topicChain?.length > 0} 
+              noWords={!words?.length > 0} noLearning={!learning || !Object.keys(learning).length > 0}
+              noMyLearning={!subTopics.find(topic => (topic.learning?.topic ))}
+            />
             // <p>This topic doesn't have {page === "topics" ? "topics" : "words"} yet! Populate it!</p>
           }
         </div>

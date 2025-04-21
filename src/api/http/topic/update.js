@@ -1,11 +1,10 @@
 import { httpEndpoint } from "..";
 import AxiosWrapper from "../AxiosWrapper";
 
-export default async (wordsMasteriesList, topicId, topicLearnChunk) => {
+export default async (topicLearnChunk) => {
     const userId = JSON.parse(localStorage.getItem('user')).userId;
-    console.log(wordsMasteriesList)
     try {
-        const performData = await AxiosWrapper.patch(`${ httpEndpoint }/cards/topic?topic=${topicId}&user=${userId}`, { wordsMasteriesList, topicLearnChunk });
+        const performData = await AxiosWrapper.patch(`${ httpEndpoint }/cards/topic?user=${userId}`, { topicLearnChunk });
         return performData.data;
     } catch (error) {
         throw error

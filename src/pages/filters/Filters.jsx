@@ -30,14 +30,22 @@ export default Filters;
 const Categories = ({ current, words, topicChain }) => {
   return (
     <div className='categories'>
-      <Link to="../topics" className={current === "topics" ? "selected" : ""}>Topics</Link>
-      {topicChain.length > 0 && <Link to="../words" className={current === "words" ? "selected": ""}>Words</Link>}
-      { words?.length > 0 &&
+      {
+        current !== "fyp" ?
         <>
-          <Link to="../stories" className={current === "stories" ? "selected": ""}>Stories</Link>
-          <Link to="../chats" className={current === "chats" ? "selected": ""}>Scripts</Link>
-        </>
+          <Link to="../topics" className={current === "topics" ? "selected" : ""}>Topics</Link>
+          {topicChain.length > 0 && <Link to="../words" className={current === "words" ? "selected": ""}>Words</Link>}
+          { words?.length > 0 &&
+            <>
+              <Link to="../stories" className={current === "stories" ? "selected": ""}>Stories</Link>
+              <Link to="../chats" className={current === "chats" ? "selected": ""}>Scripts</Link>
+            </>
+          }
+          <Link to="../my-learning" className={current === "my-learning" ? "selected": ""}>My Learning</Link>
+        </> :
+      <Link to="../">Explore</Link>
       }
+     
       <Link to="../fyp" className={current === "fyp" ? "selected": ""}>For You</Link>
     </div>
   )

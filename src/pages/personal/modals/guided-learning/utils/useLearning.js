@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux"
 export default (topic, words) => {
     const dispatch = useDispatch()
     const isDoneRef = useRef(false)
-
+    console.log(words)
    try {
         if (!isDoneRef.current) {
             isDoneRef.current = true
@@ -40,8 +40,8 @@ const updateLearning = async (dispatch, topic, words) => {
 
 const updating = (learning, words) => {
     const updatedWords = learning.words.map(w => {
-        const full = words.find(word => word._id === w._id);
-        return { ...(full || {}), ...w };
+        const full = words.find(word => word._id === w.word);
+        return { ...(full || {}), level: w?.level || 0 };
     });
     console.log({...learning, words: updatedWords})
     return {...learning, words: updatedWords}
