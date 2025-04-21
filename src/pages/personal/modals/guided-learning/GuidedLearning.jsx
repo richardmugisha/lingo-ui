@@ -17,7 +17,6 @@ import useLearning from './utils/useLearning'
 import { topicChunkperc, wholeTopicPerc, wordMastery } from './utils/mastery'
 
 import Notice from '../../../../components/notice/Notice'
-import topic from '../../../../../../server/models/topic'
 
 const GuidedLearning = () => {
   const { _id: topicId, name, words, learning } = useSelector(state => state.topic)
