@@ -15,10 +15,13 @@ const ChatRoom = ({ chatInfo, setChatInfo, username }) => {
   const [lineIndex, setLineIndex] = useState(0)
   const [currentLineObj, setCurrentLineObj] = useState({})
   const [status, setStatus] = useState("waiting")
+  const [mainCharacter, setMainCharacter] = useState({})
   const audioRef = useRef(null)
 
   useEffect(() => {
     if (chatInfo?.data?.title && chatInfo.data?.details?.length > 0) {
+      const mainGuy = chatInfo.data.characters.find(char => char.isMain)
+      if (mainGuy) setMainCharacter(mainGuy)
       prefetchAllAudio(awsUrl, chatInfo.data.title, chatInfo.data.details.length);
     }
   }, [chatInfo]);
@@ -37,7 +40,7 @@ const ChatRoom = ({ chatInfo, setChatInfo, username }) => {
   }, [chatInfo, lineIndex])
 
   useEffect(() => {
-    if (currentLineObj?.line && (currentLineObj.actor?.toLowerCase() !== username.toLowerCase() || !currentLineObj.rephrased)) {
+    if (currentLineObj?.line && (currentLineObj?.actor?.toLowerCase() != mainCharacter?.firstName?.toLowerCase() || !currentLineObj.rephrased)) {
       playAudioForLine(lineIndex);
     }
   }, [currentLineObj]);
@@ -99,10 +102,10 @@ const ChatRoom = ({ chatInfo, setChatInfo, username }) => {
           <>
             <h2>
               { currentLineObj?.type === "narration" ? "Narration" : 
-                currentLineObj.actor === username.toLowerCase() ? "Your line" : `${currentLineObj?.actor}'s line`
+                currentLineObj.actor?.toLowerCase() === mainCharacter?.firstName?.toLowerCase() ? "Your line" : `${currentLineObj?.actor}'s line`
               }
             </h2>
-            {currentLineObj?.actor === username.toLowerCase() &&
+            {currentLineObj?.actor?.toLowerCase() === mainCharacter?.firstName?.toLowerCase() &&
               <p>Repharse the line to include the word <span className='line-word'>{handleBlanksGen(currentLineObj.line, chatInfo.words).usedExpressions[0]}</span></p>
             }
             <hr />
@@ -116,12 +119,12 @@ const ChatRoom = ({ chatInfo, setChatInfo, username }) => {
 
       <section className="second-section">
         <div className="participants-grid">
-          {Object.values(chatInfo.players).map((player) => (
+          {chatInfo.data.characters.map((player, index) => (
             <ChatTile
-              key={player.id}
+              key={player.firstName + index}
               user={player}
               audioElement={audioRef.current}
-              isActive={player.name.toLowerCase() === currentLineObj.actor && (currentLineObj.actor !== username.toLowerCase() || !currentLineObj.rephrased)}
+              isActive={player.firstName.toLowerCase() === currentLineObj.actor?.toLowerCase() && !currentLineObj.rephrased}
             />
           
           ))}

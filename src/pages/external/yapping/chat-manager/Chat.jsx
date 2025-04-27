@@ -17,15 +17,11 @@ const Chat = ({ }) => {
   const { learning, _id: topicId, words: cards } = useSelector((state) => state.topic);
   const [chatInfo, setChatInfo] = useState({
         type: "chat", creator: userID, status: "lobby",
-        players: {
-          [participants[0].id]: participants[0],
-          [participants[1].id]: participants[1],
-          [participants[2].id]: participants[2],
-        }, 
         words: learning.words.map(wordObj => wordObj.word),
+        players: [],
         data: {step: "catalog", words: learning.words.map(wordObj => wordObj.word)}})
   useEffect(() => {
-    console.log('some', chatInfo.data)
+    console.log('some', chatInfo)
     if (chatInfo.data.step === "create") {
       scriptGen(chatInfo.data.title, chatInfo.data.summary, chatInfo.words, Object.values(chatInfo.players).map(p => p), topicId, userID)
       .then(script => setChatInfo(prev => ({...prev, data: {...script, step: "temporary step", mode: "practice"}})))
@@ -38,6 +34,8 @@ const Chat = ({ }) => {
       )
     }
   }, [chatInfo.data.step])
+
+  console.log(chatInfo)
 
   return (
     <>
@@ -69,11 +67,6 @@ const Chat = ({ }) => {
           handleClick={() => setChatInfo(
             {
               type: "chat", creator: userID, status: "lobby",
-              players: {
-                [participants[0].id]: participants[0],
-                [participants[1].id]: participants[1],
-                [participants[2].id]: participants[2],
-              }, 
               words: learning.words.map(wordObj => wordObj.word),
               data: {step: "catalog"}
             })} 

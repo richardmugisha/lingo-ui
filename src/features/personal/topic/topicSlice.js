@@ -7,7 +7,9 @@ const initialState = {
         creator: '',
         words: [],
         learning: {},
-        subTopics: []
+        subTopics: [],
+        scripts: [],
+        stories: []
 }
 
 const topicSlice = createSlice({
@@ -16,6 +18,8 @@ const topicSlice = createSlice({
     reducers: {
         chooseTopic: (state, action) => ({...state, ...action.payload}),
         storeSubTopics: (state, action) => {state.subTopics = action.payload},
+        storeStories: (state, action) => {state.stories = action.payload},
+        storeScripts: (state, action) => {state.scripts = action.payload},
         removeTopics: (state, action) => {
             const deletingSet = action.payload;
             state.subTopics = state.subTopics.filter(topic => !deletingSet.includes(topic._id));
@@ -28,4 +32,4 @@ const topicSlice = createSlice({
 })
 
 export default topicSlice.reducer;
-export const { chooseTopic, storeSubTopics, removeTopics, push } = topicSlice.actions
+export const { chooseTopic, storeSubTopics, storeScripts, storeStories, removeTopics, push } = topicSlice.actions

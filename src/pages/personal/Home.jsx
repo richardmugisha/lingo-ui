@@ -3,7 +3,7 @@ import Spinner from 'react-spinner-material';
 import './Personal.css';
 import Filters from '../filters/Filters';
 import { useSelector, useDispatch } from 'react-redux';
-import { chooseTopic, storeSubTopics, removeTopics } from '../../features/personal/topic/topicSlice';
+import { chooseTopic, storeSubTopics, removeTopics, storeStories, storeScripts } from '../../features/personal/topic/topicSlice';
 import { updateLearning } from './modals/guided-learning/utils/useLearning';
 import { Button } from '@mui/material';
 import { Delete as DeleteIcon, FilterAlt as FilterIcon, Clear as Close } from '@mui/icons-material';
@@ -13,7 +13,7 @@ import Info from '../../components/Info';
 import Notice from "../../components/notice/Notice"
 
 import { useNavigate, Link } from 'react-router-dom';
-import { fetchManyTopics, deleteTopics, apiBatchRequest, getWords } from '../../api/http'
+import { fetchManyTopics, deleteTopics, apiBatchRequest, getWords, fetchAllStories } from '../../api/http'
 
 import { CHUNK_SIZE, CHUNK_TARGET_MASTERY_LEVEL, TARGET_PERFECT_LEVEL } from '../../constants'
 import { wholeTopicPerc } from './modals/guided-learning/utils/mastery';
@@ -22,7 +22,7 @@ export default ({ page }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   
-  const { subTopics, words, _id: topicID, learning } = useSelector((state) => state.topic || {});
+  const { subTopics, words, _id: topicID, learning, stories, scripts } = useSelector((state) => state.topic || {});
   const userId = JSON.parse(localStorage.getItem('user')).userId;
   const [checked, setChecked] = useState(false);
   const [personalSelectedItem, setPersonalSelectedItem] = useState([]);
@@ -102,7 +102,12 @@ export default ({ page }) => {
       })
       .catch(error => setError(error.message))
       .finally(() => setSearching(false))
-    
+
+    fetchAllStories(topic._id, "story")
+      .then( stories => dispatch(storeStories(stories)))
+
+    fetchAllStories(topic._id, "chat")
+      .then( scripts => dispatch(storeScripts(scripts)))
   };
 
   const deletingTopics = async () => {
@@ -127,6 +132,7 @@ export default ({ page }) => {
   useEffect(() => {
     if (["", "topics", "my-learning",].includes(page)) {
       setTopicChain([])
+      dispatch(chooseTopic({words: [], stories: [], scripts: []}))
       getSubTopics(null, page)
       .then(({ topics }) => {
           if (page === "my-learning") console.log(topics)
@@ -167,7 +173,7 @@ export default ({ page }) => {
   }
 
   const handleTopicNavigation = (topic, index) => {
-    dispatch(chooseTopic({words: []}))
+    dispatch(chooseTopic({words: [], stories: [], scripts: []}))
     onTopicClickHandle(topic, topicChain.slice(0, index))
   }
 
@@ -178,7 +184,11 @@ export default ({ page }) => {
         {!personalSelectedItem.length ? (
           <div className="personal--filters">
             <span className="filter-btn" onClick={() => setUseFilters(!useFilters)}>{useFilters ? <Close /> : <FilterIcon />} Filters</span>
-              <Filters useFilters={useFilters} myCardsOnly={myCardsOnly} selectedLanguage={selectedLanguage} setMyCardsOnly={setMyCardsOnly} setSelectedLanguage={setSelectedLanguage} page={page} words={words} topicChain={topicChain}/>
+              <Filters 
+                  useFilters={useFilters} myCardsOnly={myCardsOnly} selectedLanguage={selectedLanguage} 
+                  setMyCardsOnly={setMyCardsOnly} setSelectedLanguage={setSelectedLanguage} page={page} 
+                  words={words} topicChain={topicChain} stories={stories?.length || 0} scripts={scripts?.length || 0}
+              />
           </div>
         ) : (
           <div className="personal--deleting-panel">

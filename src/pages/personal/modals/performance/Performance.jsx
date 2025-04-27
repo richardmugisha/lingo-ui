@@ -4,6 +4,7 @@ import "./Performance.css"
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@mui/material"
 import { School as SchoolIcon, Quiz as QuizIcon } from '@mui/icons-material';
+import createScript from '../../../../api/http/chat/createScript';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { updateLearning } from '../guided-learning/utils/useLearning';
@@ -53,10 +54,12 @@ const Performance = ({ wins, entireTopic, topicLearnChunk, mode, setUserDecision
   
     if (levelUp) {
       chunkLevel++;
-  
+      
       // If chunk is mastered, move to next chunk
       if (chunkLevel % CHUNK_TARGET_MASTERY_LEVEL === 0) {
         chunkIndex++;
+
+        createScript(null, null, wins.map(win => win.text), null, topicLearnChunk.topic)
   
         const completedOneLoop = chunkIndex === Math.ceil(entireTopic.length / CHUNK_SIZE);
   

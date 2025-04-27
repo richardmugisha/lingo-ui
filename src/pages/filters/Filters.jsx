@@ -7,7 +7,7 @@ const languages = [{value: 'english', label: 'english'}, {value: 'french', label
 
 export const LanguageSelect = ({ selectedLanguage, setSelectedLanguage }) => <MuiAutoComplete label='Language' options={languages} selectedValue={selectedLanguage} setSelectedValue={setSelectedLanguage} nullOption={{label: '', value: ''}}/>
 
-const Filters = ({ useFilters, myCardsOnly, selectedLanguage, setMyCardsOnly, setSelectedLanguage, page, words, topicChain }) => {
+const Filters = ({ useFilters, myCardsOnly, selectedLanguage, setMyCardsOnly, setSelectedLanguage, page, words, topicChain, stories, scripts }) => {
 
   return (
           <>
@@ -20,14 +20,14 @@ const Filters = ({ useFilters, myCardsOnly, selectedLanguage, setMyCardsOnly, se
                   <LanguageSelect selectedLanguage={selectedLanguage} setSelectedLanguage={setSelectedLanguage} />
                 </>
               }
-              <Categories current={page} words={words} topicChain={topicChain} />
+              <Categories current={page} words={words} topicChain={topicChain} stories={stories} scripts={scripts} />
           </>
   )
 };
 
 export default Filters;
 
-const Categories = ({ current, words, topicChain }) => {
+const Categories = ({ current, words, topicChain, stories, scripts }) => {
   return (
     <div className='categories'>
       {
@@ -35,12 +35,10 @@ const Categories = ({ current, words, topicChain }) => {
         <>
           <Link to="../topics" className={current === "topics" ? "selected" : ""}>Topics</Link>
           {topicChain.length > 0 && <Link to="../words" className={current === "words" ? "selected": ""}>Words</Link>}
-          { words?.length > 0 &&
-            <>
-              <Link to="../stories" className={current === "stories" ? "selected": ""}>Stories</Link>
-              <Link to="../chats" className={current === "chats" ? "selected": ""}>Scripts</Link>
-            </>
-          }
+          
+          <Link to={words.length ? "../stories" : ""} className={current === "stories" ? "selected": ""}>Stories ({stories})</Link>
+          <Link to={words.length ? "../chats" : ""} className={current === "chats" ? "selected": ""}>Scripts ({scripts})</Link>
+            
           <Link to="../my-learning" className={current === "my-learning" ? "selected": ""}>My Learning</Link>
         </> :
       <Link to="../">Explore</Link>

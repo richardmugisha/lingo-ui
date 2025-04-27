@@ -1,6 +1,6 @@
 class StorySetup {
-    constructor({ title, summary, author, step, mode, details, sentenceIndex, sentenceInProgress, words }) {
-        this.metadata = { title, summary, author };
+    constructor({ title, summary, author, step, mode, details, sentenceIndex, sentenceInProgress, words, characters }) {
+        this.metadata = { title, summary, author, characters };
         this.state = { 
             step: step || "onboarding", 
             mode: mode || "create", 
@@ -14,7 +14,7 @@ class StorySetup {
     get title() { return this.metadata.title}
     get summary() { return this.metadata.summary}
     get author() { return this.metadata.author}
-
+    get characters () { return this.metadata.characters}
     get step() { return this.state.step}
     get mode() { return this.state.mode}
     get details() { return this.state.details}

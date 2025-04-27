@@ -20,7 +20,7 @@ class AxiosWrapper {
     if (this._shouldThrottle(url)) {
       return Promise.reject({ message: `Throttled: ${url}` });
     }
-
+    
     try {
       const response = await axios[method](url, ...args);
       return response

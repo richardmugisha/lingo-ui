@@ -146,7 +146,7 @@ const useQuizCard = (importedFormat, importedQuizType, importedQuizLength, order
 
     const handleItemClick = (item, correct) => {
             hasPlayed.current = true
-            setWins(prev => [...prev, {word: card._id, level: card?.level, result: (correct ? 1 : -1) }])
+            setWins(prev => [...prev, {text: card.word, word: card._id, level: card?.level, result: (correct ? 1 : -1) }])
             setSelectedItem(item);
             tickAudio.volume = 0
             if (mode === "quiz-game") { // want to do this after server
