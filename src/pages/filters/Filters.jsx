@@ -34,7 +34,7 @@ const Categories = ({ current, words, topicChain, stories, scripts }) => {
         current !== "fyp" ?
         <>
           <Link to="../topics" className={current === "topics" ? "selected" : ""}>Topics</Link>
-          {topicChain.length > 0 && <Link to="../words" className={current === "words" ? "selected": ""}>Words</Link>}
+          {topicChain.length > 0 && <Link to="../words" className={current === "words" ? "selected": ""}>Words ({words.length})</Link>}
           
           <Link to={words.length ? "../stories" : ""} className={current === "stories" ? "selected": ""}>Stories ({stories})</Link>
           <Link to={words.length ? "../chats" : ""} className={current === "chats" ? "selected": ""}>Scripts ({scripts})</Link>

@@ -8,15 +8,14 @@ import { updateLearning } from './modals/guided-learning/utils/useLearning';
 import { Button } from '@mui/material';
 import { Delete as DeleteIcon, FilterAlt as FilterIcon, Clear as Close } from '@mui/icons-material';
 import { MuiCheckbox } from '../../components/MuiComponents';
-import MinCard from '../../components/card/MinCard';
+import WordCard from '../../components/word/Card';
+import TopicCard from '../../components/topic/Card'
+import FypManager from './modals/fyp/Manager';
 import Info from '../../components/Info';
 import Notice from "../../components/notice/Notice"
 
 import { useNavigate, Link } from 'react-router-dom';
 import { fetchManyTopics, deleteTopics, apiBatchRequest, getWords, fetchAllStories } from '../../api/http'
-
-import { CHUNK_SIZE, CHUNK_TARGET_MASTERY_LEVEL, TARGET_PERFECT_LEVEL } from '../../constants'
-import { wholeTopicPerc } from './modals/guided-learning/utils/mastery';
 
 export default ({ page }) => {
   const dispatch = useDispatch()
@@ -228,42 +227,23 @@ export default ({ page }) => {
           {searching && <Spinner radius={120} color="#345C70" stroke={2} visible={true} />}
 
           {(subTopics?.length && ["", "topics", "my-learning"].includes(page))? subTopics.map((topic) => (
-            <li
-              className="topic-card topic"
-              style={{ backgroundColor: personalSelectedItem.includes(topic._id) ? '#2225' : '#C0D7DA' }}
-              onClick={() => topic.creator === userId &&
-                setPersonalSelectedItem(personalSelectedItem.includes(topic._id)
-                  ? personalSelectedItem.filter((topicID) => topicID !== topic._id)
-                  : [...personalSelectedItem, topic._id]
-                )
-              }
-              onDoubleClick={() => onTopicClickHandle(topic)}
-              key={topic._id}
-            >
-              <div className="topic--meta topic--language-and-owner">
-                <div>{topic.language?.slice(0, 2)}</div>{topic.creator === userId && <div>Yours</div>}
-              </div>
-              {topic.name?.replaceAll("_", " ", 1)}
-              <div className="topic--meta topic--mastery-and-length">
-                <div>Mastery: 
-                  {
-                    (() => {
-                        return Math.round(wholeTopicPerc(topic.learning))
-                      })()
+              <TopicCard 
+                  key={topic._id}
+                  topic={topic} userId={userId} 
+                  onClick={() => topic.creator === userId &&
+                    setPersonalSelectedItem(personalSelectedItem.includes(topic._id)
+                      ? personalSelectedItem.filter((topicID) => topicID !== topic._id)
+                      : [...personalSelectedItem, topic._id]
+                    )
                   }
-                  %</div>
-                <div>{topic.words?.length} cards</div>
-              </div>
-            </li>
+                  onDoubleClick={() => onTopicClickHandle(topic)}
+                  style={{ backgroundColor: personalSelectedItem.includes(topic._id) ? '#2225' : '#C0D7DA' }}
+              />
             )) :
-            ( page === "words" && words?.length) ?
-              
-                words.map((wObj, index) => <li 
-                                            className='topic-card'
-                                            key={index}
-                                            // style={{width: "300px", padding: "1em", listStyle: "none", border: "2px solid lightblue", minHeight: "300px", height: "fit-content"}}
-                                            ><MinCard wObj={wObj} /></li>)
-            :
+            page === "words" && words?.length ? words.map((wObj, index) => <WordCard key={index} wObj={wObj} /> ) :
+            page === "fyp" ?
+            <FypManager words={words} /> :
+
             !searching && 
             <Notice 
               page={page} 
