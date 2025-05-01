@@ -21,16 +21,18 @@
 .card-head {
     display: flex;
     justify-content: space-between;
-    font-size: 1.2em;
     font-weight: bold;
-    gap: 2em
+    min-width: 100%;
 }
 
 .card-body {
     margin-block: 1em;
+    width: 90% !important;
+    margin-inline: auto;
 }
 
-.card-body p {
+.card-body > p {
+    font-size: x-large;
     margin-top: 1em;
 }
 
@@ -44,4 +46,5 @@
 
 .card-footer {
     text-align: left;
+    min-width: 100%;
 }
