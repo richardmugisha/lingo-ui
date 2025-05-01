@@ -41,6 +41,7 @@
     .fyp-manager > li > .word-card {
         width: 100%;
         min-height: 100%;
+        font-size: medium;
     }
     .controls {
         bottom: 1em;
