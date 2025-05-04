@@ -3,7 +3,7 @@
     list-style: none;
     /* color: #345C70; */
     width: min(300px, 95dvw);
-    min-height: 95dvh;
+    /* min-height: 95dvh; */
     /* height: fit-content; */
     padding: 1em;
     /* box-shadow: 0 3px 0 rgba(11, 14, 15, 0.482); */
@@ -50,4 +50,10 @@
 .card-footer {
     text-align: left;
     min-width: 100%;
+}
+
+@media (max-width: 500px) {
+    .card-body > p {
+        font-size: 1.1em;
+    }
 }
