@@ -2,8 +2,8 @@
     /* background-color: #C0D7DA; */
     list-style: none;
     /* color: #345C70; */
-    width: 300px;
-    min-height: 200px;
+    width: min(300px, 95dvw);
+    min-height: 95dvh;
     /* height: fit-content; */
     padding: 1em;
     /* box-shadow: 0 3px 0 rgba(11, 14, 15, 0.482); */
@@ -25,15 +25,18 @@
     min-width: 100%;
 }
 
+.card-head > * {
+    max-width: 40%;
+}
+
 .card-body {
-    margin-block: 1em;
     width: 90% !important;
     margin-inline: auto;
 }
 
 .card-body > p {
-    font-size: large;
-    margin-top: 1em;
+    font-size: 1.3em;
+    margin-top: 2em;
 }
 
 .card-body p:first-child {

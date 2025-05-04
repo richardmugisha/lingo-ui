@@ -183,11 +183,11 @@ export default ({ page }) => {
         {!personalSelectedItem.length ? (
           <div className="personal--filters">
             <span className="filter-btn" onClick={() => setUseFilters(!useFilters)}>{useFilters ? <Close /> : <FilterIcon />} Filters</span>
-              <Filters 
-                  useFilters={useFilters} myCardsOnly={myCardsOnly} selectedLanguage={selectedLanguage} 
-                  setMyCardsOnly={setMyCardsOnly} setSelectedLanguage={setSelectedLanguage} page={page} 
-                  words={words} topicChain={topicChain} stories={stories?.length || 0} scripts={scripts?.length || 0}
-              />
+            <Filters 
+                useFilters={useFilters} myCardsOnly={myCardsOnly} selectedLanguage={selectedLanguage} 
+                setMyCardsOnly={setMyCardsOnly} setSelectedLanguage={setSelectedLanguage} page={page} 
+                words={words} topicChain={topicChain} stories={stories?.length || 0} scripts={scripts?.length || 0}
+            />
           </div>
         ) : (
           <div className="personal--deleting-panel">
@@ -205,7 +205,7 @@ export default ({ page }) => {
         <div className="head">
           <div className="shelf">Your {page} 
             {page !== "fyp" && 
-            <div style={{ maxWidth: "400px"}}>
+            <div style={{ maxWidth: "400px"}} className='topic-chain'>
                 <button onClick={e => handleTopicNavigation()}>--/</button>
                 {topicChain.map((topic, index) => <button key={index} onClick={() => handleTopicNavigation(topic, index)}>{topicDisplay(topic.name)}</button>)}
             </div>}

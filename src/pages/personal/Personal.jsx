@@ -1,16 +1,16 @@
 
 import Home from "./Home";
 import OptionModal from "./modals/OptionModal";
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 
 const Personal = () => {
-    const navigate = useNavigate()
-    useEffect(() => {
-      console.log(window.innerWidth)
-      if (window.innerWidth <= 700 && !window.location.href.includes('fyp')) navigate("/portal/personal/fyp")
-    }, [])
+    // const navigate = useNavigate()
+    // useEffect(() => {
+    //   console.log(window.innerWidth)
+    //   if (window.innerWidth <= 700 && !window.location.href.includes('fyp')) navigate("/portal/personal/fyp")
+    // }, [])
 
     return <Routes>
       <Route path='/' element={<Home page=""/>} />

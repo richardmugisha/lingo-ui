@@ -92,5 +92,3 @@ const Controls = ({ wObj, setFypState, fypState }) => {
         </div>
     )
 }
-
-// liked : <img width="50" height="50" src="https://img.icons8.com/office/50/filled-like.png" alt="filled-like"/>

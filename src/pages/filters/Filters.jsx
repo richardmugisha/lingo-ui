@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import "./Filters.css"
 import { MuiCheckbox, MuiAutoComplete } from '../../components/MuiComponents';
+import { Menu, Clear as MenuCancel} from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
 const languages = [{value: 'english', label: 'english'}, {value: 'french', label: 'french'} , {value: 'spanish', label: 'spanish'}]
@@ -8,7 +9,6 @@ const languages = [{value: 'english', label: 'english'}, {value: 'french', label
 export const LanguageSelect = ({ selectedLanguage, setSelectedLanguage }) => <MuiAutoComplete label='Language' options={languages} selectedValue={selectedLanguage} setSelectedValue={setSelectedLanguage} nullOption={{label: '', value: ''}}/>
 
 const Filters = ({ useFilters, myCardsOnly, selectedLanguage, setMyCardsOnly, setSelectedLanguage, page, words, topicChain, stories, scripts }) => {
-
   return (
           <>
               {
@@ -21,6 +21,7 @@ const Filters = ({ useFilters, myCardsOnly, selectedLanguage, setMyCardsOnly, se
                 </>
               }
               <Categories current={page} words={words} topicChain={topicChain} stories={stories} scripts={scripts} />
+              
           </>
   )
 };
@@ -28,8 +29,11 @@ const Filters = ({ useFilters, myCardsOnly, selectedLanguage, setMyCardsOnly, se
 export default Filters;
 
 const Categories = ({ current, words, topicChain, stories, scripts }) => {
+  const [menuShow, setMenuShow] = useState(true)
+
   return (
-    <div className='categories'>
+    <>
+    {menuShow && <div className='categories'>
       {
         current !== "fyp" ?
         <>
@@ -45,6 +49,10 @@ const Categories = ({ current, words, topicChain, stories, scripts }) => {
       }
      
       <Link to="../fyp" className={current === "fyp" ? "selected": ""}>For You</Link>
-    </div>
+    </div>}
+    <span onClick={() => setMenuShow(!menuShow)} className='categories-show'>
+      { menuShow ? <MenuCancel /> :  <Menu /> }
+    </span>
+    </>
   )
 }

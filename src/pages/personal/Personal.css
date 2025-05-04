@@ -149,6 +149,7 @@ button.option:hover {
     min-width: 200px;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     row-gap: 1em;
     column-gap: calc(1em + 1vw);
     margin: 1em;
@@ -161,8 +162,8 @@ button.option:hover {
     display: flex;
 }
   
-  @media (max-width: 500px) {
-    .personal--filters {
+  @media (max-width: 700px) {
+    /* .personal--filters {
       flex-direction: column;
       align-items: start;
       display: none;
@@ -170,8 +171,11 @@ button.option:hover {
 
     .head {
       display: none;
-    }
+    } */
 
+    .topic-chain {
+      display: none !important;
+    }
     .body {
       width: 100%;
       height: 100%;
@@ -183,7 +187,7 @@ button.option:hover {
     }
   }
   
-  @media (max-width: 420px) {
+  @media (max-width: 700px) {
     button {
       padding: 5px;
       font-size: 1.2em;
@@ -193,9 +197,9 @@ button.option:hover {
       font-size: 1.2em;
     }
   
-    .body div {
+    /* .body div {
       width: 155px;
-    }
+    } */
   }
   
   
