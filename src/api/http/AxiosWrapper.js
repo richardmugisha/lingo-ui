@@ -18,7 +18,7 @@ class AxiosWrapper {
   // Base request
   async _request(method, url, ...args) {
     if (this._shouldThrottle(url)) {
-      return Promise.reject({ message: `Throttled: ${url}` });
+      Promise.reject({ message: `Throttled: ${url}` });
     }
     
     try {

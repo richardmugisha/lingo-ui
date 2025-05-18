@@ -17,9 +17,9 @@ const Chat = ({ }) => {
   const { learning, _id: topicId, words: cards } = useSelector((state) => state.topic);
   const [chatInfo, setChatInfo] = useState({
         type: "chat", creator: userID, status: "lobby",
-        words: learning.words.map(wordObj => wordObj.word),
+        words: learning.words?.map(wordObj => wordObj.word) || [],
         players: [],
-        data: {step: "catalog", words: learning.words.map(wordObj => wordObj.word)}})
+        data: {step: "catalog", words: learning.words?.map(wordObj => wordObj.word) || []}})
   useEffect(() => {
     console.log('some', chatInfo)
     if (chatInfo.data.step === "create") {
@@ -27,11 +27,12 @@ const Chat = ({ }) => {
       .then(script => setChatInfo(prev => ({...prev, data: {...script, step: "temporary step", mode: "practice"}})))
     }
     else if (chatInfo.data.step === "temporary step") {
-      waitForLine0(5, 7000, chatInfo.data.title, awsUrl).then(exists => {
-          console.log(exists)
-          if (exists) setChatInfo({...chatInfo, data: {...chatInfo.data, step: "practice"}})
-        }
-      )
+      // waitForLine0(5, 7000, chatInfo.data.title, awsUrl).then(exists => {
+      //     console.log(exists)
+      //     if (exists) 
+            setChatInfo({...chatInfo, data: {...chatInfo.data, step: "practice"}})
+      //   }
+      // )
     }
   }, [chatInfo.data.step])
 
@@ -63,11 +64,11 @@ const Chat = ({ }) => {
           chatInfo={chatInfo} setChatInfo={setChatInfo}
           username={username}
         />
-        <Button text="Practice again" 
+        <Button text="Go back" 
           handleClick={() => setChatInfo(
             {
               type: "chat", creator: userID, status: "lobby",
-              words: learning.words.map(wordObj => wordObj.word),
+              words: learning.words?.map(wordObj => wordObj.word),
               data: {step: "catalog"}
             })} 
         />

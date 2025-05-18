@@ -14,7 +14,8 @@ export { default as getFyp } from "./fyp/get"
 export { default as updateFyp } from "./fyp/update"
 
 export { default as fetchAllStories } from "./story/fetchAll"
-
+export { default as prepareEpisode } from "./script/prepareEpisode"
+ 
 export { register, login } from "./auth"
 
 export { httpEndpoint, config } from "../../../serverConfig"

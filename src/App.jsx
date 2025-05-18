@@ -28,7 +28,6 @@ function App() {
         }
       )
       .catch((error) => {
-        //console.log('error: ', error)
         if (error.message !== 'Network Error') setUserAuthed(false);
         if (error.message === 'Invalid or expired token') localStorage.removeItem('user')
       });

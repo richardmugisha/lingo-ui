@@ -139,7 +139,7 @@ export default ({ page }) => {
       })
       .catch(error => setError(error.message))
     }
-    else if (page !== "topics" && words.length) {
+    else if (page !== "topics" && words.length === 0) {
       setSearching(true)
       console.log("happening")
       const wordIDs = words.map(word => typeof word === "string" ? word : word?._id);
@@ -148,15 +148,15 @@ export default ({ page }) => {
         dispatch(chooseTopic({words: data.words || []}))
         setSearching(false)
         if (["chats", "stories"].includes(page)) {
-          setSearching(true)
-          updateLearning(dispatch, topicID, data.words)
-            .then(() => {
+          // setSearching(true)
+          // updateLearning(dispatch, topicID, data.words)
+          //   .then(() => {
                 setSearching(false)
                 if (page === "stories") navigate(`../../more/story-time/?topic=${topicID}`)
                 if (page === "chats") navigate(`../../more/chat-time/?topic=${topicID}`)
-            })
-            .catch((e) => setError(e.message))
-            .finally(() => setSearching(false))
+            // })
+            // .catch((e) => setError(e.message))
+            // .finally(() => setSearching(false))
         }
         else if (page === "learning") {
           navigate(`../guided-learning?topic=${topicID}`)

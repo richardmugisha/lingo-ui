@@ -4,10 +4,11 @@ import { Button } from "@mui/material"
 import { Add as AddIcon, Summarize } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 
-import { fetchAllStories } from '../../../../api/http';
+import { fetchAllStories, prepareEpisode } from '../../../../api/http';
 
 
 const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
+  const [scriptID, setScriptID] = useState(null)
 
   const resetStory = () => {
       setStorySettings( prev => prev.rebuild({ 
@@ -32,6 +33,21 @@ const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
     //console.log(prev.mode, prev.step);
     return prev
   })
+
+  const report = (kind, idx, script) => {
+    // console.log(script)
+    // console.log(scriptID, idx)
+    const isPreviousEpReady = idx === 0 || stories[idx - 1]?.ready
+    if(!isPreviousEpReady) return 
+    prepareEpisode(scriptID, idx).then(() => {
+      console.log(kind === 'not ready' ? "Episode coming soon!": "")
+    })
+  }
+
+  const readScript = (script) => {
+    setScriptID(script._id)
+    setStories(script.episodes)
+  }
   
   return (
     <div className='side side-wide story-catalog'>
@@ -45,17 +61,20 @@ const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
                   <span
                       key={i}
                       onClick={() => gameInfo?.type === "story" ||
-                          setStorySettings( prev => prev.rebuild(
+                        (story.script ? 
+                          readScript(story.script)
+                          : false) ||
+                          (!story.script?.episodes && (!story?.ready ? report('not ready', i, story): true) && setStorySettings( prev => prev.rebuild(
                             {
                               ...story,
                               mode: "practice",
                               step: (gameInfo?.type || "story") === "story" ? "practice" : "temporary step",
                             }
-                          ))
+                          )))
                       }
                       className="story--span"
                   >
-                  {story.title}
+                  {story.script?.title || story.title}
                   </span>
               ))}
           </div>
