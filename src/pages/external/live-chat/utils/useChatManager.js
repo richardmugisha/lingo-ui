@@ -35,9 +35,9 @@ const useChatManager = () => {
         setCurrentSpeaker('ai1')
         addMessage(
             'ai1', 
-            data.chat, 
+            data.chat + data.word ? `[${data.word}]` : "", 
             'text',
-            data.chat
+            data.chat + data.word ? `[${data.word}]` : ""
         )
 
         if (data.ready == "1") setStep("lesson")
