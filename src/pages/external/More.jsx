@@ -7,6 +7,7 @@ import Pdf from './pdf/Pdf';
 import Temp from './temporary/Temp';
 import Yapping from './yapping/Yapping';
 import Chat from './yapping/chat-manager/Chat';
+import LiveChat from './live-chat/Chat'
 
 import { Link, BrowserRouter as Router, Routes, Route  } from 'react-router-dom';
 
@@ -18,6 +19,7 @@ const More = () => {
         <Route path='pdf' element ={<Pdf />} />
         <Route path='story-time' element ={<Yapping />} />
         <Route path='chat-time' element ={<Chat />} />
+        <Route path='live-chat' element ={<LiveChat />} />
         <Route path='temporary/:idType/:id' element = {<Temp />} />
         <Route path='extension' />
         <Route path='mobile' />

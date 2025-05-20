@@ -10,7 +10,7 @@ const Notice = ({ page, noTopics, noSubTopics, noWords, noLearning, noMyLearning
     <div className='notice'>
         <h2>
             {
-                (page === "topics" && noTopics) ? "You don't have any topic!":
+                (page === "topics" && noTopics) ? "You don't have any topics!":
                 (page === "topics" && noSubTopics) ? "This topic doesn't have any subtopics!":
                 (page === "words" && noWords) ? "This topic doesn't have any words":
                 (page === "my-learning" && noMyLearning) ? "You don't have any learning plan in progress":

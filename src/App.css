@@ -35,3 +35,10 @@ footer {
   background-color: #C0D7DA;
   height: 2.5em;
 }
+
+@media (max-width: 900px) {
+  footer {
+    display: none;
+  }
+  
+}

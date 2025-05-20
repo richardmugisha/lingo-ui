@@ -129,6 +129,7 @@ export default ({ page }) => {
   }, [info]);
 
   useEffect(() => {
+    console.log('wwjfdlkfjkldj', words, page)
     if (["", "topics", "my-learning",].includes(page)) {
       setTopicChain([])
       dispatch(chooseTopic({words: [], stories: [], scripts: []}))
@@ -139,7 +140,8 @@ export default ({ page }) => {
       })
       .catch(error => setError(error.message))
     }
-    else if (page !== "topics" && words.length === 0) {
+    else if (page !== "topics" && words.length) {
+      console.log('jjlkjijij')
       setSearching(true)
       console.log("happening")
       const wordIDs = words.map(word => typeof word === "string" ? word : word?._id);
@@ -147,16 +149,18 @@ export default ({ page }) => {
       .then(data => {
         dispatch(chooseTopic({words: data.words || []}))
         setSearching(false)
-        if (["chats", "stories"].includes(page)) {
-          // setSearching(true)
-          // updateLearning(dispatch, topicID, data.words)
-          //   .then(() => {
+        if (["chats", "stories", "live-chat"].includes(page)) {
+          setSearching(true)
+          updateLearning(dispatch, topicID, data.words)
+            .then(() => {
+                console.log('why not ---------')
                 setSearching(false)
                 if (page === "stories") navigate(`../../more/story-time/?topic=${topicID}`)
-                if (page === "chats") navigate(`../../more/chat-time/?topic=${topicID}`)
-            // })
-            // .catch((e) => setError(e.message))
-            // .finally(() => setSearching(false))
+                else if (page === "chats") navigate(`../../more/chat-time/?topic=${topicID}`)
+                else if (page === "live-chat") navigate(`../../more/live-chat/?topic=${topicID}`)
+            })
+            .catch((e) => setError(e.message))
+            .finally(() => setSearching(false))
         }
         else if (page === "learning") {
           navigate(`../guided-learning?topic=${topicID}`)
@@ -211,6 +215,7 @@ export default ({ page }) => {
             </div>}
           </div>
           <div>
+            { words?.length > 0 && ["words", "topics"].includes(page) && <Link className='option' to="../live-chat">🎤Live Chat</Link>}
             { words?.length > 0 && ["words", "topics"].includes(page) && <Link className='option' to="../learning">▶️Learning</Link>}
             {["topics", ""].includes(page)  && <Link className='option' to={`../new-topic/?topics=${topicChain.map(topic => topic.name).join(" > ")}`} >New {topicChain.length ? "sub topic" : "Topic"}</Link>}
             {

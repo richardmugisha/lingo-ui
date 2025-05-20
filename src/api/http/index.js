@@ -13,6 +13,8 @@ export { default as createLearning } from "./learning/createLearning"
 export { default as getFyp } from "./fyp/get"
 export { default as updateFyp } from "./fyp/update"
 
+export { default as liveChat } from "./live-chat/chat"
+
 export { default as fetchAllStories } from "./story/fetchAll"
 export { default as prepareEpisode } from "./script/prepareEpisode"
  

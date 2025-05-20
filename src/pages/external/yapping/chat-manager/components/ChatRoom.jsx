@@ -284,7 +284,7 @@ const ChatRoom = ({ chatInfo, setChatInfo, username }) => {
         
       </div>
       <div className="sections-container">
-        <section className="second-section">
+        <section className="scene-metadata">
           <div className="participants-grid">
             {/* {chatInfo.data.characters?.map((player, index) => (
               <ChatTile
@@ -301,7 +301,7 @@ const ChatRoom = ({ chatInfo, setChatInfo, username }) => {
           </div>
         </section>
 
-        <section className="first-section" onClick={() => setCurrentLineObj(prev => currentLineObj.paraphrased ? ({...prev, paraphrased: null}) : chatInfo.data.acts[actIndex].scenes[sceneIndex].details[lineIndex])}>
+        <section className="scene-data" onClick={() => setCurrentLineObj(prev => currentLineObj.paraphrased ? ({...prev, paraphrased: null}) : chatInfo.data.acts[actIndex].scenes[sceneIndex].details[lineIndex])}>
           {
             status === "waiting" ? <h2>...Loading</h2> :
             // status === "in progress" ? 
@@ -312,7 +312,7 @@ const ChatRoom = ({ chatInfo, setChatInfo, username }) => {
                   currentLineObj?.character
                 }
               </h4>
-              {chatInfo.data.acts[actIndex]?.scenes[sceneIndex]?.words?.length > 0 &&
+              {chatInfo.data.acts[actIndex]?.scenes[sceneIndex]?.words?.length > 0 && handleBlanksGen(currentLineObj.text, chatInfo.data.acts[actIndex].scenes[sceneIndex].words).usedExpressions[0] &&
                 <p>Repharse the line to include the word <span className='line-word'>{handleBlanksGen(currentLineObj.text, chatInfo.data.acts[actIndex].scenes[sceneIndex].words).usedExpressions[0]}</span></p>
               }
               <hr />

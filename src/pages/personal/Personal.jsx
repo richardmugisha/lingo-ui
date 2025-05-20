@@ -20,6 +20,7 @@ const Personal = () => {
       <Route path='/my-learning' element={<Home page="my-learning"/>} />
       <Route path='/stories' element={<Home page="stories"/>} />
       <Route path='/chats' element={<Home page="chats"/>} />
+      <Route path='/live-chat' element={<Home page="live-chat"/>} />
       <Route path='/fyp' element={<Home page="fyp"/>} />
       <Route path='*' element={<OptionModal />} />
     </Routes>
