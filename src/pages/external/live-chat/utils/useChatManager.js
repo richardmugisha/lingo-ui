@@ -31,7 +31,7 @@ const useChatManager = () => {
 
     console.log(step)
 
-    liveChat({ chat: text, step, words: learning.words.map(wordObj => wordObj.word) }).then(data => {
+    liveChat({ chat: text, step, topic: name, words: learning.words.map(wordObj => wordObj.word) }).then(data => {
         setCurrentSpeaker('ai1')
         addMessage(
             'ai1', 
