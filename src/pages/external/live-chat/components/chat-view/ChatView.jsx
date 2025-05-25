@@ -78,7 +78,7 @@ const ChatView = ({ pair }) => {
             :
             <div className={`participant ${currentSpeaker === 'ai2' ? 'active' : ''}`}>
               <div className="avatar ai-avatar">
-                <img src={pair.supervisor.imageUrl} alt="AI 2" />
+                <img src={pair.instructor.imageUrl} alt="AI 2" />
                 {currentSpeaker === 'ai2' && <div className="ai-indicator">🤖</div>}
               </div>
               <span className="participant-name">{pair.instructor.name}</span>
