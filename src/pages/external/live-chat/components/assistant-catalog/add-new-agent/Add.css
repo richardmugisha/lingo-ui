@@ -23,14 +23,12 @@
 .agent-image {
   width: 300px;
   aspect-ratio: 1;
-  /* border-radius: 50%; */
   overflow: hidden;
   margin-bottom: 1.5rem;
 }
 
 .agent-image img {
   width: 100%;
-  height: 100%;
   object-fit: cover;
 }
 

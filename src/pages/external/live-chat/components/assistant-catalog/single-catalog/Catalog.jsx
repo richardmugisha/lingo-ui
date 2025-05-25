@@ -138,7 +138,7 @@ const Catalog = ({ onSavePair, setPage }) => {
                 className="agent-card"
                 onClick={() => handleAgentSelect(agent, role)}
               >
-                <img src={agent.imageUrl} alt={agent.name} />
+                <div className='image-container'><img src={agent.imageUrl} alt={agent.name} /></div>
                 <h4>{agent.name}</h4>
                 <p>{agent.shortDescription}</p>
               </div>

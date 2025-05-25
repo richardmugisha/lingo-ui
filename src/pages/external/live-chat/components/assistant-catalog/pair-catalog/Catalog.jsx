@@ -68,12 +68,12 @@ const Catalog = ({ setPage, setPair }) => {
           >
             <div className="agent-card">
               <h2>{pair.supervisor.name}</h2>
-              <img src={pair.supervisor.imageUrl} alt={pair.supervisor.name} />
+              <div className='image-container'><img src={pair.supervisor.imageUrl} alt={pair.supervisor.name} /></div>
               <p>{pair.supervisor.shortDescription}</p>
             </div>
             <div className="agent-card">
               <h2>{pair.instructor.name}</h2>
-              <img src={pair.instructor.imageUrl} alt={pair.instructor.name} />
+              <div className='image-container'><img src={pair.instructor.imageUrl} alt={pair.instructor.name} /></div>
               <p>{pair.instructor.shortDescription}</p>
             </div>
           </div>

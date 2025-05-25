@@ -35,10 +35,26 @@ const AddNewAgent = ({ onSave, setPage }) => {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const response = await saveAgent(formData);
+        // Create FormData object
+        const formDataToSend = new FormData();
+        
+        // Add all text fields
+        formDataToSend.append('name', formData.name);
+        formDataToSend.append('age', formData.age);
+        formDataToSend.append('sex', formData.sex);
+        formDataToSend.append('role', formData.role);
+        formDataToSend.append('ethnicity', formData.ethnicity);
+        formDataToSend.append('shortDescription', formData.shortDescription);
+        formDataToSend.append('longDescription', formData.longDescription);
+        
+        // Add the image file directly
+        if (formData.image instanceof File) {
+          formDataToSend.append('image', formData.image);
+        }
+        
+        const response = await saveAgent(formDataToSend);
         setPage("single-catalog"); // Navigate back to catalog view
       } catch (error) {
-        // Handle error - you might want to show an error message to the user
         console.error('Error saving agent:', error);
         setErrors(prev => ({
           ...prev,
@@ -65,6 +81,29 @@ const AddNewAgent = ({ onSave, setPage }) => {
 
   const onCancel = () => setPage("single-catalog")
 
+  // Modify the image input handler
+  const handleImageUpload = (file) => {
+    if (file) {
+      setFormData(prev => ({
+        ...prev,
+        image: file // Store the actual File object instead of base64
+      }));
+    }
+  };
+
+  // Update the image preview
+  const [imagePreview, setImagePreview] = useState(defaultImage);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      handleImageUpload(file);
+      // Create preview URL
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+    }
+  };
+
   return (
     <div className="add-agent-container">
       <h2>Create New Agent</h2>
@@ -80,23 +119,11 @@ const AddNewAgent = ({ onSave, setPage }) => {
                 id="image"
                 name="image"
                 accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  if (file) {
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                      setFormData(prev => ({
-                        ...prev,
-                        image: reader.result
-                      }));
-                    };
-                    reader.readAsDataURL(file);
-                  }
-                }}
+                onChange={handleImageChange}
                 style={{ display: 'none' }}
               />
               <label htmlFor="image" className="image-upload-label">
-                <img src={formData.image || defaultImage} alt="Agent preview" />
+                <img src={imagePreview} alt="Agent preview" />
                 <div className="image-overlay">
                   <span>Click to change image</span>
                 </div>
