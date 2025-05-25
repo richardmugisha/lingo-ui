@@ -14,6 +14,11 @@ export { default as getFyp } from "./fyp/get"
 export { default as updateFyp } from "./fyp/update"
 
 export { default as liveChat } from "./live-chat/chat"
+export { default as saveAgent } from "./live-chat/saveAgent"
+export { default as getAgents } from "./live-chat/getAgents"
+export { default as saveAgentPair } from "./live-chat/saveAgentPair"
+export { default as getAgentPairs } from "./live-chat/getAgentPairs"
+// export { default as }
 
 export { default as fetchAllStories } from "./story/fetchAll"
 export { default as prepareEpisode } from "./script/prepareEpisode"

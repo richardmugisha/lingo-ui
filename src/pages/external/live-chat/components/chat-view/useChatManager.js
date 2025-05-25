@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
-import { liveChat } from '../../../../api/http';
+import { liveChat } from '../../../../../api/http';
 import { useSelector } from 'react-redux';
+import handleBlanks from "../../../yapping/utils/handleBlanks"
 
-const useChatManager = () => {
+const useChatManager = (pair) => {
   const [currentSpeaker, setCurrentSpeaker] = useState('student');
   const [messages, setMessages] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const username = useState(JSON.parse(localStorage.getItem("user")).username)
-  const { learning, name } = useSelector((state) => state.topic);
+  const [{ username, userId: userID}] = useState(JSON.parse(localStorage.getItem("user")))
+  const { learning, name: topicName } = useSelector((state) => state.topic);
+  const [words, setWords] = useState(learning.words.map(wordObj => wordObj.word))
   const [step, setStep] = useState('onboarding')
-
+  const [wordSuccessAnimation, setWordSuccessAnimation] = useState(false)
 
   const addMessage = (speaker, content, type, textContent = null) => {
     const newMessage = {
@@ -25,22 +27,33 @@ const useChatManager = () => {
 
   const handleStudentMessage = (text) => {
     if (!text.trim()) return;
+
+    const { blanked, usedExpressions } = handleBlanks(text, words)
+    if (usedExpressions?.length) {
+      const stored = words
+      setWords(usedExpressions)
+      setWordSuccessAnimation(true)
+      setTimeout(() => {
+        setWordSuccessAnimation(false)
+        setWords(stored.filter(word => !usedExpressions.includes(word)))
+      }, 2000);
+    }
     
     addMessage('student', text, 'text');
     setIsProcessing(true);
 
     console.log(step)
 
-    liveChat({ chat: text, step, topic: name, words: learning.words.map(wordObj => wordObj.word) }).then(data => {
+    liveChat({ chat: text, userID }).then(data => {
         setCurrentSpeaker('ai1')
         addMessage(
             'ai1', 
-            data.chat + (data.word ? `[${data.word}]` : ""), 
+            data.reply, 
             'text',
-            data.chat + (data.word ? `[${data.word}]` : "")
+            data.reply
         )
 
-        if (data.ready == "1") setStep("lesson")
+        setStep(data.stage)
 
         setTimeout(() => {
             setCurrentSpeaker('student');
@@ -67,7 +80,7 @@ const useChatManager = () => {
   };
   useEffect(() => {
     console.log(learning.words.map(wordObj => wordObj.word))
-    liveChat({ chat: "", step}).then(data => addMessage('ai1', data.chat, 'text', data.chat))
+    liveChat({ step, userID, username, topic: topicName, words, agentPair: pair}).then(data => addMessage('ai1', data.reply, 'text', data.reply))
   }, [])
 
   const getCurrentMessage = () => {
@@ -80,7 +93,8 @@ const useChatManager = () => {
     messages,
     isProcessing,
     handleStudentMessage,
-    getCurrentMessage
+    getCurrentMessage,
+    step, words, wordSuccessAnimation
   };
 };
 

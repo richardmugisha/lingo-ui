@@ -1,0 +1,100 @@
+.add-agent-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.agent-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-content {
+  display: flex;
+  gap: 2rem;
+}
+
+/* Left column with image and basic info */
+.form-left-column {
+  width: 400px;
+}
+
+.agent-image {
+  width: 300px;
+  aspect-ratio: 1;
+  /* border-radius: 50%; */
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.agent-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Right column with descriptions */
+.form-right-column {
+  flex: 1;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Controls at the bottom */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.save-button,
+.cancel-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.save-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.cancel-button {
+  background-color: #f44336;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .form-content {
+    flex-direction: column;
+  }
+  
+  .form-left-column {
+    width: 100%;
+  }
+}
