@@ -44,7 +44,7 @@ const useChatManager = (pair) => {
 
     console.log(step)
 
-    liveChat({ chat: text, userID }).then(data => {
+    liveChat({ chat: text, userID, topic: topicName }).then(data => {
         setCurrentSpeaker('ai1')
         addMessage(
             'ai1', 
