@@ -35,3 +35,9 @@ code {
 *::-webkit-scrollbar-track, *::-webkit-scrollbar-track, *::-webkit-scrollbar-track, *::-webkit-scrollbar-track {
   background-color: #cce1e4; /* Set your desired track color */
 }
+
+@media (max-width: 700px) {
+  header {
+    display: none !important;
+  }
+}
