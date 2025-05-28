@@ -44,7 +44,8 @@ const useChatManager = (pair) => {
 
     console.log(step)
 
-    liveChat({ chat: text, userID, topic: topicName }).then(data => {
+    liveChat({ chat: text, userID, topic: topicName })
+      .then(data => {
         setCurrentSpeaker('ai1')
         addMessage(
             'ai1', 
@@ -59,7 +60,26 @@ const useChatManager = (pair) => {
             setCurrentSpeaker('student');
             setIsProcessing(false);
           }, 1000);
-    })
+      })
+      .catch(() => {
+        liveChat({ chat: text, userID, topic: topicName })
+          .then(data => {
+            setCurrentSpeaker('ai1')
+            addMessage(
+                'ai1', 
+                data.reply, 
+                'text',
+                data.reply
+            )
+
+            setStep(data.stage)
+
+            setTimeout(() => {
+                setCurrentSpeaker('student');
+                setIsProcessing(false);
+              }, 1000);
+          })
+      })
     
     // Simulate AI response after student speaks
     // In a real implementation, this would be an API call
