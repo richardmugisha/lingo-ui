@@ -313,10 +313,24 @@
     /* display: none; */
     width: 80%;
   }
+
+  .chat-messages {
+    text-align: center;
+  }
+  .message {
+    width: 98%;
+  }
 }
 
 @media (max-height: 600px) {
   .words-container {
     display: flex;
+  }
+  .chat-messages {
+    flex: 0;
+  }
+
+  .chat-container {
+    height: 200px;
   }
 }

@@ -1,7 +1,7 @@
 // serverConfig.js
 const servers = import.meta.env
 
-const HOST = servers.DEV ? "localhost:3500" : servers.VITE_HOST
+const HOST = servers.VITE_HOST
 const PATH = servers.VITE_PATH
 
 const email = servers.VITE_EMAIL
