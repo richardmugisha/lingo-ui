@@ -8,6 +8,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
+    padding: 0 !important;
     /* gap: 5em; */
 }
 
@@ -43,6 +44,7 @@ article button:hover {
 
 @media (max-width: 719px) {
     .more {
-        padding: 1em;
+        height: 100dvh;
+        width: 100dvw;
     }
 }

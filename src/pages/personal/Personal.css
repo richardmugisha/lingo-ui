@@ -183,6 +183,19 @@ button.option:hover {
     .personal {
       padding: .5em;
     }
+    .personal--filters, .personal--deleting-panel {
+      display: none;
+    }
+
+    .head {
+      overflow-x: hidden;
+    }
+
+    .topic-card {
+      width: 90dvw !important;
+      height: 300px;
+    }
+    
   }
   
   @media (max-width: 700px) {
@@ -191,9 +204,10 @@ button.option:hover {
       font-size: 1.2em;
     }
   
-    .shelf {
+    /* .shelf {
       font-size: 1.2em;
-    }
+      display: none;
+    } */
   
     /* .body div {
       width: 155px;

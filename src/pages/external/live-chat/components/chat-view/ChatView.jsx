@@ -84,13 +84,18 @@ const ChatView = ({ pair }) => {
               <span className="participant-name">{pair.instructor.name}</span>
             </div>
             }
-          </div>
-    
-          <div className="words-container">
+            <div className="words-container">
             {words?.map((word, index) => (
               <span key={index} className={"word-span" + (wordSuccessAnimation ? " success" : "")}>{word}</span>
             ))}
           </div>
+          </div>
+    
+          {/* <div className="words-container">
+            {words?.map((word, index) => (
+              <span key={index} className={"word-span" + (wordSuccessAnimation ? " success" : "")}>{word}</span>
+            ))}
+          </div> */}
     
           {!isMaximized && (
             <div className="chat-messages-container">

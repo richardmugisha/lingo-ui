@@ -235,13 +235,13 @@ export default ({ page }) => {
               <TopicCard 
                   key={topic._id}
                   topic={topic} userId={userId} 
-                  onClick={() => topic.creator === userId &&
+                  onDoubleClick={() => topic.creator === userId &&
                     setPersonalSelectedItem(personalSelectedItem.includes(topic._id)
                       ? personalSelectedItem.filter((topicID) => topicID !== topic._id)
                       : [...personalSelectedItem, topic._id]
                     )
                   }
-                  onDoubleClick={() => onTopicClickHandle(topic)}
+                  onClick={() => onTopicClickHandle(topic)}
                   style={{ backgroundColor: personalSelectedItem.includes(topic._id) ? '#2225' : '#C0D7DA' }}
               />
             )) :

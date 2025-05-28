@@ -2,8 +2,8 @@
     display: flex;
     flex-direction: column;
     height: 85dvh;
-    width: 33dvw;
-    padding: 20px;
+    width: max(40dvw, 420px);
+    padding-inline: 1em;
     background-color: #1a1a1a;
     color: #ffffff;
   }
@@ -11,7 +11,7 @@
   .chat-participants {
     display: flex;
     justify-content: space-around;
-    padding: 1em 0;
+    padding: .5em;
     height: 150px;
     background-color: #2d2d2d;
     border-radius: 10px;
@@ -144,17 +144,18 @@
   
   .chat-messages {
     flex: 1;
-    padding: 20px;
+    /*padding: 20px;*/
     overflow-y: auto;
     background-color: #2d2d2d;
   }
   
   .message {
     margin: 10px 0;
-    max-width: 70%;
+    /*max-width: 70%;*/
     padding: 10px 15px;
     border-radius: 15px;
     position: relative;
+    background-color: black !important;
   }
   
   .student-message {
@@ -239,7 +240,7 @@
   
   .words-container {
     display: flex;
-    overflow-x: auto;
+    overflow-y: auto;
     padding: .5em 0;
     scrollbar-width: thin;
     scrollbar-color: #4a4a4a #2d2d2d;
@@ -298,9 +299,24 @@
   }
   
 
-@media (max-width: 700px) {
+@media (max-width: 520px) {
   .chat-container {
-    width: 95dvw;
-    height: 95dvh;
+    width: 100dvw;
+    height: 100dvh;
+  }
+  .chat-participants {
+    height: 100px;
+    width: 100%;
+    gap: 1em;
+  }
+  .words-container {
+    /* display: none; */
+    width: 80%;
+  }
+}
+
+@media (max-height: 600px) {
+  .words-container {
+    display: flex;
   }
 }
