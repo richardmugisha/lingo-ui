@@ -1,16 +1,27 @@
+
+.Yapping--container {
+    display: flex;
+    /* justify-content: center; */
+    gap: 2em;
+    width: 95dvw;
+    box-shadow: none;
+    /* position: relative; */
+    height: 85dvh;
+}
+
 .Yapping {
     display: flex;
     gap: 1.5em;
-    width: 95dvw;
-    max-height: 100%;
     flex-direction: column;
-    align-items: center;
-    padding: 1.5em !important;
+    /* align-items: center; */
 }
 
 .story {
     flex: 1 1 auto;
-    height: 50%;
+    min-height: 500px;
+    padding: 1em;
+    box-shadow: 0 0 50px rgba(0 , 0 , 0, 0.3);
+
 }
 
 .side > div:first-child > h1, .side > div:first-child > h3 {
@@ -76,7 +87,7 @@
 
 h1 { font-size: xx-large;}
 
-textarea {
+.story textarea {
     padding: 1em;
 }
 
@@ -107,7 +118,7 @@ textarea {
     flex: 1 1 auto;
 }
 
-textarea {
+.story textarea {
     width: 90vw;
     height: 70px;
     border-radius: .5em;
@@ -119,7 +130,7 @@ textarea {
 }
 
 .side span.story--span {
-    padding: .5em 1em;
+    /* padding: .5em 1em; */
     background-color: #345C70;
     color: white;
     border-radius: 1em;
@@ -127,10 +138,10 @@ textarea {
 }
 
 .word-pool span {
-    border: 1px solid rgba(184, 49, 28, .3);
-    padding: .2em 1em;
-    color: rgb(184, 49, 28);
-    border-radius: 1em;
+    border: 1px solid rgba(184, 49, 28, 0.171);
+    padding: .2em;
+    color: rgba(184, 49, 28, 0.692);
+    border-radius: .5em;
     cursor: pointer;
     text-wrap: nowrap;
 }

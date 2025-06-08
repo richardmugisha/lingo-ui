@@ -140,27 +140,27 @@ export default ({ page }) => {
       })
       .catch(error => setError(error.message))
     }
-    else if (page !== "topics" && words.length) {
-      console.log('jjlkjijij')
+    else if ((page !== "topics" && words.length) || page === "stories") {
       setSearching(true)
-      console.log("happening")
       const wordIDs = words.map(word => typeof word === "string" ? word : word?._id);
       getWords("english", wordIDs)
       .then(data => {
         dispatch(chooseTopic({words: data.words || []}))
         setSearching(false)
-        if (["chats", "stories", "live-chat"].includes(page)) {
+        if (["chats", "live-chat"].includes(page)) {
           setSearching(true)
           updateLearning(dispatch, topicID, data.words)
             .then(() => {
-                console.log('why not ---------')
                 setSearching(false)
-                if (page === "stories") navigate(`../../more/story-time/?topic=${topicID}`)
-                else if (page === "chats") navigate(`../../more/chat-time/?topic=${topicID}`)
+                // if (page === "stories") navigate(`../../more/story-time/?topic=${topicID}`)
+                if (page === "chats") navigate(`../../more/chat-time/?topic=${topicID}`)
                 else if (page === "live-chat") navigate(`../../more/live-chat/?topic=${topicID}`)
             })
             .catch((e) => setError(e.message))
             .finally(() => setSearching(false))
+        }
+        else if (page === "stories") {
+          navigate(`../../more/story-time/?topic=${topicID}`)
         }
         else if (page === "learning") {
           navigate(`../guided-learning?topic=${topicID}`)

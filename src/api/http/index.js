@@ -5,6 +5,7 @@ export { default as apiBatchRequest } from "./batchRequest";
 export { default as masteryUpdate } from "./topic/update"
 export { default as fetchSuggestions } from "./topic/fetchSuggestions"
 export { default as saveTopics } from "./topic/saveTopics"
+export { default as searchTopics } from "./topic/searchTopics"
 export { default as getWords } from "./word/getWords"
 export { default as searchWords } from "./word/searchWords"
 export { default as getLearning } from "./learning/getLearning"
@@ -18,7 +19,6 @@ export { default as saveAgent } from "./live-chat/saveAgent"
 export { default as getAgents } from "./live-chat/getAgents"
 export { default as saveAgentPair } from "./live-chat/saveAgentPair"
 export { default as getAgentPairs } from "./live-chat/getAgentPairs"
-// export { default as }
 
 export { default as fetchAllStories } from "./story/fetchAll"
 export { default as prepareEpisode } from "./script/prepareEpisode"

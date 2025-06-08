@@ -1,14 +1,17 @@
 class StorySetup {
-    constructor({ title, summary, author, step, mode, details, sentenceIndex, sentenceInProgress, words, acts, characters }) {
+    constructor({ title, summary, author, step, mode, sentenceIndex, chapterIndex, chapterInProgress, sentenceInProgress, words, acts, characters, topics, chapters }) {
         this.metadata = { title, summary, author, characters };
         this.state = { 
             step: step || "onboarding", 
             mode: mode || "create", 
-            details: details || [], 
             sentenceIndex: sentenceIndex || 0, 
+            chapterInProgress: chapterInProgress || {},
+            chapterIndex: chapterIndex || 0,
             sentenceInProgress: sentenceInProgress || {},
             words: words || [],
-            acts: acts || []
+            acts: acts || [],
+            topics: topics || [],
+            chapters: chapters || []
         };
     }
 
@@ -18,12 +21,13 @@ class StorySetup {
     get characters () { return this.metadata.characters}
     get step() { return this.state.step}
     get mode() { return this.state.mode}
-    get details() { return this.state.details}
+    get details() { return this.state.chapterInProgress.details || [] }
     get words () { return this.state.words}
     get sentenceIndex() { return this.state.sentenceIndex}
     get sentenceInPractice() {  return this.details?.[this.sentenceIndex] }
     get sentenceInProgress() { return this.state.sentenceInProgress}
     get acts() { return this.state.acts }
+    get topics() {return this.state.topics }
 
     nextSentence () {
         const newState = {...this.state, sentenceIndex: this.sentenceIndex + 1}

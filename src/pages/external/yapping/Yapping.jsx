@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import isEqual from "lodash/lodash";
 
 import './Yapping.css';
 import Side from './Side';
+import Sidebar from './sidebar/Sidebar';
 import StoryCatalog from './story-catalog/StoryCatalog';
 import Onboarding from './creation-onboarding/Onboarding';
 import ChatOnboarding  from './chat-onboarding/Onboarding';
@@ -94,15 +94,19 @@ const Yapping = ({ gameInfo, setGameInfo, userID }) => {
 
   // console.log(storySettings, gameInfo?.data)
   return (
+    <section className='Yapping--container'>
+    { ['create', 'practice', 'read'].includes(storySettings.mode) && ['create', 'practice', 'read'].includes(storySettings.step) && (!gameInfo || gameInfo.type === "story") &&
+      <Sidebar storySettings={storySettings} setStorySettings={setStorySettings}/>
+    }
     <div className='Yapping'>
-      {
+      {/* {
         {create: storySettings.details?.length < 3, practice: okAttempt?.split('.')?.length < 2 }[storySettings.mode] || !storySettings.mode ?
         <h1>{gameInfo?.type || "story"} time</h1> : <></>
-      }
+      } */}
       {info.exists && (
         <Info info={info} id='Yapping--info' />
       )}
-      {(storySettings.mode && storySettings.title || gameInfo?.data?.title) ? <h3>Title: {storySettings.title || gameInfo?.data?.title}</h3> : <></>}
+      {/* {(storySettings.mode && storySettings.title || gameInfo?.data?.title) ? <h3>Title: {storySettings.title || gameInfo?.data?.title}</h3> : <></>} */}
       {
         storySettings.step === "catalog" ?
         <StoryCatalog 
@@ -112,7 +116,7 @@ const Yapping = ({ gameInfo, setGameInfo, userID }) => {
         /> :
         <></>
       }
-      {
+      {/* {
         ['create', 'practice'].includes(storySettings.mode) && ['create', 'practice'].includes(storySettings.step) &&
         <Side 
           selectedWords={selectedWords} 
@@ -121,10 +125,10 @@ const Yapping = ({ gameInfo, setGameInfo, userID }) => {
           updateAttempt={updateAttempt}
           storySettings={storySettings}
         />
-      }
+      } */}
       { storySettings.mode === "create" && storySettings.step ==='onboarding' &&
         (
-          gameInfo?.type === "story"?
+          gameInfo?.type === "story" || true?
           <Onboarding 
             storySettings={storySettings} setStorySettings={setStorySettings}
             gameInfo={gameInfo} userID={userID}
@@ -160,6 +164,7 @@ const Yapping = ({ gameInfo, setGameInfo, userID }) => {
       }
 
     </div>
+    </section>
   );
 };
 
