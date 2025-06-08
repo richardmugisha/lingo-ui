@@ -1,33 +1,32 @@
 class StorySetup {
-    constructor({ title, summary, author, step, mode, sentenceIndex, chapterIndex, chapterInProgress, sentenceInProgress, words, acts, characters, topics, chapters }) {
-        this.metadata = { title, summary, author, characters };
+    constructor({ title, summary, author, step, mode, details, sentenceIndex, sentenceInProgress, words, suggestedWords, acts, characters, _id, outline }) {
+        this.metadata = { _id, title, summary, author, characters, outline };
         this.state = { 
             step: step || "onboarding", 
             mode: mode || "create", 
+            details: details || [], 
             sentenceIndex: sentenceIndex || 0, 
-            chapterInProgress: chapterInProgress || {},
-            chapterIndex: chapterIndex || 0,
             sentenceInProgress: sentenceInProgress || {},
             words: words || [],
+            suggestedWords: suggestedWords || [],
             acts: acts || [],
-            topics: topics || [],
-            chapters: chapters || []
         };
     }
-
+    get _id() { return this.metadata._id }
+    get outline() { return this.metadata.outline }
     get title() { return this.metadata.title}
     get summary() { return this.metadata.summary}
     get author() { return this.metadata.author}
     get characters () { return this.metadata.characters}
     get step() { return this.state.step}
     get mode() { return this.state.mode}
-    get details() { return this.state.chapterInProgress.details || [] }
+    get details() { return this.state.details}
     get words () { return this.state.words}
+    get suggestedWords () { return this.state.suggestedWords }
     get sentenceIndex() { return this.state.sentenceIndex}
-    get sentenceInPractice() {  return this.details?.[this.sentenceIndex] }
+    get sentenceInPractice() {  return this.state.mode === "practice" && this.details?.[this.sentenceIndex] }
     get sentenceInProgress() { return this.state.sentenceInProgress}
     get acts() { return this.state.acts }
-    get topics() {return this.state.topics }
 
     nextSentence () {
         const newState = {...this.state, sentenceIndex: this.sentenceIndex + 1}

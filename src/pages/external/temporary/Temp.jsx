@@ -51,7 +51,7 @@ const Temp = () => {
       try {
         const { httpEndpoint } = { httpEndpoint };
         const userId  = JSON.parse(localStorage.getItem('user')).userId
-        const response = await AxiosWrapper.post(`${ httpEndpoint }/cards/temporary`, {userId, idType, id, topicLang, selected})
+        const response = await AxiosWrapper.post(`${ httpEndpoint }/temporary`, {userId, idType, id, topicLang, selected})
         const { id:topicId } = response.data;
         //console.log(topicId)
         setProcessed(prev => prev.filter(card => !selected.includes(card._id)))
@@ -105,7 +105,7 @@ const processing = async (setProgress, beforeProcess, setUnprocessed, setProcess
   setProgress(0)
   try {
     const { httpEndpoint } = { httpEndpoint };
-    AxiosWrapper.get(`${ httpEndpoint }/cards/app`)
+    AxiosWrapper.get(`${ httpEndpoint }/app`)
       .then(res => {
         const {timePerCard:timesPerCard} = res.data;
         //console.log(timesPerCard);
@@ -117,11 +117,11 @@ const processing = async (setProgress, beforeProcess, setUnprocessed, setProcess
       .catch(error => {console.log(error.message)})
 
     const startTime = Date.now(); // Record start time
-    const response2 = await AxiosWrapper.get(`${ httpEndpoint }/cards/temporary/${tempId}`)
+    const response2 = await AxiosWrapper.get(`${ httpEndpoint }/temporary/${tempId}`)
     const { unprocessed, processed } = response2.data;
     const elapsedTime = Date.now() - startTime; // Calculate elapsed time
     const processCardLength = beforeProcess.length - unprocessed.length;
-    await AxiosWrapper.patch(`${ httpEndpoint }/cards/app`, { timePerCard : elapsedTime / processCardLength }); // Send elapsed time to server
+    await AxiosWrapper.patch(`${ httpEndpoint }/app`, { timePerCard : elapsedTime / processCardLength }); // Send elapsed time to server
     setUnprocessed(unprocessed)
     setProcessed(processed)
     setStatus('processed')
@@ -140,7 +140,7 @@ const fetchingExtensionData = (setSearching, setUnprocessed, setProcessed, setTe
         const { httpEndpoint } = { httpEndpoint };
         const userId  = JSON.parse(localStorage.getItem('user')).userId
         setSearching(true)
-        AxiosWrapper.patch(`${ httpEndpoint }/cards/temporary`, {userId, words : words || []})
+        AxiosWrapper.patch(`${ httpEndpoint }/temporary`, {userId, words : words || []})
             .then(response => {
               const { unprocessed, processed, tempId } = response.data
               setUnprocessed(unprocessed)

@@ -4,7 +4,7 @@ import AxiosWrapper from "../AxiosWrapper";
 export default async (formData) => {
     try {
         const response = await AxiosWrapper.post(
-            `${httpEndpoint}/cards/live-chat/agents`, 
+            `${httpEndpoint}/live-chat/agents`, 
             formData,
             {
                 headers: {

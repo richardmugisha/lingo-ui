@@ -18,7 +18,7 @@ const TopicSearch = ({
     <div className="topic-search">
       <MuiAutoComplete
         label="Search for a topic"
-        options={(suggestions || topics).map(suggestion => ({
+        options={suggestions.map(suggestion => ({
           label: suggestion.name,
           value: suggestion
         }))}

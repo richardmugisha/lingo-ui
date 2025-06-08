@@ -9,7 +9,7 @@ export default async (userId, myCardsOnly, language, parent, myLearning) => {
         if (language) query["language"] = language
         if (parent) query["parent"] = parent
         if (myLearning) query["myLearning"] = true
-        const response = await AxiosWrapper.get(`${ httpEndpoint }/cards/topics`, { params: query});
+        const response = await AxiosWrapper.get(`${ httpEndpoint }/topics`, { params: query});
         return response.data;
       } catch (error) {
         //console.log(error)

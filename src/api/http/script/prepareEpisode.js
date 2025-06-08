@@ -4,7 +4,7 @@ import AxiosWrapper from "../AxiosWrapper";
 
 export default async (scriptID, epIdx) => {
     try {
-        const response =  await AxiosWrapper.patch(`${ httpEndpoint }/cards/chat-time/episode`, { scriptID, epIdx })
+        const response =  await AxiosWrapper.patch(`${ httpEndpoint }/chat-time/episode`, { scriptID, epIdx })
         return response.data
       } catch (error) {
         //console.log(error)

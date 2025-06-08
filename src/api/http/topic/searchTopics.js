@@ -3,7 +3,7 @@ import AxiosWrapper from "../AxiosWrapper";
 
 export default async (searchTerm) => {
     try {
-        const res = await AxiosWrapper.get(`${httpEndpoint}/cards/topics/search`, { 
+        const res = await AxiosWrapper.get(`${httpEndpoint}/topics/search`, { 
             params: { searchTerm }
         });
         return res.data.topics;

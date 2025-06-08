@@ -3,7 +3,7 @@ import AxiosWrapper from "../AxiosWrapper";
 
 export default async () => {
     try {
-        const response = await AxiosWrapper.get(`${httpEndpoint}/cards/live-chat/agents`);
+        const response = await AxiosWrapper.get(`${httpEndpoint}/live-chat/agents`);
         return response.data.agents;
     } catch (error) {
         throw error;

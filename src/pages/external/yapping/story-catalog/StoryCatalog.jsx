@@ -4,7 +4,7 @@ import { Button } from "@mui/material"
 import { Add as AddIcon, Summarize } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 
-import { fetchAllStories, prepareEpisode } from '../../../../api/http';
+import { fetchAllStories, prepareEpisode, fetchStories } from '../../../../api/http';
 
 
 const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
@@ -23,16 +23,21 @@ const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
 
   const [ stories, setStories ] = useState(gameInfo?.stories || [])
 
-  useEffect(() => {
-    if (!topicId || gameInfo?.type === "story") return
-    fetchAllStories(topicId, gameInfo?.type || "story").then(setStories)
-                    .catch((e) => console.log(e.msg));
-  }, [topicId])
+  // useEffect(() => {
+  //   if (!topicId || gameInfo?.type === "story") return
+  //   fetchAllStories(topicId, gameInfo?.type || "story").then(setStories)
+  //                   .catch((e) => console.log(e.msg));
+  // }, [topicId])
 
-  setStorySettings(prev => {
-    //console.log(prev.mode, prev.step);
-    return prev
-  })
+  // setStorySettings(prev => {
+  //   //console.log(prev.mode, prev.step);
+  //   return prev
+  // })
+
+  useEffect(() => {
+    fetchStories({})
+    .then(data => setStories(data.stories))
+  }, [])
 
   const report = (kind, idx, script) => {
     // console.log(script)
@@ -60,21 +65,30 @@ const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
               {stories?.map((story, i) => (
                   <span
                       key={i}
-                      onClick={() => gameInfo?.type === "story" ||
-                        (story.script ? 
-                          readScript(story.script)
-                          : false) ||
-                          (!story.script?.episodes && (!story?.ready ? report('not ready', i, story): true) && setStorySettings( prev => prev.rebuild(
-                            {
-                              ...story,
-                              mode: "practice",
-                              step: (gameInfo?.type || "story") === "story" ? "practice" : "temporary step",
-                            }
-                          )))
-                      }
+                      // onClick={() => gameInfo?.type === "story" ||
+                      //   (story.script ? 
+                      //     readScript(story.script)
+                      //     : false) ||
+                      //     (!story.script?.episodes && (!story?.ready ? report('not ready', i, story): true) && setStorySettings( prev => prev.rebuild(
+                      //       {
+                      //         ...story,
+                      //         mode: "practice",
+                      //         step: (gameInfo?.type || "story") === "story" ? "practice" : "temporary step",
+                      //       }
+                      //     )))
+                      // }
+                      onClick={() => {
+                        setStorySettings(prev => prev.rebuild({
+                          mode: "create",
+                          step: "create",
+                          outline: story.outline,
+                          _id: story._id
+                        }))
+                      }}
                       className="story--span"
                   >
-                  {story.script?.title || story.title}
+                  {/* {story.script?.title || story.title} */}
+                  {story.outline?.split("\n")[0]}
                   </span>
               ))}
           </div>

@@ -106,7 +106,7 @@ const Story = (props) => {
                 
               }
             </article>
-            <FinishButton />
+            {/* <FinishButton /> */}
           </>
         }
         

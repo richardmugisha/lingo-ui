@@ -4,13 +4,13 @@
     height: 88dvh;
 }
 .sidebar section:first-child {
-    height: 90%;
+    height: 85%;
 }
 .sidebar section {
-   display: flex;
-   gap: 1.5em;
-   border: none;
-   box-shadow: none;
+    display: flex;
+    gap: 1.5em;
+    border: none;
+    box-shadow: none;
 }
 .sidebar section button {
     display: flex;
@@ -25,10 +25,12 @@
 }
 
 .sidebar  article {
+    text-align: left;
+    width: 100%;
     display: flex;
     gap: 1.5em;
     flex-direction: column;
-    justify-content: left;
+    /* justify-content: left; */
 }
 
 .raw-text textarea {
@@ -95,4 +97,14 @@
 
 .outline.structured button.logline-toggle:hover {
     background-color: #2980b9;
+}
+
+.word-pool .right-word {
+    color: rgba(47, 128, 0, 0.575);
+}
+
+.word-pool span {
+    padding: .3em 1em;
+    display: flex;
+    justify-content: space-between;
 }

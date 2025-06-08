@@ -62,7 +62,7 @@ const useGeneralHook = (
         const { title, summary, details } = storySettings;
         if (mode?.startsWith("game")) return;
         AxiosWrapper
-          .post(`${ httpEndpoint }/cards/story-time/${topicId}`, { userId: !checked ? userId : null, details, title, words: selectedWords })
+          .post(`${ httpEndpoint }/story-time/${topicId}`, { userId: !checked ? userId : null, details, title, words: selectedWords })
           .then((res) => {
             const { story } = res.data;
             setInfo({ type: 'success', message: 'Your story was created successfully! => ' + story.title, exists: true })
@@ -77,9 +77,10 @@ const useGeneralHook = (
         const currSentence = storySettings.sentenceInProgress
         if (storySettings.mode === 'practice' || !currSentence?.sentence) return
         if ( ['.', '?', '!'].includes(currSentence.sentence[currSentence.sentence.length - 1]) ) {
-          const { blanked, usedExpressions } = handleBlanksGen(currSentence.sentence, words)
+          const { blanked, usedExpressions } = handleBlanksGen(currSentence.sentence, storySettings.suggestedWords.map(wObj => wObj.word))
           partApproval({ ...currSentence, blanked})
-          setSelectedWords(prev => [...prev, ...usedExpressions])
+          // setSelectedWords(prev => [...prev, ...usedExpressions])
+          setStorySettings(prev => prev.rebuild({words: [...prev.words, ...usedExpressions]}))
         }
       }, [storySettings.sentenceInProgress]);
     

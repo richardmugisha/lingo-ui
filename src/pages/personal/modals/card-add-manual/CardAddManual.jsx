@@ -68,7 +68,7 @@ const CardAddManual = () => {
     const { httpEndpoint } = { httpEndpoint }
     if (status === 'submitting') return
     setStatus('submitting'); //console.log('sub')
-    postingData(`${ httpEndpoint }/cards/${topicName}`, { userId, topicId, topicLang, mode: 'manual', content: {'root word': formContent['root word'], variations: formContent.variations}} )
+    postingData(`${ httpEndpoint }/${topicName}`, { userId, topicId, topicLang, mode: 'manual', content: {'root word': formContent['root word'], variations: formContent.variations}} )
       .then((data) => {
         afterSubmitReset();
         setReadytosubmit(false)

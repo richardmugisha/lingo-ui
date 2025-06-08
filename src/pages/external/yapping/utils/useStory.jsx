@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { removeKeywords } from './sentenceAnalyzer';
 import useTextToSpeech from './useTextToSpeech';
 import { Button } from '@mui/material';
-import { STORY_MINIMUM_NUMBER_OF_SENTENCES } from "../../../../constants/"
+import { STORY_MINIMUM_NUMBER_OF_SENTENCES } from "../../../../constants"
 import { StoreSharp } from '@mui/icons-material';
 
 

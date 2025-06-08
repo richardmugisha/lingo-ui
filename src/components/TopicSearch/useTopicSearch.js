@@ -32,15 +32,14 @@ export const useTopicSearch = (initialTopics = [], mode) => {
         topic.name.toLowerCase() === searchValue.toLowerCase()
       );
       if (existingTopic) {
-        setSuggestions([]);
-        return;
+        // setSuggestions([]);
+        return setSuggestions([topic])
       }
 
       // Then search through cached topics
       const cachedResults = searchCachedTopics(searchValue);
       if (cachedResults.length >= 5) {
-        setSuggestions(cachedResults);
-        return;
+        return setSuggestions(cachedResults);
       }
 
       // If not enough results, fetch from API
@@ -54,7 +53,8 @@ export const useTopicSearch = (initialTopics = [], mode) => {
           )
         );
         setSuggestions(newTopics);
-        setCachedTopics(prev => [...prev, ...newTopics]); // Cache only new topics
+        const alreadyCached = cachedTopics.map(c => c._id)
+        setCachedTopics(prev => [...prev, ...(newTopics.filter(t => alreadyCached.includes(t._id)))]); // Cache only new topics
       } catch (error) {
         console.error('Error fetching topics:', error);
         setSuggestions([]);
@@ -71,13 +71,15 @@ export const useTopicSearch = (initialTopics = [], mode) => {
   const addTopic = async (topic) => {
     if (topic && (!topics.includes(topic) || mode === "word-filling-mode")) {
       if (mode === 'word-filling-mode') {
-        if (topic.filled) return setTopic(topic)
+        if (topic.filled) return [setTopic(topic), setSuggestions(topics)]
         try {
           const wordObjects = await getWords('english', topic.words);
           setTopics(prev => prev.map(t => 
             t === topic ? {...t, words: wordObjects?.words || [], filled: true} : t
           ));
           setTopic({...topic, words: wordObjects?.words || [], filled: true});
+          console.log(topics.length)
+          setSuggestions(topics)
         } catch (error) {
           console.error('Error fetching words:', error);
           setTopics(prev => [...prev, topic]);

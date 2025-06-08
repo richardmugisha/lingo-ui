@@ -23,8 +23,6 @@ const Yapping = ({ gameInfo, setGameInfo, userID }) => {
   const { learning, _id: topicId, words:cards } = useSelector((state) => state.topic);
   const [words, setWords] = useState(learning?.words?.map((wordObj) => wordObj.word).slice(0, 20) || [] ); // 20 words
 
-  console.log(learning)
-
   useEffect(() => {
     // if (mode?.startsWith("game")) return;
     setWords(learning.words?.map(wordObj => wordObj.word)?.slice(0, 20) || [])

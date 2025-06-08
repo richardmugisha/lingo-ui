@@ -1,13 +1,12 @@
 import "./Sidebar.css"
 import TopicSearch from "../../../../components/TopicSearch/TopicSearch"
 import { useTopicSearch } from "../../../../components/TopicSearch/useTopicSearch"
+import { createStory, patchStory, createChapter, patchChapter, fetchChapter } from "../../../../api/http"
 import { useState, useEffect } from "react"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
 
 // Function to parse the outline text into a structured object
 const parseOutline = (text) => {
-    if (!text) return null;
-    
     // Split by any line containing 4 or more dashes
     const sections = text.split(/\n-{4,}\n/);
     const result = {
@@ -42,6 +41,7 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
     const {
         topic,
         topics,
+        suggestions,
         searchValue,
         setSearchValue,
         isLoading,
@@ -52,14 +52,85 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
     const [selectedValue, setSelectedValue] = useState(null)
     const [showOutline, setShowOutline] = useState(false)
     const [showLoglines, setShowLoglines] = useState(true)
-    const [outlineText, setOutlineText] = useState('')
+    const [outlineText, setOutlineText] = useState(storySettings.outline)
     const [parsedOutline, setParsedOutline] = useState(null)
+    const [story, setStory] = useState(storySettings)
+    const [chapter, setChapter] = useState(null)
+    const [updateFlag, setUpdateFlag] = useState(true)
 
     // Parse outline whenever the text changes
     useEffect(() => {
+        if (!outlineText) return;
         const parsed = parseOutline(outlineText);
         setParsedOutline(parsed);
+
+        const t = setTimeout(() => {
+            patchStory({id: story._id, item: "outline", update: outlineText})
+            .then(data => console.log(data))
+        }, 5000);
+
+        return () => clearTimeout(t)
     }, [outlineText]);
+
+    useEffect(() => {
+        console.log(story._id)
+        if (story._id) {
+            fetchChapter({ index: 0, storyID: story._id})
+            .then( data => {
+                setUpdateFlag(true)
+                setChapter(data.chapter)
+                setStorySettings(prev => prev.rebuild({ details: data.chapter.details}))
+            })
+        } else {
+            createStory({})
+            .then(data => {
+                setStory(data?.story || {});
+                createChapter({ storyID: data?.story?._id})
+                .then(data => setChapter(data.chapter))
+            } )
+        }
+    }, [])
+
+    useEffect(() => {
+        if (topic.words) setStorySettings(prev => prev.rebuild({suggestedWords: topic.words}))
+    }, [topic])
+
+    useEffect(() => {
+        if (storySettings?.details?.length && chapter && !updateFlag) {
+            const lastDetail = storySettings.details[storySettings.details.length - 1]
+            patchChapter({ id: chapter._id, item: "details", update: lastDetail})
+        }
+        setUpdateFlag(false)
+    }, [storySettings.details])
+
+    useEffect(() => {
+        if (storySettings?.words?.length && chapter) {
+            const lastWord = storySettings.words[storySettings.words.length - 1]
+            const lastWordID = topic.words?.find(wObj => wObj.word === lastWord)?._id
+            patchChapter({ id: chapter._id, item: "words", update: {word: lastWordID, topic: topic._id} })
+        }
+    }, [storySettings.words])
+
+    const handleNewChapter = () => {
+        createChapter({ storyID: story?._id})
+        .then(data => {
+            setChapter(data.chapter)
+            setStorySettings(prev => prev.rebuild({ details: []}))
+        })
+    }
+
+    const handleChapterNavigation = (index) => {
+        fetchChapter({ index, storyID: story._id })
+        .then(data => {
+            if (data.chapter) {
+                setChapter(data.chapter)
+                setUpdateFlag(true)
+                setStorySettings(prev => prev.rebuild({ details: data.chapter.details }))
+            }
+        })
+    }
+
+    console.log(storySettings)
 
     return (
         <article className="sidebar">
@@ -67,20 +138,23 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
                 {
                     !showOutline ?
                     <article className="workspace">
-                        <h1>{storySettings.title || "Best title in the word "}</h1>
-                        <h3>Chapter 1: Best current Chapter</h3>
+                        <h1>{ parsedOutline?.title}</h1>
+                        <h3>{ parsedOutline?.chapters?.[0]?.title || "Untitled Chapter"}</h3>
                         <TopicSearch
                             topics={topics} mode="word-filling-mode"
                             searchValue={searchValue}
                             setSearchValue={setSearchValue}
-                            suggestions={null}
-                            isLoading={isLoading}
+                            suggestions={suggestions}
+                            isLoading={isLoading}   
                             addTopic={addTopic}
                             removeTopic={removeTopic}
                             selectedValue={selectedValue} setValue={setSelectedValue}
                         />
                         {selectedValue &&
-                            <ul className="side word-pool"> { topic?.words?.map(wObj => <span className="wrong-word">{wObj.word}</span>)} 
+                            <ul className="side word-pool"> { storySettings.suggestedWords?.map((wObj, i) => 
+                                <span key={i} className={storySettings.words.includes(wObj.word) ? "right-word" : "wrong-word"}>
+                                    {wObj.word}{storySettings.words.filter(w => w === wObj.word).length > 1 ? <b>{`(${storySettings.words.filter(w => w === wObj.word).length}x)`}</b> : ""}
+                                </span>)} 
                             </ul>
                         }
                     
@@ -93,7 +167,7 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
                                 {/* <p className="summary">{parsedOutline.summary}</p> */}
                                 
                                 {parsedOutline.chapters.map((chapter, index) => (
-                                    <div key={index} className="chapter">
+                                    <div key={index} className="chapter" onClick={() => handleChapterNavigation(index)}>
                                         <h2>{chapter.title}</h2>
                                         {showLoglines && <p className="logline">{chapter.logline}</p>}
                                     </div>
@@ -123,6 +197,8 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
                 }
             </section>
             <section>
+                <button onClick={handleNewChapter}
+                >New Chapter</button>
                 <button onClick={() => setShowOutline(!showOutline)}>
                     {showOutline ? <VisibilityOff /> : <Visibility /> }
                     Outline
