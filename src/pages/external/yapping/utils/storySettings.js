@@ -5,7 +5,7 @@ class StorySetup {
             step: step || "onboarding", 
             mode: mode || "create", 
             details: details || [], 
-            sentenceIndex: sentenceIndex || 0, 
+            sentenceIndex: mode === "create" ? details.length - 1 : sentenceIndex, 
             sentenceInProgress: sentenceInProgress || {},
             words: words || [],
             suggestedWords: suggestedWords || [],
@@ -23,7 +23,7 @@ class StorySetup {
     get details() { return this.state.details}
     get words () { return this.state.words}
     get suggestedWords () { return this.state.suggestedWords }
-    get sentenceIndex() { return this.state.sentenceIndex}
+    get sentenceIndex() { return this.details.length - 1}
     get sentenceInPractice() {  return this.state.mode === "practice" && this.details?.[this.sentenceIndex] }
     get sentenceInProgress() { return this.state.sentenceInProgress}
     get acts() { return this.state.acts }

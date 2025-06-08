@@ -51,6 +51,7 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
 
     const [selectedValue, setSelectedValue] = useState(null)
     const [showOutline, setShowOutline] = useState(false)
+    const [showOutlineEditor, setShowOutlineEditor] = useState(true)
     const [showLoglines, setShowLoglines] = useState(true)
     const [outlineText, setOutlineText] = useState(storySettings.outline)
     const [parsedOutline, setParsedOutline] = useState(null)
@@ -130,8 +131,6 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
         })
     }
 
-    console.log(storySettings)
-
     return (
         <article className="sidebar">
             <section>
@@ -186,7 +185,7 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
                     </article>
                 }
             
-                {showOutline &&
+                {showOutline && showOutlineEditor &&
                     <article className="outline raw-text">
                         <textarea 
                             value={outlineText}
@@ -202,6 +201,10 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
                 <button onClick={() => setShowOutline(!showOutline)}>
                     {showOutline ? <VisibilityOff /> : <Visibility /> }
                     Outline
+                </button>
+                <button onClick={() => setShowOutlineEditor(!showOutlineEditor)}>
+                    {showOutlineEditor ? <VisibilityOff /> : <Visibility /> }
+                    Outline Editor
                 </button>
                 <button onClick={() => setShowLoglines(!showLoglines)}>
                     {showLoglines ? <VisibilityOff /> : <Visibility /> }
