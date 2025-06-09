@@ -57,6 +57,7 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
     const [parsedOutline, setParsedOutline] = useState(null)
     const [story, setStory] = useState(storySettings)
     const [chapter, setChapter] = useState(null)
+    const [chapterIndex, setChapterIndex] = useState(0)
     const [updateFlag, setUpdateFlag] = useState(true)
 
     // Parse outline whenever the text changes
@@ -121,6 +122,7 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
     }
 
     const handleChapterNavigation = (index) => {
+        setChapterIndex(index)
         fetchChapter({ index, storyID: story._id })
         .then(data => {
             if (data.chapter) {
@@ -138,7 +140,7 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
                     !showOutline ?
                     <article className="workspace">
                         <h1>{ parsedOutline?.title}</h1>
-                        <h3>{ parsedOutline?.chapters?.[0]?.title || "Untitled Chapter"}</h3>
+                        <h3>{ parsedOutline?.chapters?.[chapterIndex]?.title || "Untitled Chapter"}</h3>
                         <TopicSearch
                             topics={topics} mode="word-filling-mode"
                             searchValue={searchValue}
