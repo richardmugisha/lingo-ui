@@ -123,6 +123,7 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
 
     const handleChapterNavigation = (index) => {
         setChapterIndex(index)
+        setShowOutline(false)
         fetchChapter({ index, storyID: story._id })
         .then(data => {
             if (data.chapter) {
