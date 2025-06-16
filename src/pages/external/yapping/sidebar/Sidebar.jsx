@@ -101,7 +101,7 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
         if (storySettings?.details?.length && chapter && !updateFlag) {
             console.log(storySettings.details)
             const lastDetail = storySettings.details[storySettings.details.length - 1]
-            // patchChapter({ id: chapter._id, item: "details", update: lastDetail})
+            patchChapter({ id: chapter._id, item: "details", update: lastDetail})
         }
         setUpdateFlag(false)
     }, [storySettings.details])
