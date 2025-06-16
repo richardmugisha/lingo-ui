@@ -2,29 +2,50 @@ import axios from 'axios';
 
 class AxiosWrapper {
   constructor(throttleGap = 200) {
-    this.lastCalled = {}; // { [url]: timestamp }
+    this.lastCalled = {}; // { [method:url]: timestamp }
     this.throttleGap = throttleGap;
+    console.log('AxiosWrapper initialized with throttleGap:', throttleGap);
   }
 
   // Internal throttle check
-  _shouldThrottle(url) {
+  _shouldThrottle(method, url) {
     const now = Date.now();
-    const lastTime = this.lastCalled[url] || 0;
-    if (now - lastTime < this.throttleGap) return true;
-    this.lastCalled[url] = now;
+    const key = `${method}:${url}`;
+    const lastTime = this.lastCalled[key] || 0;
+    const timeDiff = now - lastTime;
+    
+    // console.log('Throttle Check:', {
+    //   method,
+    //   url,
+    //   key,
+    //   now,
+    //   lastTime,
+    //   timeDiff,
+    //   throttleGap: this.throttleGap,
+    //   shouldThrottle: timeDiff < this.throttleGap
+    // });
+
+    if (timeDiff < this.throttleGap) return true;
+    this.lastCalled[key] = now;
     return false;
   }
 
   // Base request
   async _request(method, url, ...args) {
-    if (this._shouldThrottle(url)) {
-      Promise.reject({ message: `Throttled: ${url}` });
+    console.log('Request started:', { method, url, timestamp: Date.now() });
+    
+    if (this._shouldThrottle(method, url)) {
+      console.log('Request throttled:', { method, url });
+      return Promise.reject({ message: `Throttled: ${method.toUpperCase()} ${url}` });
     }
     
     try {
+      console.log('Making request:', { method, url });
       const response = await axios[method](url, ...args);
-      return response
+      console.log('Request successful:', { method, url });
+      return response;
     } catch (err) {
+      console.log('Request failed:', { method, url, error: err.message });
       throw err;
     }
   }

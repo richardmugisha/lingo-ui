@@ -269,7 +269,7 @@ h1 { font-size: xx-large;}
 .story article.draft-story .draft-sentence{
     display: inline; 
     background-color: #e7eaf6; /* Optional: Different background for spans */
-    margin-right: .5em;
+    /* margin-right: .5em; */
     border-radius: .3em;
     padding: .2em;
     box-decoration-break: clone;

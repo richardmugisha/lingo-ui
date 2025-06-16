@@ -76,10 +76,9 @@ const useGeneralHook = (
         if (!storySettings?.sentenceInProgress) return
         const currSentence = storySettings.sentenceInProgress
         if (storySettings.mode === 'practice' || !currSentence?.sentence) return
-        if ( ['.', '?', '!'].includes(currSentence.sentence[currSentence.sentence.length - 1]) ) {
+        if (currSentence.sentence.match(/[.!?]["']?\s$/)) {
           const { blanked, usedExpressions } = handleBlanksGen(currSentence.sentence, storySettings.suggestedWords.map(wObj => wObj.word))
           partApproval({ ...currSentence, blanked})
-          // setSelectedWords(prev => [...prev, ...usedExpressions])
           setStorySettings(prev => prev.rebuild({words: [...prev.words, ...usedExpressions]}))
         }
       }, [storySettings.sentenceInProgress]);
@@ -89,7 +88,7 @@ const useGeneralHook = (
         setStorySettings(prev => prev.rebuild({
           details: [...prev.details, {...currSentence, blanked: currSentence.blanked || currSentence.sentence}],
           sentenceInProgress: { sentence: "", blanked: ""},
-          sentenceIndex: prev.details.length + 1
+          sentenceIndex: prev.details.length
         }))
         
       }
@@ -121,7 +120,7 @@ const useGeneralHook = (
                       })
             return prev.rebuild({
                     details: [...prev.details, {sentence: "\n", blanked: "\n"}], 
-                    sentenceInProgress: { sentence: "", blank: "" },
+                    sentenceInProgress: {sentence: "", blank: ""},
                     sentenceIndex: prev.details.length + 1
                   })
         }) 
