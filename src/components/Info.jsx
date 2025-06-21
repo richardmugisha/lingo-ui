@@ -20,7 +20,6 @@ const infoStyler = (info) => {
 }
 
 const Info = ({ info }) => {
-    console.log(info)
     return <div style={infoStyler(info)} >
           {info.message}
     </div>

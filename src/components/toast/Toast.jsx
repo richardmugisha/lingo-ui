@@ -9,11 +9,8 @@ import Info from '../Info'
 const Toast = ( ) => {
     const [infos, setInfos] = useState([])
     const { info } = useSelector(state => state.system)
-    const topic = useSelector(state => state.topic)
-    // console.log('topic:', topic);
 
     useEffect(() => {
-        console.log(info)
         if (!info?.message) return;
         setInfos(prev => [...prev, info])
         const interval = setInterval(() => {
