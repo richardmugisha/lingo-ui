@@ -1,0 +1,127 @@
+.rabbit-hole {
+    padding: 1em .5em;
+    background-color: hsla(199, 26%, 62%, 0.1);
+    width: 500px;
+    position: relative;
+    transition: width 0.3s, left 0.3s, top 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    /* flex: 1; */
+    height: 100%;
+}
+
+.rabbit-hole h2 {
+    color: #86A8B8;
+}
+
+.rabbit-hole .rabbit-toggle {
+    padding: .5em;
+    border-radius: 50%;
+    margin: 0;
+    margin-right: 1em;
+}
+
+.rabbit-hole .controls {
+    color: #86A8B8;
+    padding-block: 1em;
+    text-align: left;
+}
+
+.rabbit-hole .chat {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 1em;
+    width: min(500px, 100%);
+    margin-inline: auto;
+    background: linear-gradient(to bottom, #86a8b848, #92b7b918);
+    border-top: none;
+    padding: 1em;
+    margin-block: 1em;
+    overflow-y: auto;
+}
+
+.rabbit-hole p {
+    width: fit-content;
+    max-width: min(700px, 90%);
+    border-radius: 1em;
+    font-size: large;
+    padding: 1em;
+}
+
+.rabbit-hole .user {
+    max-width: min(400px, 80%);
+    background-color: rgba(134, 168, 184, 0.2);
+    color: rgba(28, 58, 71, 0.9);
+    align-self: flex-end;
+    flex-wrap: wrap;
+}
+
+.rabbit-hole .assistant {
+    background-color: rgba(28, 58, 71, 0.9);
+    color: rgb(227, 236, 240);
+    text-wrap: wrap;
+}
+
+.rabbit-hole textarea {
+    width: 100%;
+    min-height: 80px;
+    max-height: 200px;
+    padding: 1em;
+    border: 2px solid #86A8B8;
+    border-radius: 1em;
+    font-size: large;
+    background-color: rgba(227, 236, 240, 0.7);
+    color: #1c3a47;
+    resize: vertical;
+    box-shadow: 0 2px 8px rgba(134, 168, 184, 0.15);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+.rabbit-hole textarea:focus {
+    border-color: #23556c;
+    box-shadow: 0 0 0 2px #86A8B8;
+}
+
+.rabbit-hole.maximized {
+    width: 100dvw !important;
+}
+
+.rabbit-toggle {
+    width: fit-content;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: none;
+    background-color: #345C70;
+    position: fixed;
+    bottom: .5em;
+    left: .5em;
+    font-size: 2em;
+  }
+  
+.rabbit-toggle:hover {
+    background-color: #467A92;
+    box-shadow: 0 0 10px 2px #92b7b9;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    bottom: .7em;
+    left: .7em;
+  }
+  
+.maximize-btn {
+    position: absolute;
+    padding: 0;
+    top: -1.5em;
+    right: .5em;
+    background: none;
+    color: #1c3a47;
+    border: none;
+    /* font-size: 1.5em; */
+    cursor: pointer;
+}
+
+.maximize-btn:hover {
+    background-color: none !important;
+}
