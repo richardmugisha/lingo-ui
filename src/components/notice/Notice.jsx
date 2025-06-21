@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 
 const Notice = ({ page, noTopics, noSubTopics, noWords, noLearning, noMyLearning}) => {
-    console.log( page, noTopics, noSubTopics, noWords, noLearning)
+    // console.log( page, noTopics, noSubTopics, noWords, noLearning)
   return (
     <div className='notice'>
         <h2>

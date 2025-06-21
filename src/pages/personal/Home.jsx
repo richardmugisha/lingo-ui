@@ -4,6 +4,7 @@ import './Personal.css';
 import Filters from '../filters/Filters';
 import { useSelector, useDispatch } from 'react-redux';
 import { chooseTopic, storeSubTopics, removeTopics, storeStories, storeScripts } from '../../features/personal/topic/topicSlice';
+import { setInfo } from '../../features/system/systemSlice'
 import { updateLearning } from './modals/guided-learning/utils/useLearning';
 import { Button } from '@mui/material';
 import { Delete as DeleteIcon, FilterAlt as FilterIcon, Clear as Close } from '@mui/icons-material';
@@ -11,7 +12,6 @@ import { MuiCheckbox } from '../../components/MuiComponents';
 import WordCard from '../../components/word/Card';
 import TopicCard from '../../components/topic/Card'
 import FypManager from './modals/fyp/Manager';
-import Info from '../../components/Info';
 import Notice from "../../components/notice/Notice"
 
 import { useNavigate, Link } from 'react-router-dom';
@@ -29,7 +29,6 @@ export default ({ page }) => {
   const [error, setError] = useState('');
   const [myCardsOnly, setMyCardsOnly] = useState(true);
   const [selectedLanguage, setSelectedLanguage] = useState({ label: '', value: '' });
-  const [info, setInfo] = useState({ type: '', message: '', exists: false });
   const [useFilters, setUseFilters] = useState(false)
   const batchReqRef = useRef(0)
   const [topicChain, setTopicChain] = useState([])
@@ -37,7 +36,7 @@ export default ({ page }) => {
   const [userLearning, setUserLearning] = useState({})
 
   useEffect(() => {
-    error && setInfo({ type: 'danger', message: error, exists: true });
+    error && dispatch(setInfo({ type: 'danger', message: error, timestamp: Date.now() }));
   }, [error]);
 
 
@@ -104,9 +103,11 @@ export default ({ page }) => {
 
     fetchAllStories(topic._id, "story")
       .then( stories => dispatch(storeStories(stories)))
+      .catch(error => setError(error.message))
 
     fetchAllStories(topic._id, "chat")
       .then( scripts => dispatch(storeScripts(scripts)))
+      .catch(error => setError(error.message))
   };
 
   const deletingTopics = async () => {
@@ -114,22 +115,14 @@ export default ({ page }) => {
       const data = await deleteTopics(personalSelectedItem)
       dispatch(removeTopics(personalSelectedItem));
       setPersonalSelectedItem([]);
-      setInfo({ type: 'info', message: data.msg, exists: true } );
+      dispatch(setInfo({ type: 'info', message: data.msg, exists: true } ));
     } catch (error) {
       setError(error.message);
     }
   };
 
+  
   useEffect(() => {
-    if (!info.exists) return;
-    const timeout = setTimeout(() => {
-      setInfo({exists: false});
-    }, 5000);
-    return () => clearTimeout(timeout);
-  }, [info]);
-
-  useEffect(() => {
-    console.log('wwjfdlkfjkldj', words, page)
     if (["", "topics", "my-learning",].includes(page)) {
       setTopicChain([])
       dispatch(chooseTopic({words: [], stories: [], scripts: []}))
@@ -180,8 +173,6 @@ export default ({ page }) => {
     onTopicClickHandle(topic, topicChain.slice(0, index))
   }
 
-  console.log(subTopics)
-
   return (
     <div className="personal">
         {!personalSelectedItem.length ? (
@@ -225,8 +216,6 @@ export default ({ page }) => {
             }
           </div>
         </div>
-
-        {info.exists && <Info info={info} />}
 
         <div className="body">
           {searching && <Spinner radius={120} color="#345C70" stroke={2} visible={true} />}

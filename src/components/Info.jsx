@@ -9,21 +9,22 @@ const backgroundColors = {
 
 const infoStyler = (info) => {
     return {
-        position: 'absolute',
         minWidth: '500px',
-        zIndex: 2,
         left: '50%',
-        transform: 'translate(-50%, -30%)',
+        transform: 'translateX(-50%)',
         padding: '1em 3em',
+        marginBottom: '1em',
         boxShadow: '0 0 1em rgba(0, 0, 0, 0.5',
         background: backgroundColors[info.type]
     }
 }
 
-const Info = ({ info, id }) => 
-    <div style={infoStyler(info)} id={id}>
+const Info = ({ info }) => {
+    console.log(info)
+    return <div style={infoStyler(info)} >
           {info.message}
     </div>
+}
 
 
 export default Info

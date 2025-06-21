@@ -6,7 +6,7 @@
 }
 
 
-section {
+.chat-room section {
   box-shadow: 0 0 1em rgba(176, 196, 222, 0.603);
   border-radius: 1em;
   border: 1px solid rgba(173, 216, 230, 0.089);
@@ -15,7 +15,7 @@ section {
   cursor: pointer;
 }
 
-section p.actor-line {
+.chat-room section p.actor-line {
   height: auto;
   /* max-height: calc(100% - 1em); */
   overflow-y: auto;
@@ -41,7 +41,7 @@ section p.actor-line {
   /* display: flex; */
   /* width: fit-content; */
 }
-section > h2 {
+.chat-room section > h2 {
   padding: .2em;
   text-align: left;
 }
@@ -137,7 +137,7 @@ section > h2 {
     width: 100%;
   }
 
-  section p.actor-line {
+  .chat-room section p.actor-line {
     line-height: 1.5em;
     font-size: large;
   }

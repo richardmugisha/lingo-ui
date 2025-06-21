@@ -1,9 +1,11 @@
 import "./Sidebar.css"
 import TopicSearch from "../../../../components/TopicSearch/TopicSearch"
 import { useTopicSearch } from "../../../../components/TopicSearch/useTopicSearch"
-import { createStory, patchStory, createChapter, patchChapter, fetchChapter } from "../../../../api/http"
+import { createStory, patchStory, createChapter, patchChapter, fetchChapter, liveChat } from "../../../../api/http"
 import { useState, useEffect } from "react"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
+import { useDispatch } from "react-redux"
+import { setChat, setInfo } from "../../../../features/system/systemSlice"
 
 // Function to parse the outline text into a structured object
 const parseOutline = (text) => {
@@ -49,6 +51,7 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
         removeTopic
     } = useTopicSearch(storySettings.topics, "word-filling-mode")
 
+    const dispatch = useDispatch()
     const [selectedValue, setSelectedValue] = useState(null)
     const [showOutline, setShowOutline] = useState(false)
     const [showOutlineEditor, setShowOutlineEditor] = useState(true)
@@ -59,6 +62,7 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
     const [chapter, setChapter] = useState(null)
     const [chapterIndex, setChapterIndex] = useState(0)
     const [updateFlag, setUpdateFlag] = useState(true)
+    const [{ userId: userID, username }] = useState(JSON.parse(localStorage.getItem("user")))
 
     // Parse outline whenever the text changes
     useEffect(() => {
@@ -104,6 +108,25 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
             patchChapter({ id: chapter._id, item: "details", update: lastDetail})
         }
         setUpdateFlag(false)
+    }, [storySettings.details])
+
+    useEffect(() => {
+        const sentencesCount = storySettings.details.length
+        console.log(userID)
+        if (sentencesCount > 0 && sentencesCount % 2 === 0) {
+            const lastChunk = storySettings.details.slice(-5)
+            const message = `
+            You are talking to ${username}. I just stole their device for 2 seconds. I am their guardian angel. I noticed he is writing to improve their english fluency.
+            ${storySettings.words.length ? `First make sure you scrutinize his use of these words in this writing. The words: ${storySettings.words.slice(-5)} | Then, ` : ""}
+            help him with feedback on the coherence and transition of sentences. Your scrutinity should be more around english rules, and 20% about writing and creativity. Be brief.
+            Talk to ${username} directly now. Here is the last chunk of his writing:
+            ${lastChunk.map(sentenceObject => sentenceObject.sentence + ".")}`
+
+            liveChat({userID, chat: message})
+                .then(data => dispatch(setChat(data)))
+                .catch(error => dispatch(setInfo({type: "warning", message: "Couldn't retrieve feedback for your writing!", timestamp: Date.now()})))
+        }
+
     }, [storySettings.details])
 
     useEffect(() => {

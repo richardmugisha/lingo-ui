@@ -44,7 +44,7 @@ button {
     gap: 3em;
   }
   
-button, .option {
+.personal button, .option {
     cursor: pointer;
     border: none;
     color: #86A8B8;
@@ -62,7 +62,7 @@ button, .option {
     margin-left: 20px;
 }
   
-button.option:hover {
+.personal button.option:hover {
     color: white;
     box-shadow: 0 0 15px #a7c2d0;
 }
@@ -92,8 +92,9 @@ button.option:hover {
 }
   
 .body .topic-card:hover {
-    color: white;
-    scale: 1.01;
+    /* color: white; */
+    font-size: 1.1em;
+    /* scale: 1.01; */
     /* box-shadow: 0 0 12px rgba(11, 14, 15, 0.482); */
 }
   

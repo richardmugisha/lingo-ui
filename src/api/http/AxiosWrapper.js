@@ -4,7 +4,7 @@ class AxiosWrapper {
   constructor(throttleGap = 200) {
     this.lastCalled = {}; // { [method:url]: timestamp }
     this.throttleGap = throttleGap;
-    console.log('AxiosWrapper initialized with throttleGap:', throttleGap);
+    // console.log('AxiosWrapper initialized with throttleGap:', throttleGap);
   }
 
   // Internal throttle check
@@ -32,20 +32,20 @@ class AxiosWrapper {
 
   // Base request
   async _request(method, url, ...args) {
-    console.log('Request started:', { method, url, timestamp: Date.now() });
+    // console.log('Request started:', { method, url, timestamp: Date.now() });
     
     if (this._shouldThrottle(method, url)) {
-      console.log('Request throttled:', { method, url });
+      // console.log('Request throttled:', { method, url });
       return Promise.reject({ message: `Throttled: ${method.toUpperCase()} ${url}` });
     }
     
     try {
-      console.log('Making request:', { method, url });
+      // console.log('Making request:', { method, url });
       const response = await axios[method](url, ...args);
-      console.log('Request successful:', { method, url });
+      // console.log('Request successful:', { method, url });
       return response;
     } catch (err) {
-      console.log('Request failed:', { method, url, error: err.message });
+      // console.log('Request failed:', { method, url, error: err.message });
       throw err;
     }
   }
