@@ -17,9 +17,10 @@
     width: 10em !important;
     aspect-ratio: 4/5;
     overflow: hidden;
+    padding: 1em !important;
+
 }
 
 .story .title {
-    padding: .5em 1em;
     margin: 1em;
 }

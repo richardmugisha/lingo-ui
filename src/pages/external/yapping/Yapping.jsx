@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
 import './Yapping.css';
-import Side from './Side';
 import Sidebar from './sidebar/Sidebar';
 import StoryCatalog from './story-catalog/StoryCatalog';
 import Onboarding from './creation-onboarding/Onboarding';

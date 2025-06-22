@@ -1,10 +1,12 @@
 .sidebar {
     gap: 3em;
     padding: 1em;
-    height: 88dvh;
+    /* height: 95dvh; */
+    /* flex: 1; */
+    /* width: 300px !important; */
 }
 .sidebar section:first-child {
-    height: 85%;
+    height: 100%;
 }
 .sidebar section {
     display: flex;
@@ -26,7 +28,7 @@
 
 .sidebar  article {
     text-align: left;
-    width: 100%;
+    /* width: 100%; */
     display: flex;
     gap: 1.5em;
     flex-direction: column;
@@ -55,6 +57,7 @@
     border-radius: 1em;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 1.1em;
+    overflow-y: auto;
 }
 
 .outline.structured h1 {
@@ -107,4 +110,30 @@
     padding: .3em 1em;
     display: flex;
     justify-content: space-between;
+}
+
+.sidebar .workspace .word-pool {
+    position: relative;
+}
+
+.sidebar .selected-word--card {
+    position: absolute;
+    background-color: lightblue;
+    translate: 120%;
+}
+
+.sidebar .word-pool span:hover {
+    position: relative;
+}
+.sidebar .word-pool span:hover::after {
+    position: absolute;
+    content: "";
+    width: 1em;
+    aspect-ratio: 1;
+    transform: translate(1em, -50%) rotate(45deg);
+    top: 50%;
+    right: 0;
+    border-top: 1px solid rgba(184, 49, 28, 0.692);
+    border-right: 1px solid rgba(184, 49, 28, 0.692);
+    background-color: transparent;
 }

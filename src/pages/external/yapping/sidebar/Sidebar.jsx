@@ -6,6 +6,9 @@ import { useState, useEffect } from "react"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
 import { useDispatch } from "react-redux"
 import { setChat, setInfo } from "../../../../features/system/systemSlice"
+import WordCard from "../../../../components/word/Card"
+
+let timerID;
 
 // Function to parse the outline text into a structured object
 const parseOutline = (text) => {
@@ -62,6 +65,7 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
     const [chapter, setChapter] = useState(null)
     const [chapterIndex, setChapterIndex] = useState(0)
     const [updateFlag, setUpdateFlag] = useState(true)
+    const [hoveredWord, setHoveredWord] = useState(null)
     const [{ userId: userID, username }] = useState(JSON.parse(localStorage.getItem("user")))
 
     // Parse outline whenever the text changes
@@ -158,33 +162,22 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
         })
     }
 
+    const handleOffHover = () => {
+       
+        timerID = setTimeout(() => {
+            setHoveredWord(null);
+        }, 500);
+    }
+
+    const handleOnHover = (wObj) => {
+        clearTimeout(timerID)
+        setHoveredWord(wObj);
+    }
+
     return (
         <article className="sidebar">
             <section>
-                {
-                    !showOutline ?
-                    <article className="workspace">
-                        <h1>{ parsedOutline?.title}</h1>
-                        <h3>{ parsedOutline?.chapters?.[chapterIndex]?.title || "Untitled Chapter"}</h3>
-                        <TopicSearch
-                            topics={topics} mode="word-filling-mode"
-                            searchValue={searchValue}
-                            setSearchValue={setSearchValue}
-                            suggestions={suggestions}
-                            isLoading={isLoading}   
-                            addTopic={addTopic}
-                            removeTopic={removeTopic}
-                            selectedValue={selectedValue} setValue={setSelectedValue}
-                        />
-                        {selectedValue &&
-                            <ul className="side word-pool"> { storySettings.suggestedWords?.map((wObj, i) => 
-                                <span key={i} className={storySettings.words.includes(wObj.word) ? "right-word" : "wrong-word"}>
-                                    {wObj.word}{storySettings.words.filter(w => w === wObj.word).length > 1 ? <b>{`(${storySettings.words.filter(w => w === wObj.word).length}x)`}</b> : ""}
-                                </span>)} 
-                            </ul>
-                        }
-                    
-                    </article> :
+                { showOutline &&
                     <article className="outline structured">
                         {parsedOutline ? (
                             <>
@@ -219,6 +212,31 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
                             onChange={(e) => setOutlineText(e.target.value)}
                             placeholder="Enter your outline here..."
                         />
+                    </article>
+                }
+                {
+                    !(showOutline && showOutlineEditor) &&
+                    <article className="workspace">
+                        <h1>{ parsedOutline?.title}</h1>
+                        <h3>{ parsedOutline?.chapters?.[chapterIndex]?.title || "Untitled Chapter"}</h3>
+                        <TopicSearch
+                            topics={topics} mode="word-filling-mode"
+                            searchValue={searchValue}
+                            setSearchValue={setSearchValue}
+                            suggestions={suggestions}
+                            isLoading={isLoading}   
+                            addTopic={addTopic}
+                            removeTopic={removeTopic}
+                            selectedValue={selectedValue} setValue={setSelectedValue}
+                        />
+                        {selectedValue &&
+                            <ul className="side word-pool"> { storySettings.suggestedWords?.map((wObj, i) => 
+                                <span key={wObj._id} className={storySettings.words.includes(wObj.word) ? "right-word" : "wrong-word"} onMouseEnter={() => handleOnHover(wObj)} onMouseLeave={handleOffHover}>
+                                    {wObj.word}{storySettings.words.filter(w => w === wObj.word).length > 1 ? <b>{`(${storySettings.words.filter(w => w === wObj.word).length}x)`}</b> : ""}
+                                </span>)} 
+                            </ul>
+                        }
+                        {hoveredWord && <div className="selected-word--card"><WordCard wObj={hoveredWord}/></div>}
                     </article>
                 }
             </section>
