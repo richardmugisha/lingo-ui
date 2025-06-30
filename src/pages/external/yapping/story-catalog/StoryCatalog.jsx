@@ -82,7 +82,8 @@ const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
                           mode: "create",
                           step: "create",
                           outline: story.outline,
-                          _id: story._id
+                          _id: story._id,
+                          details: story.details
                         }))
                       }}
                       className="story--span"

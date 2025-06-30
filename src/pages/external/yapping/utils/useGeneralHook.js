@@ -108,22 +108,36 @@ const useGeneralHook = (
 
       const callUponAi = useCallback((e) => {
         const key = e.key;
-        if (["Tab", "Enter"].includes(key)) e.preventDefault();
-        if (key === 'Tab')  return setStorySettings(prev => prev.rebuild({ 
-                              sentenceInProgress: { sentence: prev.state.sentenceInProgress.sentence + "\t" },
-                      }))
-        if (key === 'Enter') 
+        if (["Tab", "Enter"].includes(key)) {
+          e.preventDefault();
+          const keyChar = key == "Tab" ? "\t" : "\n";
           return setStorySettings(prev => {
             if (prev.sentenceInProgress.sentence) 
               return prev.rebuild({
-                        sentenceInProgress: { sentence: prev.state.sentenceInProgress.sentence + "\n" },
+                        sentenceInProgress: { sentence: prev.state.sentenceInProgress.sentence + keyChar },
                       })
             return prev.rebuild({
-                    details: [...prev.details, {sentence: "\n", blanked: "\n"}], 
+                    details: [...prev.details, {sentence: keyChar, blanked: keyChar}], 
                     sentenceInProgress: {sentence: "", blank: ""},
                     sentenceIndex: prev.details.length + 1
                   })
-        }) 
+                })
+        }
+        // if (key === 'Tab')  return setStorySettings(prev => prev.rebuild({ 
+        //                       sentenceInProgress: { sentence: prev.state.sentenceInProgress.sentence + "\t" },
+        //               }))
+        // if (key === 'Enter') 
+        //   return setStorySettings(prev => {
+        //     if (prev.sentenceInProgress.sentence) 
+        //       return prev.rebuild({
+        //                 sentenceInProgress: { sentence: prev.state.sentenceInProgress.sentence + "\n" },
+        //               })
+        //     return prev.rebuild({
+        //             details: [...prev.details, {sentence: "\n", blanked: "\n"}], 
+        //             sentenceInProgress: {sentence: "", blank: ""},
+        //             sentenceIndex: prev.details.length + 1
+        //           })
+        // }) 
         
       }, [summary, title, story])
       

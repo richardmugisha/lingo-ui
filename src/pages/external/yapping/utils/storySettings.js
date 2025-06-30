@@ -1,5 +1,5 @@
 class StorySetup {
-    constructor({ title, summary, author, step, mode, details, sentenceIndex, sentenceInProgress, words, suggestedWords, acts, characters, _id, outline }) {
+    constructor({ title, summary, author, step, mode, details, sentenceIndex, sentenceInProgress, words, suggestedWords, acts, characters, _id, outline, selectedIndices, operation, editableText }) {
         this.metadata = { _id, title, summary, author, characters, outline };
         this.state = { 
             step: step || "onboarding", 
@@ -10,6 +10,9 @@ class StorySetup {
             words: words || [],
             suggestedWords: suggestedWords || [],
             acts: acts || [],
+            selectedIndices: selectedIndices || [],
+            operation: operation, //delete or edit,
+            editableText: editableText || "",
         };
     }
     get _id() { return this.metadata._id }
@@ -27,6 +30,9 @@ class StorySetup {
     get sentenceInPractice() {  return this.state.mode === "practice" && this.details?.[this.sentenceIndex] }
     get sentenceInProgress() { return this.state.sentenceInProgress}
     get acts() { return this.state.acts }
+    get selectedIndices() { return this.state.selectedIndices }
+    get operation () { return this.state.operation }
+    get editableText () { return this.state.editableText }
 
     nextSentence () {
         const newState = {...this.state, sentenceIndex: this.sentenceIndex + 1}

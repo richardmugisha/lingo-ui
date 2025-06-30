@@ -1,7 +1,7 @@
 import "./Sidebar.css"
 import TopicSearch from "../../../../components/TopicSearch/TopicSearch"
 import { useTopicSearch } from "../../../../components/TopicSearch/useTopicSearch"
-import { createStory, patchStory, createChapter, patchChapter, fetchChapter, liveChat } from "../../../../api/http"
+import { createStory, patchStory, createChapter, patchChapter, fetchChapter, liveChat, patchEditDetails, patchDeleteDetails } from "../../../../api/http"
 import { useState, useEffect } from "react"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
 import { useDispatch } from "react-redux"
@@ -85,18 +85,18 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
     useEffect(() => {
         console.log(story._id)
         if (story._id) {
-            fetchChapter({ index: 0, storyID: story._id})
-            .then( data => {
                 setUpdateFlag(true)
-                setChapter(data.chapter)
-                setStorySettings(prev => prev.rebuild({ details: data.chapter.details}))
-            })
+            // fetchChapter({ index: 0, storyID: story._id})
+            // .then( data => {
+            //     setChapter(data.chapter)
+            //     setStorySettings(prev => prev.rebuild({ details: data.chapter.details}))
+            // })
         } else {
             createStory({})
             .then(data => {
                 setStory(data?.story || {});
-                createChapter({ storyID: data?.story?._id})
-                .then(data => setChapter(data.chapter))
+                // createChapter({ storyID: data?.story?._id})
+                // .then(data => setChapter(data.chapter))
             } )
         }
     }, [])
@@ -106,17 +106,17 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
     }, [topic])
 
     useEffect(() => {
-        if (storySettings?.details?.length && chapter && !updateFlag) {
+        if (storySettings?.details?.length && !updateFlag) {
             console.log(storySettings.details)
             const lastDetail = storySettings.details[storySettings.details.length - 1]
-            patchChapter({ id: chapter._id, item: "details", update: lastDetail})
+            patchStory({ id: story._id, item: "details", update: {...lastDetail, topic: topic._id}})
+                .then(console.log)
         }
         setUpdateFlag(false)
     }, [storySettings.details])
 
     useEffect(() => {
         const sentencesCount = storySettings.details.length
-        console.log(userID)
         if (sentencesCount > 0 && sentencesCount % 2 === 0) {
             const lastChunk = storySettings.details.slice(-5)
             const message = `
@@ -173,6 +173,55 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
         clearTimeout(timerID)
         setHoveredWord(wObj);
     }
+
+    const handleDeleteDetails = () => {
+        setUpdateFlag(true)
+        setStorySettings(prev => prev.rebuild({details: prev.details.filter((det, idx) => !prev.selectedIndices.includes(idx))}))
+        setStorySettings(prev => prev.rebuild({ selectedIndices: [] }))
+        patchDeleteDetails({id: story._id, list: storySettings.selectedIndices})
+            .then(data => console.log(data))
+            .catch(e => console.log(e.message))
+    }
+
+    const handleEditDetails = () => {
+        setStorySettings(prev => prev.rebuild({ editableText: prev.details.filter((det, idx) => prev.selectedIndices.includes(idx)).map(det => det.sentence).join("")}))
+        
+    }
+
+    const handleSaveEditDetails = () => {
+        // edit from the db
+        // send a edit dict: edit range and new text
+        patchEditDetails({id: story._id, list: storySettings.selectedIndices, edit: {sentence: storySettings.editableText, blanked: storySettings.editableText, topic: topic._id}})
+            .then(data => console.log(data))
+            .catch(e => console.log(e.message))
+
+        setUpdateFlag(true)
+        setStorySettings(prev => {
+            // Remove details at indices in selectedIndices
+            const sortedIndices = [...prev.selectedIndices].sort((a, b) => b - a);
+            let newDetails = [...prev.details];
+            for (const idx of sortedIndices) {
+                newDetails.splice(idx, 1);
+            }
+            // Replace the detail at selectedIndices[0] with the editableText
+            const insertIndex = prev.selectedIndices[0];
+            newDetails.splice(insertIndex, 0, {
+                ...prev.details[insertIndex],
+                sentence: prev.editableText,
+                blanked: prev.editableText
+            });
+            return prev.rebuild({ selectedIndices: [], details: newDetails });
+        });
+    }
+
+    useEffect(() => {
+        switch (storySettings.operation) {
+            case "delete": handleDeleteDetails(); break;
+            case "edit": handleEditDetails(); break;
+            case "save": handleSaveEditDetails(); break;
+        }
+    }, [storySettings.operation])
+
 
     return (
         <article className="sidebar">
@@ -240,9 +289,11 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
                     </article>
                 }
             </section>
-            <section>
+            <section className="sidebar--controls">
                 <button onClick={handleNewChapter}
                 >New Chapter</button>
+                <button>New Part</button>
+                <button>New scene</button>
                 <button onClick={() => setShowOutline(!showOutline)}>
                     {showOutline ? <VisibilityOff /> : <Visibility /> }
                     Outline
@@ -255,6 +306,18 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
                     {showLoglines ? <VisibilityOff /> : <Visibility /> }
                     Loglines
                 </button>
+                <input type="text" placeholder="Font"/>
+                <input type="number" name="" id="" value={12}/>
+                <input type="number" name="" id="" value={1.5}/>
+                {
+                    storySettings.selectedIndices.length > 0 && <>
+        {/* setStorySettings(prev => prev.rebuild({selectedIndices: [index]}))
+                     */}
+                        <button onClick={() => setStorySettings(prev => prev.rebuild({operation: "edit"}))}>Edit</button>
+                        <button onClick={() => setStorySettings(prev => prev.rebuild({operation: "delete"}))}>Delete</button>
+                        <button onClick={() => setStorySettings(prev => prev.rebuild({operation: "save"}))}>Save</button>
+                    </>
+                }
             </section>
         </article>
     )

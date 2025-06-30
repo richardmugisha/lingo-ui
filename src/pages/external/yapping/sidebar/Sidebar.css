@@ -137,3 +137,19 @@
     border-right: 1px solid rgba(184, 49, 28, 0.692);
     background-color: transparent;
 }
+
+.sidebar--controls {
+    position: absolute;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar .MuiInputBase-root {
+    min-width: 300px;
+}
+
+.sidebar--controls input {
+    height: fit-content;
+    padding: .5em;
+    border: none;
+}

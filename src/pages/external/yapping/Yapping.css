@@ -277,7 +277,7 @@ h1 { font-size: xx-large;}
     font-family: Tahoma, sans-serif;
     white-space: pre-wrap;
 }
-.story article.draft-story .draft-sentence.new-line {visibility: hidden}
+.story article.draft-story .draft-sentence.whitespace {visibility: hidden}
 .story article.draft-story input.draft-sentence {
     font-size: inherit;
     color: inherit;

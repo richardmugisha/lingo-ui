@@ -1,7 +1,7 @@
 
 import { Button } from '@mui/material';
 import useStory from './utils/useStory';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Story = (props) => {
   const {
@@ -11,6 +11,9 @@ const Story = (props) => {
     handlePartSelection, callUponAi, 
     info, FinishButton
   } = useStory(props)
+
+  const [selectedIndices, setSelectedIndices] = useState([])
+  const [shiftKeySelected, setShiftKeySelected] = useState(false)
 
   const getSharedPrefix = (originalWord, comparisonWord) => {
     let matchLength = 0;
@@ -32,7 +35,73 @@ const Story = (props) => {
       remainingPart,
     };
   };
+
+  const handleSelectDetail = (index) => {
+    console.log(index)
+    if (shiftKeySelected) {
+      // Range selection with shift
+      if (storySettings.selectedIndices.length > 0) {
+        const lastSelected = storySettings.selectedIndices[storySettings.selectedIndices.length - 1];
+        const start = Math.min(lastSelected, index);
+        const end = Math.max(lastSelected, index);
+        const range = [];
+        for (let i = start; i <= end; i++) {
+          if (!storySettings.selectedIndices.includes(i)) {
+            range.push(i);
+          }
+        }
+        // setSelectedIndices(prev => [...prev, ...range]);
+        setStorySettings(prev => prev.rebuild({selectedIndices: [...prev.selectedIndices, ...range]}))
+
+      } else {
+        setStorySettings(prev => prev.rebuild({selectedIndices: [index]}))
+
+        // setSelectedIndices([index]);
+      }
+    } else {
+      // Toggle selection/deselection for single click
+      // setSelectedIndices(prev => {
+        // if (prev.includes(index)) {
+        //   // Deselect if already selected
+        //   return prev.filter(i => i !== index);
+        // } else {
+        //   // Select only this index
+        //   return [index];
+        // }
+        console.log(storySettings.selectedIndices)
+        const newList = storySettings.selectedIndices.includes(index) ? [] : [index] 
+        setStorySettings(prev => prev.rebuild({selectedIndices: newList}))
+      // });
+    }
+  }
+
+  const handleKeyDown = (e) => {
+    if (storySettings.operation !== "edit") {
+      callUponAi(e)
+    }
+  }
   
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Shift") {
+        setShiftKeySelected(true);
+      }
+    };
+
+    const handleKeyUp = (e) => {
+      if (e.key === "Shift") {
+        setShiftKeySelected(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   return (
     <div className="story">
@@ -65,8 +134,18 @@ const Story = (props) => {
             <article className="draft-story">
               {
                 storySettings.details.map((currSentence, thisIndex) => (
-                  <span className={`draft-sentence ${currSentence.sentence !== "\n" ? "": "new-line"}`} key={thisIndex} style={{opacity: thisIndex > storySettings.sentenceIndex ? .1: 1}}>
+                  <span className={`draft-sentence ${["\n", "\t"].includes(currSentence.sentence) && "whitespace"}`} key={thisIndex} 
+                        style={{opacity: thisIndex > storySettings.sentenceIndex ? .1: 1, background: storySettings.selectedIndices.includes(thisIndex) ? "grey": "", 
+                          display: storySettings.operation == "edit" && storySettings.selectedIndices.slice(1).includes(thisIndex) ? "none" : ""
+                        }}
+                        onClick={() => !storySettings.operation && handleSelectDetail(thisIndex)}
+                  >
                     { 
+                      storySettings.state.mode === "create" && storySettings.operation == "edit" && storySettings.selectedIndices[0] === thisIndex ?
+                      <input type='text' className='draft-sentence' value={storySettings.editableText} 
+                        onChange={e => setStorySettings(prev => prev.rebuild({editableText: e.target.value}))}
+                      />
+                      :
                       (thisIndex == storySettings.sentenceIndex) ? 
                         attempt.map((word, i) => {
                           return word === correctSentence[i] ?
@@ -76,7 +155,7 @@ const Story = (props) => {
                               className='attempt-input'
                               onChange={ e => props.updateAttempt({word: e.target.value, fillIndex: i, fillingMode: "typing"}) }
                             />&nbsp;
-                            {['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? <label>{word[word.length - 1]} </label> : ''}
+                            {['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? <label>{word[word.length - 1]}</label> : ''}
                           </span>
                           }
                       ) 
@@ -99,7 +178,7 @@ const Story = (props) => {
                     else if (storySettings.state.mode === 'practice') setAttempt(e.target.value.split(' '))
                     }
                   }
-                  onKeyDown={callUponAi}
+                  onKeyDown={handleKeyDown}
                   // onMouseUp={() => handlePartSelection()}
                   readOnly={info.exists && info.type === 'warning'}
                 />
