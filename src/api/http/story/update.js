@@ -38,3 +38,21 @@ export const patchDeleteDetails = async({id, list}) => {
         console.log(error.message)
     }
 }
+
+export const patchTypeSettings = async({ id, typeSettings }) => {
+    try {
+        const response = await AxiosWrapper.patch(`${httpEndpoint}/story/typeSettings`, {id, typeSettings})
+        return response.data
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+export const patchPageSettings = async({ id, pageSettings }) => {
+    try {
+        const response = await AxiosWrapper.patch(`${httpEndpoint}/story/pageSettings`, { id, pageSettings })
+        return response.data
+    } catch (error) {
+        console.log(error.message)
+    }
+}

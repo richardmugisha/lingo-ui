@@ -13,9 +13,9 @@ const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
   const resetStory = () => {
       setStorySettings( prev => prev.rebuild({ 
         title: "", summary: "",
-        mode: "create", step: "onboarding", details: [], 
-        sentenceInProgress: {sentence: "", blanked: ""},
-        sentenceIndex: 0,
+        mode: "create", step: "onboarding", 
+        // sentenceInProgress: {sentence: "", blanked: ""},
+        sentenceIndex: 1,
       }) )
     }
   
@@ -83,7 +83,8 @@ const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
                           step: "create",
                           outline: story.outline,
                           _id: story._id,
-                          details: story.details
+                          details: story.details,
+                          ...story
                         }))
                       }}
                       className="story--span"

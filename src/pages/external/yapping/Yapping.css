@@ -254,28 +254,22 @@ h1 { font-size: xx-large;}
 
 .story article.draft-story {
     width: min(700px, 90vw); /* Define container width */
-    line-height: 2.3; /* Adjust line height for readability */
     background-color :#f7eee461; 
     padding: 1em 2em;
-    /* border: 1px solid #f7ce22; */
-    /* box-shadow: 0 0 1em #555; */
     overflow-y: auto;
     overflow-x: hidden;
     flex: 1 1 auto;
     text-align: start;
-    font-size: 1.1em !important;
-    /* text-indent: 5em; */
 }
 
 .story article.draft-story .draft-sentence{
     display: inline; 
-    background-color: #e7eaf6; /* Optional: Different background for spans */
-    /* margin-right: .5em; */
+    background-color: #e7eaf6;
     border-radius: .3em;
     padding: .2em;
     box-decoration-break: clone;
-    font-family: Tahoma, sans-serif;
     white-space: pre-wrap;
+    font-family: 'Roboto', sans-serif;
 }
 .story article.draft-story .draft-sentence.whitespace {visibility: hidden}
 .story article.draft-story input.draft-sentence {

@@ -21,3 +21,13 @@ export const fetchStories = async(filters) => {
         console.log(error.message)
     }
 }
+
+export const fetchStory = async(id, page) => {
+    console.log(page)
+    try {
+        const response = await AxiosWrapper.get(`${httpEndpoint}/story/${id}`, { params: { page } })
+        return response.data
+    } catch (error) {
+        console.log(error.message)
+    }
+}

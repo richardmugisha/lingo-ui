@@ -103,6 +103,17 @@ const Story = (props) => {
     };
   }, []);
 
+
+  const handleConditionToHide = (index) => {
+    if (storySettings.operation == "edit") {
+      return storySettings.selectedIndices.slice(1).includes(index)
+    }
+    else if ([0, 1].includes(index)) {
+      return true
+    }
+    return false
+  }
+
   return (
     <div className="story">
         {
@@ -133,12 +144,13 @@ const Story = (props) => {
             </p>
             <article className="draft-story">
               {
-                storySettings.details.map((currSentence, thisIndex) => (
-                  <span className={`draft-sentence ${["\n", "\t"].includes(currSentence.sentence) && "whitespace"}`} key={thisIndex} 
+                storySettings.details?.map((currSentence, thisIndex) => (
+                  <span className={`draft-sentence ${["\n", "\t"].includes(currSentence.sentence) && !storySettings.operation && "whitespace"}`} key={thisIndex} 
                         style={{opacity: thisIndex > storySettings.sentenceIndex ? .1: 1, background: storySettings.selectedIndices.includes(thisIndex) ? "grey": "", 
-                          display: storySettings.operation == "edit" && storySettings.selectedIndices.slice(1).includes(thisIndex) ? "none" : ""
+                          display: handleConditionToHide(thisIndex) ? "flex" : "",
+                          ...(currSentence.typeSettings || storySettings.typeSettings),
                         }}
-                        onClick={() => !storySettings.operation && handleSelectDetail(thisIndex)}
+                        onClick={() => {{/*!storySettings.operation &&*/} handleSelectDetail(thisIndex)}}
                   >
                     { 
                       storySettings.state.mode === "create" && storySettings.operation == "edit" && storySettings.selectedIndices[0] === thisIndex ?

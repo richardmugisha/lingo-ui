@@ -1,7 +1,7 @@
 import "./Sidebar.css"
 import TopicSearch from "../../../../components/TopicSearch/TopicSearch"
 import { useTopicSearch } from "../../../../components/TopicSearch/useTopicSearch"
-import { createStory, patchStory, createChapter, patchChapter, fetchChapter, liveChat, patchEditDetails, patchDeleteDetails } from "../../../../api/http"
+import { createStory, patchStory, createChapter, patchChapter, fetchChapter, liveChat, patchEditDetails, patchDeleteDetails, patchTypeSettings, patchPageSettings, fetchStory } from "../../../../api/http"
 import { useState, useEffect } from "react"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
 import { useDispatch } from "react-redux"
@@ -9,6 +9,7 @@ import { setChat, setInfo } from "../../../../features/system/systemSlice"
 import WordCard from "../../../../components/word/Card"
 
 let timerID;
+let lastSaved;
 
 // Function to parse the outline text into a structured object
 const parseOutline = (text) => {
@@ -64,6 +65,7 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
     const [story, setStory] = useState(storySettings)
     const [chapter, setChapter] = useState(null)
     const [chapterIndex, setChapterIndex] = useState(0)
+    const [sceneIndex, setSceneIndex] = useState(0)
     const [updateFlag, setUpdateFlag] = useState(true)
     const [hoveredWord, setHoveredWord] = useState(null)
     const [{ userId: userID, username }] = useState(JSON.parse(localStorage.getItem("user")))
@@ -83,20 +85,19 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
     }, [outlineText]);
 
     useEffect(() => {
-        console.log(story._id)
+        // console.log(story._id)
         if (story._id) {
-                setUpdateFlag(true)
-            // fetchChapter({ index: 0, storyID: story._id})
-            // .then( data => {
-            //     setChapter(data.chapter)
-            //     setStorySettings(prev => prev.rebuild({ details: data.chapter.details}))
-            // })
+            const pages = story.pageSettings
+            const lastPage = pages[pages.length - 1]
+            // console.log(pages, lastPage, story)
+            fetchStory(story._id, { start: lastPage.offset, end: lastPage.size + lastPage.offset})
+            .then(console.log)
+            setUpdateFlag(true)
         } else {
             createStory({})
             .then(data => {
                 setStory(data?.story || {});
-                // createChapter({ storyID: data?.story?._id})
-                // .then(data => setChapter(data.chapter))
+                setStorySettings(prev => prev.rebuild(data?.story || {}))
             } )
         }
     }, [])
@@ -108,11 +109,13 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
     useEffect(() => {
         if (storySettings?.details?.length && !updateFlag) {
             console.log(storySettings.details)
-            const lastDetail = storySettings.details[storySettings.details.length - 1]
-            patchStory({ id: story._id, item: "details", update: {...lastDetail, topic: topic._id}})
+            const newDetails = storySettings.details.length - (lastSaved || 0)
+            const lastDetails = storySettings.details.slice(-newDetails)
+            patchStory({ id: story._id, item: "details", update: lastDetails.map(det => ({...det, topic: topic._id })) })
                 .then(console.log)
         }
         setUpdateFlag(false)
+        lastSaved = storySettings.details.length
     }, [storySettings.details])
 
     useEffect(() => {
@@ -141,25 +144,71 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
         }
     }, [storySettings.words])
 
-    const handleNewChapter = () => {
-        createChapter({ storyID: story?._id})
-        .then(data => {
-            setChapter(data.chapter)
-            setStorySettings(prev => prev.rebuild({ details: []}))
+    const savePageSettings = () => {
+        console.log(storySettings, chapterIndex, storySettings.pageSettings[chapterIndex])
+        const sceneDeltaSize = storySettings.details.length - storySettings.pageSettings[chapterIndex].sceneSettings[sceneIndex].size
+        console.log(sceneDeltaSize, storySettings.details.length, storySettings.pageSettings[chapterIndex].sceneSettings[sceneIndex].size)
+        const newSceneSettings = [...storySettings.pageSettings[chapterIndex].sceneSettings]
+        newSceneSettings[sceneIndex] = {
+            ...newSceneSettings[sceneIndex],
+            size: storySettings.details.length
+        }
+        const newPageSettings = [...storySettings.pageSettings ]
+        newPageSettings[chapterIndex] = {
+            ...newPageSettings[chapterIndex],
+            size: newPageSettings[chapterIndex].size + (sceneIndex > 0 ? storySettings.details.length : sceneDeltaSize),
+            sceneSettings: newSceneSettings
+        }
+       
+        lastSaved = 0;
+       return newPageSettings
+    }
+
+    const introduceNewScene = () => {
+        const newPageSettings = savePageSettings()
+        setSceneIndex(sceneIndex + 1)
+        setStorySettings(prev => prev.reset("scene"))
+        const prevScene = newPageSettings[chapterIndex].sceneSettings[sceneIndex]
+        newPageSettings[chapterIndex].sceneSettings.push({
+            offset: prevScene.offset + prevScene.size,
+            size: 1
         })
+
+        patchPageSettings({id: story._id, pageSettings: newPageSettings})
+        .then(d => {
+            console.log(d)
+            setStorySettings(prev => prev.rebuild({pageSettings: newPageSettings}))
+        })
+    }
+
+    const introduceNewChapter = () => {
+        const newPageSettings = savePageSettings()
+        setSceneIndex(0)
+        setChapterIndex(chapterIndex + 1)
+        setStorySettings(prev => prev.reset("chapter"))
+        console.log(chapterIndex)
+        newPageSettings.push({
+            offset: newPageSettings[chapterIndex].size,
+            size: 2,
+            sceneSettings: [{
+                offset: 0,
+                size: 2
+            }]
+        })
+
+        patchPageSettings({id: story._id, pageSettings: newPageSettings})
+       .then(d => {
+        console.log(d);
+        setStorySettings(prev => prev.rebuild({pageSettings: newPageSettings}))
+       })
+
     }
 
     const handleChapterNavigation = (index) => {
         setChapterIndex(index)
         setShowOutline(false)
-        fetchChapter({ index, storyID: story._id })
-        .then(data => {
-            if (data.chapter) {
-                setChapter(data.chapter)
-                setUpdateFlag(true)
-                setStorySettings(prev => prev.rebuild({ details: data.chapter.details }))
-            }
-        })
+        // fetchChapter({ index, storyID: story._id })
+        setChapter(storySettings.pageSettings[index])
     }
 
     const handleOffHover = () => {
@@ -222,6 +271,12 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
         }
     }, [storySettings.operation])
 
+    useEffect(() => {
+        if (storySettings.typeSettings && story._id) {
+            patchTypeSettings({id: story._id, typeSettings: storySettings.typeSettings})
+            .then(console.log)
+        }
+    }, [storySettings.typeSettings])
 
     return (
         <article className="sidebar">
@@ -290,10 +345,8 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
                 }
             </section>
             <section className="sidebar--controls">
-                <button onClick={handleNewChapter}
-                >New Chapter</button>
-                <button>New Part</button>
-                <button>New scene</button>
+                <button onClick={introduceNewChapter}>New Chapter</button>
+                <button onClick={introduceNewScene}>New scene</button>
                 <button onClick={() => setShowOutline(!showOutline)}>
                     {showOutline ? <VisibilityOff /> : <Visibility /> }
                     Outline
@@ -306,14 +359,28 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
                     {showLoglines ? <VisibilityOff /> : <Visibility /> }
                     Loglines
                 </button>
-                <input type="text" placeholder="Font"/>
-                <input type="number" name="" id="" value={12}/>
-                <input type="number" name="" id="" value={1.5}/>
+                <select
+                    value={storySettings.typeSettings?.fontFamily || "Roboto, sans-serif"}
+                    onChange={e => setStorySettings(prev => prev.rebuild({ typeSettings: { ...prev.typeSettings, fontFamily: e.target.value } }))}
+                >
+                    <option value="Roboto, sans-serif">Roboto</option>
+                    <option value="Georgia, serif">Georgia</option>
+                    <option value="Times New Roman, Times, serif">Times New Roman</option>
+                    <option value="Arial, Helvetica, sans-serif">Arial</option>
+                    <option value="'Courier New', Courier, monospace">Courier New</option>
+                </select>
+                <input type="number" min={8} max={48} step={1} value={storySettings.typeSettings?.fontSize || 16}
+                    onChange={e => setStorySettings(prev => prev.rebuild({ typeSettings: { ...prev.typeSettings, fontSize: Number(e.target.value) } }) ) }
+                    placeholder="Font size"
+                    style={{ width: "4em", marginRight: "0.5em" }}
+                />
+                <input type="number" min={1} max={3} step={0.1} value={storySettings.typeSettings?.lineHeight || 1.5} onChange={e =>  setStorySettings(prev =>  prev.rebuild({ typeSettings: {  ...prev.typeSettings,  lineHeight: Number(e.target.value) }}))}
+                    placeholder="Line height"
+                    style={{ width: "4em" }}
+                />
+                <button onClick={() => setStorySettings(prev => prev.rebuild({operation: "edit"}))}>Edit</button>
                 {
                     storySettings.selectedIndices.length > 0 && <>
-        {/* setStorySettings(prev => prev.rebuild({selectedIndices: [index]}))
-                     */}
-                        <button onClick={() => setStorySettings(prev => prev.rebuild({operation: "edit"}))}>Edit</button>
                         <button onClick={() => setStorySettings(prev => prev.rebuild({operation: "delete"}))}>Delete</button>
                         <button onClick={() => setStorySettings(prev => prev.rebuild({operation: "save"}))}>Save</button>
                     </>

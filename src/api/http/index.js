@@ -22,8 +22,8 @@ export { default as getAgentPairs } from "./live-chat/getAgentPairs"
 
 export { default as fetchAllStories } from "./story/fetchAll"
 export { default as createStory, createChapter } from "./story/create"
-export { patchStory, patchChapter, patchEditDetails, patchDeleteDetails } from "./story/update"
-export { fetchChapter, fetchStories } from "./story/fetch"
+export { patchStory, patchChapter, patchEditDetails, patchDeleteDetails, patchTypeSettings, patchPageSettings } from "./story/update"
+export { fetchChapter, fetchStories, fetchStory } from "./story/fetch"
 
 export { default as prepareEpisode } from "./script/prepareEpisode"
  
