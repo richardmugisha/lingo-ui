@@ -36,7 +36,7 @@ const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
 
   useEffect(() => {
     fetchStories({})
-    .then(data => setStories(data.stories))
+    .then(data => setStories(data?.stories || []))
   }, [])
 
   const report = (kind, idx, script) => {
@@ -56,7 +56,7 @@ const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
   
   return (
     <div className='side side-wide story-catalog'>
-      {stories.length ?
+      {stories?.length ?
         <>
           <div>
             <p>Pick a story to practice with </p>
@@ -89,8 +89,7 @@ const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
                       }}
                       className="story--span"
                   >
-                  {/* {story.script?.title || story.title} */}
-                  {story.outline?.split("\n")[0]}
+                  {story.script?.title || story.title}
                   </span>
               ))}
           </div>

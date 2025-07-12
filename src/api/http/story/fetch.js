@@ -31,3 +31,13 @@ export const fetchStory = async(id, page) => {
         console.log(error.message)
     }
 }
+
+export const fetchScene = async(id) => {
+    try {
+        const response = await AxiosWrapper.get(`${httpEndpoint}/story/scene/${id}`)
+        console.log(response.data)
+        return response.data
+    } catch (error) {
+        console.log(error.message)
+    }
+}

@@ -73,15 +73,34 @@ const useGeneralHook = (
 
     
       useEffect(() => {
-        if (!storySettings?.sentenceInProgress) return
-        const currSentence = storySettings.sentenceInProgress
-        if (storySettings.mode === 'practice' || !currSentence?.sentence) return
-        if (currSentence.sentence.match(/[.!?]["']?\s$/)) {
-          const { blanked, usedExpressions } = handleBlanksGen(currSentence.sentence, storySettings.suggestedWords.map(wObj => wObj.word))
-          partApproval({ ...currSentence, blanked})
-          setStorySettings(prev => prev.rebuild({words: [...prev.words, ...usedExpressions]}))
-        }
-      }, [storySettings.sentenceInProgress]);
+        const text = storySettings?.scene?.text;
+        if (!text || storySettings.mode === 'practice') return;
+
+        const lastChar = text.slice(-1)
+        if (![".", "!", "?"].includes(lastChar)) return;
+
+        // split on sentence boundaries and pull the last one
+        const sentences = text.match(/[^.!?]+[.!?]+["']?\s*/g);
+        if (!sentences) return;
+
+        const lastSentence = sentences[sentences.length - 1].trim();
+        if (!lastSentence) return;
+
+        const words = storySettings.suggestedWords.map(w => w.word);
+        const { blanked, usedExpressions } = handleBlanksGen(lastSentence, words)
+
+        // part approval
+
+        setStorySettings(prev => prev.rebuild({words: [...prev.words, ...usedExpressions]}))
+
+        // const currSentence = storySettings.sentenceInProgress
+        // if (storySettings.mode === 'practice' || !currSentence?.sentence) return
+        // if (currSentence.sentence.match(/[.!?]["']?\s$/)) {
+        //   const { blanked, usedExpressions } = handleBlanksGen(currSentence.sentence, storySettings.suggestedWords.map(wObj => wObj.word))
+        //   partApproval({ ...currSentence, blanked})
+        //   setStorySettings(prev => prev.rebuild({words: [...prev.words, ...usedExpressions]}))
+        // }
+      }, [storySettings.scene?.text]);
     
       const partApproval = (currSentence) => {
 

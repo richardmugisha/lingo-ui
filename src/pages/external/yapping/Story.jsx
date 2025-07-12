@@ -2,6 +2,7 @@
 import { Button } from '@mui/material';
 import useStory from './utils/useStory';
 import { useState, useEffect } from 'react';
+import Canvas from './Canvas';
 
 const Story = (props) => {
   const {
@@ -144,56 +145,57 @@ const Story = (props) => {
             </p>
             <article className="draft-story">
               {
-                storySettings.details?.map((currSentence, thisIndex) => (
-                  <span className={`draft-sentence ${["\n", "\t"].includes(currSentence.sentence) && !storySettings.operation && "whitespace"}`} key={thisIndex} 
-                        style={{opacity: thisIndex > storySettings.sentenceIndex ? .1: 1, background: storySettings.selectedIndices.includes(thisIndex) ? "grey": "", 
-                          display: handleConditionToHide(thisIndex) ? "flex" : "",
-                          ...(currSentence.typeSettings || storySettings.typeSettings),
-                        }}
-                        onClick={() => {{/*!storySettings.operation &&*/} handleSelectDetail(thisIndex)}}
-                  >
-                    { 
-                      storySettings.state.mode === "create" && storySettings.operation == "edit" && storySettings.selectedIndices[0] === thisIndex ?
-                      <input type='text' className='draft-sentence' value={storySettings.editableText} 
-                        onChange={e => setStorySettings(prev => prev.rebuild({editableText: e.target.value}))}
-                      />
-                      :
-                      (thisIndex == storySettings.sentenceIndex) ? 
-                        attempt.map((word, i) => {
-                          return word === correctSentence[i] ?
-                          <label key={word + i}>{word} </label>: 
-                          <span key={word + i}>
-                            <input type='text'  value={['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? word.slice(0, word.length - 1) : word}
-                              className='attempt-input'
-                              onChange={ e => props.updateAttempt({word: e.target.value, fillIndex: i, fillingMode: "typing"}) }
-                            />&nbsp;
-                            {['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? <label>{word[word.length - 1]}</label> : ''}
-                          </span>
-                          }
-                      ) 
-                      :
-                      (
-                        thisIndex < storySettings.sentenceIndex ? currSentence.sentence : currSentence.blanked
-                      )
-                    }
-                  </span>
-                ))
+                // storySettings.details?.map((currSentence, thisIndex) => (
+                //   <span className={`draft-sentence ${["\n", "\t"].includes(currSentence.sentence) && !storySettings.operation && "whitespace"}`} key={thisIndex} 
+                //         style={{opacity: thisIndex > storySettings.sentenceIndex ? .1: 1, background: storySettings.selectedIndices.includes(thisIndex) ? "grey": "", 
+                //           display: handleConditionToHide(thisIndex) ? "flex" : "",
+                //           ...(currSentence.typeSettings || storySettings.typeSettings),
+                //         }}
+                //         onClick={() => {{/*!storySettings.operation &&*/} handleSelectDetail(thisIndex)}}
+                //   >
+                //     { 
+                //       storySettings.state.mode === "create" && storySettings.operation == "edit" && storySettings.selectedIndices[0] === thisIndex ?
+                //       <input type='text' className='draft-sentence' value={storySettings.editableText} 
+                //         onChange={e => setStorySettings(prev => prev.rebuild({editableText: e.target.value}))}
+                //       />
+                //       :
+                //       (thisIndex == storySettings.sentenceIndex) ? 
+                //         attempt.map((word, i) => {
+                //           return word === correctSentence[i] ?
+                //           <label key={word + i}>{word} </label>: 
+                //           <span key={word + i}>
+                //             <input type='text'  value={['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? word.slice(0, word.length - 1) : word}
+                //               className='attempt-input'
+                //               onChange={ e => props.updateAttempt({word: e.target.value, fillIndex: i, fillingMode: "typing"}) }
+                //             />&nbsp;
+                //             {['.', ',', ';', ']', '"', '!', '?', ')'].includes(word[word.length - 1]) ? <label>{word[word.length - 1]}</label> : ''}
+                //           </span>
+                //           }
+                //       ) 
+                //       :
+                //       (
+                //         thisIndex < storySettings.sentenceIndex ? currSentence.sentence : currSentence.blanked
+                //       )
+                //     }
+                //   </span>
+                // ))
               }
               
               {
                 storySettings.state.mode === "create" &&// selectedWords.length > 0 &&
-                <input type="text" className="draft-sentence"
-                  placeholder={storySettings.details.length ? "": "Type your story here using the provided words"} name="" id="" autoFocus
-                  value={storySettings.state.mode === 'create' ? storySettings.state.sentenceInProgress?.sentence: attempt.join(' ') }
-                  onChange={(e) => {
-                    if (storySettings.state.mode === 'create') setStorySettings((prev) => prev.rebuild({ sentenceInProgress: { sentence: e.target.value } }))
-                    else if (storySettings.state.mode === 'practice') setAttempt(e.target.value.split(' '))
-                    }
-                  }
-                  onKeyDown={handleKeyDown}
-                  // onMouseUp={() => handlePartSelection()}
-                  readOnly={info.exists && info.type === 'warning'}
-                />
+                // <input type="text" className="draft-sentence"
+                //   placeholder={storySettings.details.length ? "": "Type your story here using the provided words"} name="" id="" autoFocus
+                //   value={storySettings.state.mode === 'create' ? storySettings.state.sentenceInProgress?.sentence: attempt.join(' ') }
+                //   onChange={(e) => {
+                //     if (storySettings.state.mode === 'create') setStorySettings((prev) => prev.rebuild({ sentenceInProgress: { sentence: e.target.value } }))
+                //     else if (storySettings.state.mode === 'practice') setAttempt(e.target.value.split(' '))
+                //     }
+                //   }
+                //   onKeyDown={handleKeyDown}
+                //   // onMouseUp={() => handlePartSelection()}
+                //   readOnly={info.exists && info.type === 'warning'}
+                // />
+                <Canvas storySettings={storySettings} setStorySettings={setStorySettings} />
                 
               }
             </article>

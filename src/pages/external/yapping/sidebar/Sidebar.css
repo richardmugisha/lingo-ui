@@ -30,7 +30,7 @@
     text-align: left;
     /* width: 100%; */
     display: flex;
-    gap: 1.5em;
+    /* gap: 1.5em; */
     flex-direction: column;
     /* justify-content: left; */
 }
@@ -70,6 +70,14 @@
     color: #34495e;
 }
 
+.outline.structured .scenes {
+    line-height: 2em;
+}
+
+.outline.structured h3 {
+    margin-left: 1em;
+    cursor: pointer;
+}
 .outline.structured .logline {
     font-style: italic;
     color: #7f8c8d;
@@ -137,6 +145,30 @@
     border-right: 1px solid rgba(184, 49, 28, 0.692);
     background-color: transparent;
 }
+
+.sidebar .scene-title {
+    margin-bottom: 2em;
+}
+.sidebar .workspace input.metadata {
+    min-height: 2.5em;
+    background-color: transparent;
+    /* border: .5px solid rgba(128, 128, 128, 0.171); */
+    border: none;
+    outline: none;
+    padding: 0 1em;
+    font-size: 1.2em;
+    text-align: left;
+}
+
+.sidebar .workspace input.metadata.story-title {
+    font-size: 1.7em;
+    font-weight: 600;
+}
+.sidebar .workspace input.metadata.chapter-title {
+    font-size: 1.4em;
+    font-weight: 500;
+}
+
 
 .sidebar--controls {
     position: absolute;

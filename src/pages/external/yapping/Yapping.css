@@ -1,7 +1,7 @@
 
 .Yapping--container {
     display: flex;
-    /* justify-content: center; */
+    /* justify-content: space-between; */
     gap: 2em;
     width: 95dvw;
     box-shadow: none;
@@ -13,16 +13,12 @@
     display: flex;
     gap: 1.5em;
     flex-direction: column;
-    /* align-items: center; */
-    padding-top: 1em;
 }
 
 .story {
     flex: 1 1 auto;
     min-height: 500px;
-    padding: 1em;
-    box-shadow: 0 0 50px rgba(0 , 0 , 0, 0.3);
-
+    box-shadow: 0 0 50px rgba(0 , 0 , 0, 0.1);
 }
 
 .side > div:first-child > h1, .side > div:first-child > h3 {
@@ -88,9 +84,7 @@
 
 h1 { font-size: xx-large;}
 
-.story textarea {
-    padding: 1em;
-}
+
 
 .story {
     display: flex;
@@ -119,16 +113,7 @@ h1 { font-size: xx-large;}
     flex: 1 1 auto;
 }
 
-.story textarea {
-    width: 90vw;
-    height: 70px;
-    border-radius: .5em;
-    font-size: 1.2em;
-    font-weight: 500;
-    color: #345C70;
-    position: relative;
-    /* margin-top: 2em; */
-}
+
 
 .side span.story--span {
     /* padding: .5em 1em; */
@@ -214,18 +199,18 @@ h1 { font-size: xx-large;}
     background-color: rgb(242, 242, 227);
 }
 
-.side-pool::-webkit-scrollbar, textarea::-webkit-scrollbar, #text-container::-webkit-scrollbar, article.draft-story::-webkit-scrollbar {
-    width: 5px; /* Set your desired width */
+/* .side-pool::-webkit-scrollbar, #text-container::-webkit-scrollbar, article.draft-story::-webkit-scrollbar {
+    width: 5px; 
     height: 5px;
-}
+} */
   
-.side-pool::-webkit-scrollbar-thumb, textarea::-webkit-scrollbar-thumb, #text-container::-webkit-scrollbar-thumb, article.draft-story::-webkit-scrollbar-thumb {
+/* .side-pool::-webkit-scrollbar-thumb, #text-container::-webkit-scrollbar-thumb, article.draft-story::-webkit-scrollbar-thumb {
     background-color: rgb(66, 157, 185);
-    border-radius: 6px; /* Set half of the scrollbar width to create a circular thumb */
-}
+    border-radius: 6px; 
+} */
   
   /* Optional: You can style the track to add some visual cues */
-.side-pool::-webkit-scrollbar-track, textarea::-webkit-scrollbar-track, #text-container::-webkit-scrollbar-track, article.draft-story::-webkit-scrollbar-track {
+.side-pool::-webkit-scrollbar-track, #text-container::-webkit-scrollbar-track, article.draft-story::-webkit-scrollbar-track {
     background-color: #cce1e4; /* Set your desired track color */
 }
 
@@ -253,13 +238,14 @@ h1 { font-size: xx-large;}
   }
 
 .story article.draft-story {
-    width: min(700px, 90vw); /* Define container width */
+    width: min(800px, 90vw); /* Define container width */
     background-color :#f7eee461; 
-    padding: 1em 2em;
+    padding: .5em;
     overflow-y: auto;
     overflow-x: hidden;
     flex: 1 1 auto;
     text-align: start;
+    overflow: hidden;
 }
 
 .story article.draft-story .draft-sentence{

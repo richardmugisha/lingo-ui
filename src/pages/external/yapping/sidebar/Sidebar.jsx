@@ -1,7 +1,7 @@
 import "./Sidebar.css"
 import TopicSearch from "../../../../components/TopicSearch/TopicSearch"
 import { useTopicSearch } from "../../../../components/TopicSearch/useTopicSearch"
-import { createStory, patchStory, createChapter, patchChapter, fetchChapter, liveChat, patchEditDetails, patchDeleteDetails, patchTypeSettings, patchPageSettings, fetchStory } from "../../../../api/http"
+import { createStory, patchStory, createChapter, patchChapter, fetchChapter, liveChat, patchEditDetails, patchDeleteDetails, patchTypeSettings, fetchStory, fetchScene, createScene, patchChapterLog } from "../../../../api/http"
 import { useState, useEffect } from "react"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
 import { useDispatch } from "react-redux"
@@ -78,7 +78,7 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
 
         const t = setTimeout(() => {
             patchStory({id: story._id, item: "outline", update: outlineText})
-            .then(data => console.log(data))
+            // .then(data => console.log(data))
         }, 5000);
 
         return () => clearTimeout(t)
@@ -87,15 +87,21 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
     useEffect(() => {
         // console.log(story._id)
         if (story._id) {
-            const pages = story.pageSettings
-            const lastPage = pages[pages.length - 1]
-            // console.log(pages, lastPage, story)
-            fetchStory(story._id, { start: lastPage.offset, end: lastPage.size + lastPage.offset})
-            .then(console.log)
+            const chaptIdx = story.chapters.length - 1
+            const lastChapter = story.chapters[chaptIdx]
+            const sceneIdx = lastChapter.scenes.length - 1
+            const lastScene = lastChapter.scenes[sceneIdx]
+
+            setChapterIndex(chaptIdx)
+            setSceneIndex(sceneIdx)
+            fetchScene(lastScene.id)
+            .then(data => setStorySettings(prev => prev.rebuild({scene: {...lastScene, ...data?.scene}})))
+ 
             setUpdateFlag(true)
         } else {
             createStory({})
             .then(data => {
+                // console.log(data)
                 setStory(data?.story || {});
                 setStorySettings(prev => prev.rebuild(data?.story || {}))
             } )
@@ -103,38 +109,40 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
     }, [])
 
     useEffect(() => {
-        if (topic.words) setStorySettings(prev => prev.rebuild({suggestedWords: topic.words}))
+        if (topic.words) {
+            const allTopics = new Set([...storySettings.scene.topics, topic._id])
+            const scene = {...storySettings.scene, topics: [...allTopics]}
+            patchStory({id: story._id, item: "scene", update: scene})
+            .then(console.log)
+            setStorySettings(prev => prev.rebuild({suggestedWords: topic.words, scene: {...storySettings.scene, topics: [...allTopics]}}))
+        }
     }, [topic])
 
     useEffect(() => {
-        if (storySettings?.details?.length && !updateFlag) {
-            console.log(storySettings.details)
-            const newDetails = storySettings.details.length - (lastSaved || 0)
-            const lastDetails = storySettings.details.slice(-newDetails)
-            patchStory({ id: story._id, item: "details", update: lastDetails.map(det => ({...det, topic: topic._id })) })
-                .then(console.log)
+        if (storySettings?.scene?.text?.length && !updateFlag) {
+            patchStory({ id: story._id, item: "scene", update: storySettings.scene})
+                // .then(console.log)
         }
         setUpdateFlag(false)
-        lastSaved = storySettings.details.length
-    }, [storySettings.details])
+        // lastSaved = storySettings.details.length
+    }, [storySettings.scene?.text])
 
-    useEffect(() => {
-        const sentencesCount = storySettings.details.length
-        if (sentencesCount > 0 && sentencesCount % 2 === 0) {
-            const lastChunk = storySettings.details.slice(-5)
-            const message = `
-            You are talking to ${username}. I just stole their device for 2 seconds. I am their guardian angel. I noticed he is writing to improve their english fluency.
-            ${storySettings.words.length ? `First make sure you scrutinize his use of these words in this writing. The words: ${storySettings.words.slice(-5)} | Then, ` : ""}
-            help him with feedback on the coherence and transition of sentences. Your scrutinity should be more around english rules, and 20% about writing and creativity. Be brief.
-            Talk to ${username} directly now. Here is the last chunk of his writing:
-            ${lastChunk.map(sentenceObject => sentenceObject.sentence + ".")}`
+    // useEffect(() => {
+    //     const sentencesCount = storySettings.scene?.text.length || 0
+    //     if (sentencesCount > 0 && sentencesCount % 2 === 0) {
+    //         const lastChunk = storySettings.scene.text.slice(-1000)
+    //         const message = `
+    //         You are talking to ${username}. I just stole their device for 2 seconds. I am their guardian angel. I noticed he is writing to improve their english fluency.
+    //         help him with feedback on the coherence and transition of sentences. Your scrutinity should be more around english rules, and 20% about writing and creativity. Be brief.
+    //         Talk to ${username} directly now. Here is the last chunk of his writing:
+    //         ${lastChunk}`
 
-            liveChat({userID, chat: message})
-                .then(data => dispatch(setChat(data)))
-                .catch(error => dispatch(setInfo({type: "warning", message: "Couldn't retrieve feedback for your writing!", timestamp: Date.now()})))
-        }
+    //         liveChat({userID, chat: message})
+    //             .then(data => dispatch(setChat(data)))
+    //             .catch(error => dispatch(setInfo({type: "warning", message: "Couldn't retrieve feedback for your writing!", timestamp: Date.now()})))
+    //     }
 
-    }, [storySettings.details])
+    // }, [storySettings.scene?.text])
 
     useEffect(() => {
         if (storySettings?.words?.length && chapter) {
@@ -144,71 +152,61 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
         }
     }, [storySettings.words])
 
-    const savePageSettings = () => {
-        console.log(storySettings, chapterIndex, storySettings.pageSettings[chapterIndex])
-        const sceneDeltaSize = storySettings.details.length - storySettings.pageSettings[chapterIndex].sceneSettings[sceneIndex].size
-        console.log(sceneDeltaSize, storySettings.details.length, storySettings.pageSettings[chapterIndex].sceneSettings[sceneIndex].size)
-        const newSceneSettings = [...storySettings.pageSettings[chapterIndex].sceneSettings]
-        newSceneSettings[sceneIndex] = {
-            ...newSceneSettings[sceneIndex],
-            size: storySettings.details.length
+    const saveCurrentScene = async() => {
+        try {
+            return await patchStory({ id: story._id, item: "scene", update: storySettings.scene})
+        } catch (error) {
+            throw error
         }
-        const newPageSettings = [...storySettings.pageSettings ]
-        newPageSettings[chapterIndex] = {
-            ...newPageSettings[chapterIndex],
-            size: newPageSettings[chapterIndex].size + (sceneIndex > 0 ? storySettings.details.length : sceneDeltaSize),
-            sceneSettings: newSceneSettings
+    }
+
+    const introduceNewScene = async () => {
+        try {
+            await saveCurrentScene()
+            const data = await createScene()
+            const chapterLog = storySettings.chapters
+            chapterLog[chapterIndex].scenes.push({id: data.scene._id, title: "Untitled Scene"})
+            await patchChapterLog({id: story._id, chapterLog})
+            setStorySettings(prev => prev.rebuild({scene: data.scene, chapters: chapterLog}))
+
+            setSceneIndex(sceneIndex + 1)
+            return adaptedData
+        } catch (error) {
+            throw error
         }
-       
-        lastSaved = 0;
-       return newPageSettings
     }
 
-    const introduceNewScene = () => {
-        const newPageSettings = savePageSettings()
-        setSceneIndex(sceneIndex + 1)
-        setStorySettings(prev => prev.reset("scene"))
-        const prevScene = newPageSettings[chapterIndex].sceneSettings[sceneIndex]
-        newPageSettings[chapterIndex].sceneSettings.push({
-            offset: prevScene.offset + prevScene.size,
-            size: 1
-        })
+    const introduceNewChapter = async () => {
+        try {
+            await saveCurrentScene()
+            const data = await createScene()
+            const chapterLog = storySettings.chapters
+            chapterLog.push({
+                title: "Untitled Chapter",
+                scenes: [ { id: data.scene._id, title: "Untitled Scene"}]
+            })
 
-        patchPageSettings({id: story._id, pageSettings: newPageSettings})
-        .then(d => {
-            console.log(d)
-            setStorySettings(prev => prev.rebuild({pageSettings: newPageSettings}))
-        })
+            await patchChapterLog({id: story._id, chapterLog})
+
+            setStorySettings(prev => prev.rebuild({scene: data.scene, chapters: chapterLog}))
+
+            setChapterIndex(chapterIndex + 1)
+
+        } catch (error) {
+            throw error
+        }
     }
 
-    const introduceNewChapter = () => {
-        const newPageSettings = savePageSettings()
-        setSceneIndex(0)
-        setChapterIndex(chapterIndex + 1)
-        setStorySettings(prev => prev.reset("chapter"))
-        console.log(chapterIndex)
-        newPageSettings.push({
-            offset: newPageSettings[chapterIndex].size,
-            size: 2,
-            sceneSettings: [{
-                offset: 0,
-                size: 2
-            }]
-        })
-
-        patchPageSettings({id: story._id, pageSettings: newPageSettings})
-       .then(d => {
-        console.log(d);
-        setStorySettings(prev => prev.rebuild({pageSettings: newPageSettings}))
-       })
-
-    }
-
-    const handleChapterNavigation = (index) => {
-        setChapterIndex(index)
+    const handleChapterNavigation = (chapIdx, sceneIdx) => {
+        setChapterIndex(chapIdx)
+        setSceneIndex(sceneIdx)
         setShowOutline(false)
+        const chap = storySettings.chapters[chapIdx]
+        const scene = chap.scenes[sceneIdx]
+        fetchScene(scene.id)
+        .then(data => setStorySettings(prev => prev.rebuild({scene: data?.scene})))
         // fetchChapter({ index, storyID: story._id })
-        setChapter(storySettings.pageSettings[index])
+        setChapter(storySettings.chapters[chapIdx])
     }
 
     const handleOffHover = () => {
@@ -223,45 +221,36 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
         setHoveredWord(wObj);
     }
 
-    const handleDeleteDetails = () => {
-        setUpdateFlag(true)
-        setStorySettings(prev => prev.rebuild({details: prev.details.filter((det, idx) => !prev.selectedIndices.includes(idx))}))
-        setStorySettings(prev => prev.rebuild({ selectedIndices: [] }))
-        patchDeleteDetails({id: story._id, list: storySettings.selectedIndices})
-            .then(data => console.log(data))
-            .catch(e => console.log(e.message))
+    const handleSceneTitleUpdate = (value) => {
+        const chapterLog = storySettings.chapters
+        chapterLog[chapterIndex].scenes[sceneIndex].title = value
+
+        patchChapterLog({id: story._id, chapterLog})
+        // .then(console.log)
+
+        setStorySettings(prev => prev.rebuild({chapters: chapterLog}))
     }
 
-    const handleEditDetails = () => {
-        setStorySettings(prev => prev.rebuild({ editableText: prev.details.filter((det, idx) => prev.selectedIndices.includes(idx)).map(det => det.sentence).join("")}))
-        
+    const handleChapterTitleUpdate = (value) => {
+        const chapterLog = storySettings.chapters
+        chapterLog[chapterIndex].title = value
+
+        patchChapterLog({id: story._id, chapterLog})
+        // .then(console.log)
+
+        setStorySettings(prev => prev.rebuild({chapters: chapterLog}))
+
     }
 
-    const handleSaveEditDetails = () => {
-        // edit from the db
-        // send a edit dict: edit range and new text
-        patchEditDetails({id: story._id, list: storySettings.selectedIndices, edit: {sentence: storySettings.editableText, blanked: storySettings.editableText, topic: topic._id}})
-            .then(data => console.log(data))
-            .catch(e => console.log(e.message))
-
-        setUpdateFlag(true)
-        setStorySettings(prev => {
-            // Remove details at indices in selectedIndices
-            const sortedIndices = [...prev.selectedIndices].sort((a, b) => b - a);
-            let newDetails = [...prev.details];
-            for (const idx of sortedIndices) {
-                newDetails.splice(idx, 1);
-            }
-            // Replace the detail at selectedIndices[0] with the editableText
-            const insertIndex = prev.selectedIndices[0];
-            newDetails.splice(insertIndex, 0, {
-                ...prev.details[insertIndex],
-                sentence: prev.editableText,
-                blanked: prev.editableText
-            });
-            return prev.rebuild({ selectedIndices: [], details: newDetails });
-        });
+    const handleTitleUpdate = (value) => {
+        patchStory({id: story._id, item: "title", update: value})
+        // .then(console.log)
+        setStorySettings(prev => prev.rebuild({title: value}))
     }
+   
+    useEffect(() => {
+        if (parsedOutline?.title) handleTitleUpdate(parsedOutline.title)
+    }, [parsedOutline?.title])
 
     useEffect(() => {
         switch (storySettings.operation) {
@@ -274,7 +263,7 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
     useEffect(() => {
         if (storySettings.typeSettings && story._id) {
             patchTypeSettings({id: story._id, typeSettings: storySettings.typeSettings})
-            .then(console.log)
+            // .then(console.log)
         }
     }, [storySettings.typeSettings])
 
@@ -283,16 +272,21 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
             <section>
                 { showOutline &&
                     <article className="outline structured">
-                        {parsedOutline ? (
+                        {storySettings.chapters  ? (
                             <>
-                                <h1>{parsedOutline.title}</h1>
-                                {showLoglines && <p className="logline">{parsedOutline.logline}</p>}
+                                <h1>{storySettings.title || parsedOutline?.title || "Untitled Story"}</h1>
+                                {showLoglines && <p className="logline">{parsedOutline?.logline}</p>}
                                 {/* <p className="summary">{parsedOutline.summary}</p> */}
                                 
-                                {parsedOutline.chapters.map((chapter, index) => (
-                                    <div key={index} className="chapter" onClick={() => handleChapterNavigation(index)}>
-                                        <h2>{chapter.title}</h2>
-                                        {showLoglines && <p className="logline">{chapter.logline}</p>}
+                                {storySettings.chapters?.map((chapter, index) => (
+                                    <div key={index} className="chapter" >
+                                        <h2>{chapter?.title || "Untitled Chapter"}</h2>
+                                        {/* {showLoglines && <p className="logline">{chapter?.logline}</p>} */}
+                                        <div className="scenes">
+                                        {
+                                            chapter?.scenes?.map((scene, idx) => <h3 onClick={() => handleChapterNavigation(index, idx)}>{scene.title || "Untitled Scene"}</h3>)
+                                        }
+                                        </div>
                                     </div>
                                 ))}
 
@@ -321,8 +315,9 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
                 {
                     !(showOutline && showOutlineEditor) &&
                     <article className="workspace">
-                        <h1>{ parsedOutline?.title}</h1>
-                        <h3>{ parsedOutline?.chapters?.[chapterIndex]?.title || "Untitled Chapter"}</h3>
+                        <input type="text" className="story-title metadata" value={storySettings.title} onChange={e => handleTitleUpdate(e.target.value)} />
+                        <input type="text" className="chapter-title metadata" value={storySettings.chapters[chapterIndex]?.title} onChange={e => handleChapterTitleUpdate(e.target.value)}/>
+                        <input type="text" value={storySettings.chapters[chapterIndex]?.scenes[sceneIndex]?.title} onChange={e => handleSceneTitleUpdate(e.target.value)} className="scene-title metadata"/>
                         <TopicSearch
                             topics={topics} mode="word-filling-mode"
                             searchValue={searchValue}
@@ -378,13 +373,6 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
                     placeholder="Line height"
                     style={{ width: "4em" }}
                 />
-                <button onClick={() => setStorySettings(prev => prev.rebuild({operation: "edit"}))}>Edit</button>
-                {
-                    storySettings.selectedIndices.length > 0 && <>
-                        <button onClick={() => setStorySettings(prev => prev.rebuild({operation: "delete"}))}>Delete</button>
-                        <button onClick={() => setStorySettings(prev => prev.rebuild({operation: "save"}))}>Save</button>
-                    </>
-                }
             </section>
         </article>
     )

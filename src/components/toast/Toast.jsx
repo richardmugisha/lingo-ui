@@ -15,7 +15,11 @@ const Toast = ( ) => {
     useEffect(() => {
         if (!info?.message) return;
         if (intervalID) clearInterval(intervalID)
-        setInfos(prev => [...prev, info])
+        setInfos(prev => {
+            const prevCopy = prev.filter(infoHere => infoHere.message !== info.message)
+            prevCopy.push(info)
+            return prevCopy
+        })
         intervalID = setInterval(() => {
             setInfos(prev => prev.slice(1))
         }, 3000);

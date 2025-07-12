@@ -1,22 +1,11 @@
 class StorySetup {
-    constructor({ title, summary, author, step, mode, details, sentenceIndex, sentenceInProgress, words, suggestedWords, acts, characters, _id, outline, selectedIndices, operation, editableText, typeSettings, pageSettings }) {
-        this.metadata = { _id, title, summary, author, characters, outline, typeSettings: typeSettings || {}, pageSettings: pageSettings || [] };
+    constructor({ title, summary, author, step, mode, details, sentenceIndex, sentenceInProgress, words, suggestedWords, acts, characters, _id, outline, selectedIndices, operation, editableText, typeSettings, chapters, scene }) {
+        this.metadata = { _id, title, summary, author, characters, outline, typeSettings: typeSettings || {}, chapters: chapters || [] };
         this.state = { 
             step: step || "onboarding", 
             mode: mode || "create", 
-            details: details?.length ? details : [
-                {
-                    sentence: "Untitled Chapter",
-                    blanked: "Untitled Chapter",
-                    topic: "",
-                },
-                {
-                    sentence: "Untitled Scene",
-                    blanked: "Untitled Scene",
-                    topic: "",
-                },
-
-            ], 
+            details: details || "", 
+            scene: scene,
             sentenceIndex: mode === "create" ? details?.length: sentenceIndex, 
             sentenceInProgress: sentenceInProgress || {},
             words: words || [],
@@ -35,18 +24,19 @@ class StorySetup {
     get characters () { return this.metadata.characters}
     get step() { return this.state.step}
     get mode() { return this.state.mode}
-    get details() { return this.state?.details || []}
+    get details() { return this.state?.details || ""}
+    get scene() { return this.state.scene }
     get words () { return this.state.words}
     get suggestedWords () { return this.state.suggestedWords }
     get sentenceIndex() { return this.details.length}
-    get sentenceInPractice() {  return this.state.mode === "practice" && this.details?.[this.sentenceIndex] }
-    get sentenceInProgress() { return this.state.sentenceInProgress}
+    // get sentenceInPractice() {  return this.state.mode === "practice" && this.details?.[this.sentenceIndex] }
+    // get sentenceInProgress() { return this.state.sentenceInProgress}
     get acts() { return this.state.acts }
     get selectedIndices() { return this.state.selectedIndices }
     get operation () { return this.state.operation }
     get editableText () { return this.state.editableText }
     get typeSettings () { return this.metadata.typeSettings }
-    get pageSettings () { return this.metadata.pageSettings }
+    get chapters () { return this.metadata.chapters }
 
     nextSentence () {
         const newState = {...this.state, sentenceIndex: this.sentenceIndex + 1}
@@ -73,22 +63,7 @@ class StorySetup {
     }
 
     reset(newWhat) {
-        const newDetails = newWhat === "chapter" ? [{
-                sentence: "Untitled Chapter",
-                blanked: "Untitled Chapter",
-                topic: "",
-            },
-            {
-                sentence: "Untitled Scene",
-                blanked: "Untitled Scene",
-                topic: "",
-            } ] : newWhat === "scene" ? [ {
-                    sentence: "Untitled Scene",
-                    blanked: "Untitled Scene",
-                    topic: "",
-            } ] : []
-
-        this.state.details = newDetails
+        this.state.details = ""
         this.state.sentenceInProgress = {}
         this.state.sentenceIndex = newDetails.length
 

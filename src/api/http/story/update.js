@@ -48,9 +48,9 @@ export const patchTypeSettings = async({ id, typeSettings }) => {
     }
 }
 
-export const patchPageSettings = async({ id, pageSettings }) => {
+export const patchChapterLog = async({ id, chapterLog }) => {
     try {
-        const response = await AxiosWrapper.patch(`${httpEndpoint}/story/pageSettings`, { id, pageSettings })
+        const response = await AxiosWrapper.patch(`${httpEndpoint}/story/chapterLog`, { id, chapterLog })
         return response.data
     } catch (error) {
         console.log(error.message)
