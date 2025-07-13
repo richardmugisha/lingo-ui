@@ -4,7 +4,7 @@ import React from 'react'
 import "./Toc.css"
 import { fetchScene } from '../../../../../../api/http'
 
-const Toc = ({ storySettings, setStorySettings, setChapterIndex, setSceneIndex, setChapter, setTab }) => {
+const Toc = ({ storySettings, setStorySettings, setChapterIndex, setSceneIndex, setTab }) => {
 
     const handleChapterNavigation = (chapIdx, sceneIdx) => {
         setChapterIndex(chapIdx)
@@ -13,8 +13,6 @@ const Toc = ({ storySettings, setStorySettings, setChapterIndex, setSceneIndex, 
         const scene = chap.scenes[sceneIdx]
         fetchScene(scene.id)
         .then(data => setStorySettings(prev => prev.rebuild({scene: data?.scene})))
-        // fetchChapter({ index, storyID: story._id })
-        setChapter(storySettings.chapters[chapIdx])
         setTab("writing")
     }
 

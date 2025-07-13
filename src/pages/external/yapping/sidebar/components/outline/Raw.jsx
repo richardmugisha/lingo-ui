@@ -62,7 +62,7 @@ const Raw = ({storySettings, setStorySettings, chapIdx, scIdx}) => {
                 storySettings?.outline?.chapters[chapIdx]?.scenes[scIdx]
             }
             onChange={(e) => handleOutlineEdit(e.target.value)}
-            placeholder={`The title of this outline goes here\n ------------------------------------------------------------------------\nAnd the summary goes here
+            placeholder={`The title of this outline goes here\n ------------------------------------\nAnd the summary goes here
             `}
         />
     </article>

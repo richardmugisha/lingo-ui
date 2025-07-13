@@ -57,7 +57,11 @@ const Workspace = ({ storySettings, setStorySettings, story, chapterIndex, setCh
 
     useEffect(() => {
         if (topic.words) {
-            setStorySettings(prev => prev.rebuild({suggestedWords: topic.words }))
+            const allTopics = new Set([...storySettings.scene.topics, topic._id])
+            const scene = {...storySettings.scene, topics: [...allTopics]}
+            patchStory({id: story._id, item: "scene", update: scene})
+            .then(console.log)
+            setStorySettings(prev => prev.rebuild({suggestedWords: topic.words, scene: {...storySettings.scene, topics: [...allTopics]}}))
         }
     }, [topic])
 

@@ -7,10 +7,12 @@
 .outline-controls .chapters {
     flex-direction: column;
     margin: 1em 3em;
+    gap: 1em !important;
 }
 
 .outline-controls .scenes {
    flex-direction: column;
+   gap: .5em;
    margin: 0 3em;
 }
 
@@ -21,7 +23,18 @@
 }
 
 .outline-controls h1 {
+    font-size: 1.5em;
     cursor: pointer;
+}
+
+.outline-controls .chapters div {
+    margin-block: 0;
+}
+
+.outline-controls .scenes h4 {
+    margin-block: .3em;
+    min-width: fit-content;
+    text-wrap: nowrap;
 }
 
 /* Fixed: Use :active or :focus instead of invalid :clicked pseudo-class */

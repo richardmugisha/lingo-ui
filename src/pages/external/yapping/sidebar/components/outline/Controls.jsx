@@ -50,7 +50,7 @@ const Controls = ({ setShowOutline, storySettings, setStorySettings, chapIdx, se
   return (
     <article className='outline-controls'>
         <Button onClick={() => setShowOutline(prev => !prev)}>General Outline</Button>
-        <h1 className={chapIdx == undefined && scIdx === undefined && "selected"} onClick={() => { setChapIdx(-1); setScIdx(-1)}}>Title: {structure?.general || "Untitled Story"}</h1>
+        <h1 className={chapIdx < 0 && scIdx < 0 && "selected"} onClick={() => { setChapIdx(-1); setScIdx(-1)}}>Title: {structure?.general || "Untitled Story"}</h1>
         <section className='chapters'>
           {structure?.chapters?.map((ch, chIdx) => (
               <>
@@ -60,7 +60,7 @@ const Controls = ({ setShowOutline, storySettings, setStorySettings, chapIdx, se
                 </div>
                 { showList.includes(chIdx) &&
                   <section key={chIdx} className='scenes'>
-                    {ch?.scenes?.map((sc, scIdx) => <h4 className={chapIdx >=0 && scIdx ? "selected" : ""} key={scIdx} onClick={() => { setChapIdx(chIdx); setScIdx(scIdx)}} >Sc{scIdx+1}: {sc || `Untitled`}</h4>)}
+                    {ch?.scenes?.map((sc, sceneIdx) => <h4 className={scIdx === sceneIdx && chapIdx === chIdx ? "selected" : ""} key={sceneIdx} onClick={() => { setChapIdx(chIdx); setScIdx(sceneIdx)}} >Sc{sceneIdx+1}: {sc || `Untitled`}</h4>)}
                     <Button variant="outlined" color="info" startIcon={<Add /> } onClick={() => handleAddNewScene(chIdx)}>Scene</Button>
                   </section>
                 }

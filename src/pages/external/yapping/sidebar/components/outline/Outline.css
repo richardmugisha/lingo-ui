@@ -9,4 +9,9 @@
 .Outline textarea {
     height: 78dvh;
     overflow-y: auto;
+    border-radius: 0;
+}
+
+.Outline textarea::-webkit-scrollbar {
+    width: 2px; 
 }
