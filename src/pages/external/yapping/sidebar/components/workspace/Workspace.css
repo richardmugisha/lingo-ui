@@ -1,0 +1,76 @@
+.workspace {
+    height: 85dvh !important;
+}
+
+.word-pool .right-word {
+    color: rgba(47, 128, 0, 0.575);
+}
+
+.word-pool span {
+    padding: .3em 1em;
+    display: flex;
+    justify-content: space-between;
+}
+
+.workspace .word-pool {
+    position: relative;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.sidebar .selected-word--card {
+    position: absolute;
+    background-color: lightblue;
+    translate: 120%;
+    z-index: 2;
+}
+
+.sidebar .word-pool span:hover {
+    position: relative;
+}
+.sidebar .word-pool span:hover::after {
+    position: absolute;
+    content: "";
+    width: 1em;
+    aspect-ratio: 1;
+    transform: translate(1em, -50%) rotate(45deg);
+    top: 50%;
+    right: 0;
+    border-top: 1px solid rgba(184, 49, 28, 0.692);
+    border-right: 1px solid rgba(184, 49, 28, 0.692);
+    background-color: transparent;
+}
+
+.sidebar .workspace p:nth-child(3) {
+    margin-bottom: 2em;
+}
+.sidebar .workspace input.metadata {
+    min-height: 2.5em;
+    background-color: transparent;
+    /* border: .5px solid rgba(128, 128, 128, 0.171); */
+    border: none;
+    outline: none;
+    padding: 0 1em;
+    font-size: 1.1em;
+    text-align: left;
+}
+
+.sidebar .workspace p {
+    display: flex;
+    align-items: center;
+    font-size: 1.2em;
+}
+
+.sidebar .workspace input.metadata.story-title {
+    font-size: 1.7em;
+    font-weight: 600;
+}
+.sidebar .workspace input.metadata.chapter-title {
+    font-size: 1.5em;
+    font-weight: 500;
+}
+
+.sidebar--controls {
+    margin-bottom: 2em;
+}

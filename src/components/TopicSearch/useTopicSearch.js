@@ -20,7 +20,6 @@ export const useTopicSearch = (initialTopics = [], mode) => {
 
   useEffect(() => {
     if (!searchValue) return
-    console.log(searchValue)
     const performSearch = async () => {
       if (!searchValue) {
         setSuggestions([]);

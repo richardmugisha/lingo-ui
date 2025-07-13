@@ -1,0 +1,12 @@
+
+.Outline {
+    display: flex;
+    flex-direction: row !important;
+    gap: 2em;
+    margin-top: 1em;
+}
+
+.Outline textarea {
+    height: 78dvh;
+    overflow-y: auto;
+}

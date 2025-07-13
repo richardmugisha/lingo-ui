@@ -15,6 +15,8 @@ import usePageRefreshHandle from "../../../utils/usePageRefreshHandle"
 
 import Info from '../../../components/Info'
 
+import Toolbar from './toolbar/Toolbar';
+
 import StorySetup from './utils/storySettings';
 
 const Yapping = ({ gameInfo, setGameInfo, userID }) => {
@@ -139,6 +141,8 @@ const Yapping = ({ gameInfo, setGameInfo, userID }) => {
       }
       {
         ['create', 'practice', 'read'].includes(storySettings.mode) && ['create', 'practice', 'read'].includes(storySettings.step) && (!gameInfo || gameInfo.type === "story") &&
+        <>
+        <Toolbar storySettings={storySettings} setStorySettings={setStorySettings} />
         <Story 
           storySettings={storySettings} setStorySettings={setStorySettings}
           info={info} setInfo={setInfo}
@@ -148,6 +152,7 @@ const Yapping = ({ gameInfo, setGameInfo, userID }) => {
           correctSentence={correctSentence} setCorrectSentence={setCorrectSentence}
           updateAttempt={updateAttempt}
         />
+        </>
       }
       {
         storySettings.step === 'submit' && 

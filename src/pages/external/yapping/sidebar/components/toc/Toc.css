@@ -1,0 +1,64 @@
+.outline.structured {
+    width: 400px;
+    height: 78dvh;
+    padding: 2em;
+    display: flex;
+    gap: 1em;
+    border: 1px solid lightblue;
+    border-radius: 1em;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1.1em;
+    overflow-y: auto;
+}
+
+.outline.structured h1 {
+    font-size: 1.5em;
+    color: #2c3e50;
+}
+
+.outline.structured h2 {
+    font-size: 1.2em;
+    color: #34495e;
+    margin-left: 2em;
+}
+
+.outline.structured .scenes {
+    line-height: 2em;
+}
+
+.outline.structured h3 {
+    margin-left: 4em;
+    margin-block: 1em;
+    cursor: pointer;
+}
+.outline.structured .logline {
+    font-style: italic;
+    color: #7f8c8d;
+}
+
+.outline.structured .summary {
+    margin: 0.5em 0 1.5em;
+}
+
+.outline.structured .chapter {
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.outline.structured .chapter:last-child {
+    border-bottom: none;
+}
+
+.outline.structured button.logline-toggle {
+    margin-top: 1em;
+    padding: 0.5em 1em;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 0.3em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.outline.structured button.logline-toggle:hover {
+    background-color: #2980b9;
+}

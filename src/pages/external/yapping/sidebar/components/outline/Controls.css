@@ -1,0 +1,36 @@
+
+.outline-controls {
+    margin: 1em 0;
+    min-width: 300px;
+}
+
+.outline-controls .chapters {
+    flex-direction: column;
+    margin: 1em 3em;
+}
+
+.outline-controls .scenes {
+   flex-direction: column;
+   margin: 0 3em;
+}
+
+.outline-controls .chapters div, .outline-controls .scenes * {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.outline-controls h1 {
+    cursor: pointer;
+}
+
+/* Fixed: Use :active or :focus instead of invalid :clicked pseudo-class */
+.outline-controls .control:active,
+.outline-controls .control:focus {
+    outline: 1px solid;
+}
+
+.outline-controls .selected {
+    padding: .5em;
+    border: 1px solid rgba(128, 128, 128, 0.377);
+}
