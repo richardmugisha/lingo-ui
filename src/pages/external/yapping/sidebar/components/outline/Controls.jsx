@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { Button } from '@mui/material'
-import { Add, KeyboardArrowDown } from "@mui/icons-material"
+import { Add, ArrowForward, ArrowRight, KeyboardArrowDown, KeyboardArrowRight } from "@mui/icons-material"
 import "./Controls.css"
 
 
@@ -61,15 +61,15 @@ const Controls = ({ setShowOutline, storySettings, setStorySettings, chapIdx, se
                 { showList.includes(chIdx) &&
                   <section key={chIdx} className='scenes'>
                     {ch?.scenes?.map((sc, sceneIdx) => <h4 className={scIdx === sceneIdx && chapIdx === chIdx ? "selected" : ""} key={sceneIdx} onClick={() => { setChapIdx(chIdx); setScIdx(sceneIdx)}} >Sc{sceneIdx+1}: {sc || `Untitled`}</h4>)}
-                    <Button variant="outlined" color="info" startIcon={<Add /> } onClick={() => handleAddNewScene(chIdx)}>Scene</Button>
+                    <Button color="info" startIcon={<Add /> } onClick={() => handleAddNewScene(chIdx)}>Scene</Button>
                   </section>
                 }
               </>
             ))
           }
-        <Button variant="outlined" color="info" startIcon={<Add /> } onClick={handleAddNewChapter}>Chapter</Button>
+        <Button color="info" startIcon={<Add /> } onClick={handleAddNewChapter}>Chapter</Button>
         </section>
-        <Button variant="outlined" color="info" onClick={viewBrainDump}>Brain dump</Button>
+        <Button color="info" endIcon={<ArrowForward />} onClick={viewBrainDump}>Brain dump</Button>
     </article>
   )
 }

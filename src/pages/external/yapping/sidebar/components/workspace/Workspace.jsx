@@ -9,7 +9,6 @@ import "./Workspace.css"
 import { Button } from '@mui/material'
 import { Add } from '@mui/icons-material'
 
-let timerID;
 
 const Workspace = ({ storySettings, setStorySettings, story, chapterIndex, setChapterIndex, sceneIndex, setSceneIndex}) => {
 
@@ -65,16 +64,8 @@ const Workspace = ({ storySettings, setStorySettings, story, chapterIndex, setCh
         }
     }, [topic])
 
-    const handleOffHover = () => {
-       
-        timerID = setTimeout(() => {
-            setHoveredWord(null);
-        }, 500);
-    }
-
     const handleOnHover = (wObj) => {
-        clearTimeout(timerID)
-        setHoveredWord(wObj);
+        setHoveredWord(prev => prev == wObj ? null : wObj)
     }
     const saveCurrentScene = async() => {
         try {
@@ -142,7 +133,7 @@ const Workspace = ({ storySettings, setStorySettings, story, chapterIndex, setCh
         
         {selectedValue &&
             <ul className="side word-pool"> { storySettings.suggestedWords?.map((wObj, i) => 
-                <span key={wObj._id} className={storySettings.words.includes(wObj.word) ? "right-word" : "wrong-word"} onMouseEnter={() => handleOnHover(wObj)} onMouseLeave={handleOffHover}>
+                <span key={wObj._id} className={storySettings.words.includes(wObj.word) ? "right-word" : "wrong-word"} onClick={() => handleOnHover(wObj)}>
                     {wObj.word}{storySettings.words.filter(w => w === wObj.word).length > 1 ? <b>{`(${storySettings.words.filter(w => w === wObj.word).length}x)`}</b> : ""}
                 </span>)} 
             </ul>

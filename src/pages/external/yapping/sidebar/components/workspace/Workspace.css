@@ -22,7 +22,7 @@
 .sidebar .selected-word--card {
     position: absolute;
     background-color: lightblue;
-    translate: 120%;
+    translate: 142%;
     z-index: 2;
 }
 
