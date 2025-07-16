@@ -7,7 +7,7 @@ export const patchStory = async ({ id, item, update }) => {
         const response = await AxiosWrapper.patch(`${httpEndpoint}/story`, { id, item, update })
         return response.data
     } catch (error) {
-        console.log(error.message)
+        // console.log(error.message)
     }
 }
 
@@ -17,7 +17,7 @@ export const patchChapter = async ({ id, item, update }) => {
         return response.data
 
     } catch (error) {
-        console.log(error.message)
+        // console.log(error.message)
     }
 }
 
@@ -26,7 +26,7 @@ export const patchEditDetails = async({id, list, edit}) => {
         const response = await AxiosWrapper.patch(`${httpEndpoint}/story/details`, { id, list, edit})
         return response.data
     } catch (error) {
-        console.log(error.message)
+        // console.log(error.message)
     }
 }
 
@@ -35,7 +35,7 @@ export const patchDeleteDetails = async({id, list}) => {
         const response = await AxiosWrapper.delete(`${httpEndpoint}/story/details`, { params: {id, list}})
         return response.data
     } catch (error) {
-        console.log(error.message)
+        // console.log(error.message)
     }
 }
 
@@ -44,7 +44,7 @@ export const patchTypeSettings = async({ id, typeSettings }) => {
         const response = await AxiosWrapper.patch(`${httpEndpoint}/story/typeSettings`, {id, typeSettings})
         return response.data
     } catch (error) {
-        console.log(error.message)
+        // console.log(error.message)
     }
 }
 
@@ -53,6 +53,6 @@ export const patchChapterLog = async({ id, chapterLog }) => {
         const response = await AxiosWrapper.patch(`${httpEndpoint}/story/chapterLog`, { id, chapterLog })
         return response.data
     } catch (error) {
-        console.log(error.message)
+        // console.log(error.message)
     }
 }

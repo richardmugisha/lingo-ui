@@ -85,7 +85,6 @@ const parseRawOutline = (raw) => {
       outline: chOut[0], scenes
     }
   })
-  console.log(general, chapters)
   return {
     general, chapters
   }

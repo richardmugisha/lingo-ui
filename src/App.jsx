@@ -11,6 +11,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 
 import AxiosWrapper from './api/http/AxiosWrapper';
+import { ping } from './api/http';
 import { httpEndpoint } from '../serverConfig'
 const token = localStorage.getItem('token');
 const user = localStorage.getItem('user')
@@ -39,6 +40,14 @@ function App() {
     
 
   }, [token]);
+
+  useEffect(() => {
+    let intId = setInterval(() => {
+      ping()
+    }, 60*1000);
+
+    return () => clearInterval(intId)
+  }, [])
 
   return (
     <div className="App">

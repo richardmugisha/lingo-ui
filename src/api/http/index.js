@@ -1,3 +1,6 @@
+import { httpEndpoint } from "../../../serverConfig";
+import AxiosWrapper from "./AxiosWrapper";
+
 export { default as deleteTopics } from "./topic/delete";
 export { default as fetchManyTopics } from "./topic/fetchAll";
 export { default as fetchOneTopic } from "./topic/fetchOne";
@@ -30,3 +33,5 @@ export { default as prepareEpisode } from "./script/prepareEpisode"
 export { register, login } from "./auth"
 
 export { httpEndpoint, config } from "../../../serverConfig"
+
+export const ping = () => AxiosWrapper.get(`${httpEndpoint}/uptime`)
