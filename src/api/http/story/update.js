@@ -65,3 +65,12 @@ export const patchUserContribution = async(userID, words) => {
         console.error(error.message)
     }
 }
+
+export const patchUserWritingGoal = async (userID, goal) => {
+    try {
+        const response = await AxiosWrapper.patch(`${httpEndpoint}/story/goal`, { userID, goal})
+        return response.data
+    } catch (error) {
+        console.error(error.message)
+    }
+}

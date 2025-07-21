@@ -1,15 +1,18 @@
 
 import React, { useEffect, useState } from 'react'
 import Progressbar from "@ramonak/react-progress-bar"
+import { Settings as SettingsIcon, ArrowForward,  ArrowForwardIos } from '@mui/icons-material';
+import { Button } from '@mui/material';
 import './Stats.css'
 import {
     generatePastYearDates,
     mergeContributionData,
     groupByWeeks,
-    getColor
+    getColor,
+    truncateToUTCDate
 } from "./util";
 
-import { fetchUserContribution, fetchUserGoal } from "../../../../api/http"
+import { fetchUserContribution, fetchUserGoal, patchUserWritingGoal } from "../../../../api/http"
 
 // Placeholder data
 const streak = 7 // days
@@ -147,6 +150,7 @@ const Stats = () => {
     const [data, setData] = useState([])
     const [goalData, setGoalData ] = useState({})
     const [trendData, setTrendData] = useState([])
+    const [editGoal, setEditGoal] = useState(false)
     const { userId: userID } = JSON.parse(localStorage.getItem("user"))
 
     useEffect(() => {
@@ -164,13 +168,132 @@ const Stats = () => {
         fetchUserGoal(userID)
         .then(data => setGoalData(data?.goal || {}))
     }, [])
+
+    useEffect(() => {
+      if (!goalData.upcoming?.startDate) return;
+
+      const today = truncateToUTCDate(new Date());
+      const upcomingStart = new Date(goalData.upcoming.startDate);
+
+      // If the upcoming goal should start today or earlier
+      if (upcomingStart <= today) {
+        const newGoal = {
+          ...goalData,
+          current: { ...goalData.upcoming },
+          upcoming: null,
+        };
+        setGoalData(newGoal);
+        patchUserWritingGoal(userID, newGoal);
+      }
+      // Only run this effect when goalData changes after fetch
+      // eslint-disable-next-line
+    }, [goalData.upcoming?.startDate]);
+
+    const handleUpdateGoalData = (field, value) => {
+      if (field === "startDate" && goalData.current && value) {
+        const inputDate = new Date(value);
+        const currentStart = new Date(goalData.current.startDate);
+        const currentEnd = new Date(currentStart);
+        currentEnd.setDate(currentEnd.getDate() + (goalData.current.days || 1) - 1);
+        if (inputDate <= currentEnd) {
+          return console.error("Chosen date comes before the end of the current goal");
+        }
+      }
+
+      const oldNext = goalData.upcoming || { startDate: truncateToUTCDate(new Date()), wordsPerDay: 300, days: 1 };
+
+      switch (field) {
+        case "startDate":
+          oldNext.startDate = truncateToUTCDate(new Date(value));
+          break;
+        case "wordsPerDay":
+          oldNext.wordsPerDay = value;
+          break;
+        case "days":
+          oldNext.days = value;
+          break;
+        default:
+          break;
+      }
+
+      const newGoal = { ...goalData, upcoming: oldNext }
+      setGoalData(newGoal);
+
+      patchUserWritingGoal(userID, newGoal)
+    }
+
+  const handleOvercomeDays = () => {
+    if (!goalData.current?.startDate || !goalData.current?.days) return 0;
+    const start = new Date(goalData.current.startDate);
+    const today = truncateToUTCDate(new Date());
+    const end = new Date(start);
+    end.setDate(start.getDate() + goalData.current.days - 1);
+
+    // If before start, 0 days overcome
+    if (today < start) return 0;
+
+    // If after end, all days overcome
+    if (today > end) return goalData.current.days;
+
+    // Days completed so far (including today)
+    return Math.min(goalData.current.days, Math.floor((today - start) / (1000 * 60 * 60 * 24)) + 1);
+  };
+
+  const handleDaysUntilUpcomingGoal = () => {
+    if (!goalData.upcoming?.startDate) return 0;
+    const today = truncateToUTCDate(new Date());
+    const upcomingStart = new Date(goalData.upcoming.startDate);
+    // If the upcoming goal starts today or in the past, return 0
+    if (upcomingStart <= today) return 0;
+    // Days left until the upcoming goal starts (exclusive of today)
+    return Math.ceil((upcomingStart - today) / (1000 * 60 * 60 * 24));
+  };
+
   return (
     trendData?.length > 0 ?
     <div className="stats-container">
         <section>
-          <h3>Streak </h3>
-            <Progressbar height='10px' completed={Math.round(goalData.streak?.value * 100 / goalData.current?.days)} labelColor='transparent'/>
-            <span> {goalData?.streak?.value} 🔥</span>
+            <div>
+              <h3>Streak </h3>
+              <span> {goalData?.streak?.value} 🔥</span>
+            </div>
+            {editGoal &&
+              <div className='goal-editor'>
+                <span>
+                  <h3>Current Goal</h3>
+                  <p>{goalData.current.days} days</p>
+                  <p>{goalData.current.wordsPerDay} words per day</p>
+                </span>
+                <span>
+                  <h3>Next Goal</h3>
+                  {goalData.upcoming &&
+                  <>
+                    <p>Starts on {new Date(goalData.upcoming.startDate).toDateString()}</p>
+                    <p>Will last  {goalData.upcoming.days} days</p>
+                    <p>{goalData.upcoming.wordsPerDay} words per day</p>
+                    <p>Get ready in {handleDaysUntilUpcomingGoal()} days</p>
+                  </>}
+                </span>
+                <span>
+                  <h3>Edit next goal</h3>
+                  <input type="date" style={{ fontSize: "1em", padding: "0.2em", borderRadius: "0.3em", border: "1px solid #ccc" }} onChange={e => handleUpdateGoalData("startDate", e.target.value)} />
+                  <div style={{ marginTop: "0.5em" }}>
+                    <label htmlFor="goal-duration" style={{ marginRight: "0.5em" }}>Words Per Day:</label>
+                    <input id="goal-duration" type="number" min="1" value={goalData.upcoming.wordsPerDay || 300}  style={{ width: "4em", fontSize: "1em", padding: "0.2em", borderRadius: "0.3em", border: "1px solid #ccc" }}  onChange={e => handleUpdateGoalData("wordsPerDay", e.target.value)} />
+                  </div>
+                  <div style={{ marginTop: "0.5em" }}>
+                    <label htmlFor="goal-duration" style={{ marginRight: "0.5em" }}>Goal duration (days):</label>
+                    <input id="goal-duration" type="number" min="1"  value={goalData.upcoming.days || 1} style={{ width: "4em", fontSize: "1em", padding: "0.2em", borderRadius: "0.3em", border: "1px solid #ccc" }}  onChange={e => handleUpdateGoalData("days", e.target.value)} />
+                  </div>
+                  <Button onClick={() => setEditGoal(false)}>Done</Button>
+                </span>
+              </div>}
+            <div onClick={() => setEditGoal(true)}>
+              <Progressbar height='1.5em' completed={90} customLabel={`CURRENT GOAL => ${handleOvercomeDays()}/${goalData.current?.days}`} bgColor='green' labelSize='.6em'/>
+              <label htmlFor="">Next goal in {handleDaysUntilUpcomingGoal()}</label>
+              <ArrowForwardIos />
+            </div>
+            
         </section>
         <section>
           <h3>Contributions</h3>

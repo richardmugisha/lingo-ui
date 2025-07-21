@@ -45,9 +45,14 @@ function getColor(count) {
     return '#196127';
   }
 
+function truncateToUTCDate(date) {
+    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  }
+
 export {
     generatePastYearDates,
     mergeContributionData,
     groupByWeeks,
-    getColor
+    getColor,
+    truncateToUTCDate
 }
