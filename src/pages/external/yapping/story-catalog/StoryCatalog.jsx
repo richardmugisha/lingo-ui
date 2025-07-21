@@ -5,6 +5,7 @@ import { Add as AddIcon, Summarize } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 
 import { fetchAllStories, prepareEpisode, fetchStories } from '../../../../api/http';
+import Stats from '../stats/Stats';
 
 
 const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
@@ -58,10 +59,8 @@ const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
     <div className='side side-wide story-catalog'>
       {stories?.length ?
         <>
-          <div>
-            <p>Pick a story to practice with </p>
-          </div>
-          <div className='side-pool titles'>
+          <h1>Story Catalog </h1>
+          <div className='story-catalog'>
               {stories?.map((story, i) => (
                   <span
                       key={i}
@@ -92,17 +91,15 @@ const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
                   {story.script?.title || story.title}
                   </span>
               ))}
+              <span className="story--span" onClick={resetStory}>+</span>
           </div>
-          or
         </> :
-        <>No {pluralize(gameInfo?.type || "story")} yet!</> 
+        <>
+          <p>No {pluralize(gameInfo?.type || "story")} yet!</p>
+          <span className="story--span" onClick={resetStory}>+</span>
+        </> 
       }
-      <Button startIcon={<AddIcon />} variant="contained" color='primary' disableElevation 
-          onClick={resetStory}
-      >
-          New {gameInfo?.type || "story"}
-      </Button>
-          
+      <Stats />
     </div>
   )
 }

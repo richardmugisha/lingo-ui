@@ -8,7 +8,7 @@ export const fetchChapter = async ({ index, storyID }) => {
         return response.data
 
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
     }
 }
 
@@ -18,7 +18,7 @@ export const fetchStories = async(filters) => {
         return response.data
 
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
     }
 }
 
@@ -28,7 +28,7 @@ export const fetchStory = async(id, page) => {
         const response = await AxiosWrapper.get(`${httpEndpoint}/story/${id}`, { params: { page } })
         return response.data
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
     }
 }
 
@@ -38,6 +38,24 @@ export const fetchScene = async(id) => {
         console.log(response.data)
         return response.data
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
+    }
+}
+
+export const fetchUserContribution = async(userID, year) => {
+    try {
+        const response = await AxiosWrapper.get(`${httpEndpoint}/story/contributions`, { params: {userID, year}})
+        return response.data
+    } catch (error) {
+        console.error(error.message)
+    }
+}
+
+export const fetchUserGoal = async(userID) => {
+    try {
+        const response = await AxiosWrapper.get(`${httpEndpoint}/story/goal`, { params: { userID }})
+        return response.data
+    } catch (error) {
+        console.error(error.message)
     }
 }

@@ -1,24 +1,21 @@
-.side-wide.story-catalog {
-    align-items: center;
+.story-catalog {
+    display: flex;
+    width: 95dvw;
+    height: 85dvh;
     gap: 3em;
+    padding: 3em;
+    justify-content: center;
 }
 
-.side-wide .titles {
-    flex-direction: row !important;
+.story-catalog .story--span {
+    display: flex;
     flex-wrap: wrap;
-    display: flex;
-    max-height: 15em;
-}
-
-.side-wide .story--span {
-    display: flex;
     justify-content: center;
     align-items: center;
-    width: 10em !important;
-    aspect-ratio: 4/5;
+    width: 10em;
+    height: 15em;
     overflow: hidden;
     padding: 1em !important;
-
 }
 
 .story .title {

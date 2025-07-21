@@ -56,3 +56,12 @@ export const patchChapterLog = async({ id, chapterLog }) => {
         // console.log(error.message)
     }
 }
+
+export const patchUserContribution = async(userID, words) => {
+    try {
+        const response = await AxiosWrapper.patch(`${httpEndpoint}/story/contributions`, { userID, words})
+        return response.data
+    } catch (error) {
+        console.error(error.message)
+    }
+}

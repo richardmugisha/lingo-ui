@@ -1,5 +1,5 @@
 import "./Sidebar.css"
-import { createStory, patchStory, liveChat, patchTypeSettings, fetchScene } from "../../../../api/http"
+import { createStory, patchStory, liveChat, patchTypeSettings, fetchScene, patchUserContribution } from "../../../../api/http"
 import { useState, useEffect } from "react"
 import { useDispatch } from "react-redux"
 import { setChat, setInfo } from "../../../../features/system/systemSlice"
@@ -16,6 +16,7 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
     const [chapterIndex, setChapterIndex] = useState(0)
     const [sceneIndex, setSceneIndex] = useState(0)
     const [updateFlag, setUpdateFlag] = useState(true)
+    const [writingSnapshot, setWritingSnapshot] = useState(null)
     const [{ userId: userID, username }] = useState(JSON.parse(localStorage.getItem("user")))
 
     // Parse outline whenever the text changes
@@ -88,6 +89,23 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
             // .then(console.log)
         }
     }, [storySettings.typeSettings])
+
+    useEffect(() => {
+        if (!storySettings.scene?.text) return
+
+        if (!writingSnapshot) {
+            setWritingSnapshot(storySettings)
+        }
+
+        if (storySettings.scene.text.length % 100 == 0 && writingSnapshot) {
+            patchUserContribution(userID, storySettings.scene.text.length - writingSnapshot.scene.text.length)
+            .then(d => {
+                console.log(d)
+                setWritingSnapshot(storySettings)
+            })
+        }
+
+    }, [storySettings.scene?.text])
 
 
     return (

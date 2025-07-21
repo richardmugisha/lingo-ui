@@ -1,0 +1,76 @@
+.stats-container {
+  display: flex;
+  /* justify-content: center; */
+  border-block: 1px solid;
+}
+
+.stats-container section {
+    border-left: 1px solid;
+    padding: 1em;
+    min-width: 10em;
+}
+
+.stats-container h3 {
+    margin-bottom: 1em;
+}
+
+.contribution-tableau {
+  display: flex;
+  gap: .3em;
+  min-width: 20em;
+}
+
+.contribution-week {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contribution-cell {
+  width: 1em;
+  height: 1em;
+  border-radius: 2px;
+  border: 1px solid rgb(226, 226, 226);
+  transition: background 0.2s;
+  background-color: transparent;
+}
+
+.contribution-cell.level-1 { background: rgba(34,197,94,0.35); }
+.contribution-cell.level-2 { background: rgba(34,197,94,0.5); }
+.contribution-cell.level-3 { background: rgba(34,197,94,0.65); }
+.contribution-cell.level-4 { background: rgba(34,197,94,0.8); }
+.contribution-cell.level-5 { background: rgba(34,197,94,0.95); }
+
+.trend-line-container {
+  min-width: 20em;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stats-container .stats-section {
+    display: flex;
+}
+
+.stats-container .stats-section .contribution-yrs button {
+    display: block;
+    background-color: transparent;
+    color: #345C70;
+    padding: .3em;
+    padding-right: 3em;
+    margin-left: 1em;
+    font-size: large;
+    border: none;
+    cursor: pointer;
+    border-radius: .2em;
+}
+.stats-container .contribution-yrs button:hover {
+    background-color: rgb(52, 92, 112, .1) ;
+    color: white;
+}
+
+.stats-container .stats-section .contribution-yrs button.selected {
+    background-color: #345C70 ;
+    color: white;
+}
