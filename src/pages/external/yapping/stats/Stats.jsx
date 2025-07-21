@@ -165,30 +165,32 @@ const Stats = () => {
         .then(data => setGoalData(data?.goal || {}))
     }, [])
   return (
+    trendData?.length > 0 ?
     <div className="stats-container">
-      <section>
-        <h3>Streak </h3>
-        <Progressbar height='10px' completed={Math.round(goalData.streak?.value * 100 / goalData.days)} labelColor='transparent'/>
-        <span> {goalData?.streak?.value} 🔥</span>
-      </section>
-      <section>
-        <h3>Contributions</h3>
-        <div className="stats-section" >
-            <ContributionsGrid data={data} />
-            <div className='contribution-yrs'>
-                {statYr !== new Date().getFullYear() && <button onClick={() => setStatYr(statYr + 1)}>{statYr+1}</button>}
-                <button className='selected'>{statYr}</button>
-                {[1,2].map(offset => (
-                    <button key={statYr - offset} onClick={() => setStatYr(statYr - offset)}>{statYr - offset}</button>
-                ))}
-            </div>
-        </div>
-      </section>
-      <section>
-        <h3>Trend</h3>
-        <TrendLine data={trendData} />
-      </section>
-    </div>
+        <section>
+          <h3>Streak </h3>
+            <Progressbar height='10px' completed={Math.round(goalData.streak?.value * 100 / goalData.current?.days)} labelColor='transparent'/>
+            <span> {goalData?.streak?.value} 🔥</span>
+        </section>
+        <section>
+          <h3>Contributions</h3>
+          <div className="stats-section" >
+              <ContributionsGrid data={data} />
+              <div className='contribution-yrs'>
+                  {statYr !== new Date().getFullYear() && <button onClick={() => setStatYr(statYr + 1)}>{statYr+1}</button>}
+                  <button className='selected'>{statYr}</button>
+                  {[1,2].map(offset => (
+                      <button key={statYr - offset} onClick={() => setStatYr(statYr - offset)}>{statYr - offset}</button>
+                  ))}
+              </div>
+          </div>
+        </section>
+        <section>
+          <h3>Trend</h3>
+          <TrendLine data={trendData} />
+        </section>
+    </div> :
+    <></>
   )
 }
 

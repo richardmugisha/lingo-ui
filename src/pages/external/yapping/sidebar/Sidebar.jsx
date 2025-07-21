@@ -96,9 +96,13 @@ const Sidebar = ({ storySettings, setStorySettings }) => {
         if (!writingSnapshot) {
             setWritingSnapshot(storySettings)
         }
+        
+        if (!writingSnapshot?.scene?.text) return
 
-        if (storySettings.scene.text.length % 100 == 0 && writingSnapshot) {
-            patchUserContribution(userID, storySettings.scene.text.length - writingSnapshot.scene.text.length)
+        const diff = storySettings.scene.text.length - writingSnapshot.scene.text.length
+
+        if (diff > 10) {
+            patchUserContribution(userID, storySettings.scene.text.split(" ").length - writingSnapshot.scene.text.split(" ").length)
             .then(d => {
                 console.log(d)
                 setWritingSnapshot(storySettings)
