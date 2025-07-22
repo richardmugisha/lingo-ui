@@ -279,18 +279,18 @@ const Stats = () => {
                   <input type="date" style={{ fontSize: "1em", padding: "0.2em", borderRadius: "0.3em", border: "1px solid #ccc" }} onChange={e => handleUpdateGoalData("startDate", e.target.value)} />
                   <div style={{ marginTop: "0.5em" }}>
                     <label htmlFor="goal-duration" style={{ marginRight: "0.5em" }}>Words Per Day:</label>
-                    <input id="goal-duration" type="number" min="1" value={goalData.upcoming.wordsPerDay || 300}  style={{ width: "4em", fontSize: "1em", padding: "0.2em", borderRadius: "0.3em", border: "1px solid #ccc" }}  onChange={e => handleUpdateGoalData("wordsPerDay", e.target.value)} />
+                    <input id="goal-duration" type="number" min="1" value={goalData.upcoming?.wordsPerDay || 300}  style={{ width: "4em", fontSize: "1em", padding: "0.2em", borderRadius: "0.3em", border: "1px solid #ccc" }}  onChange={e => handleUpdateGoalData("wordsPerDay", e.target.value)} />
                   </div>
                   <div style={{ marginTop: "0.5em" }}>
                     <label htmlFor="goal-duration" style={{ marginRight: "0.5em" }}>Goal duration (days):</label>
-                    <input id="goal-duration" type="number" min="1"  value={goalData.upcoming.days || 1} style={{ width: "4em", fontSize: "1em", padding: "0.2em", borderRadius: "0.3em", border: "1px solid #ccc" }}  onChange={e => handleUpdateGoalData("days", e.target.value)} />
+                    <input id="goal-duration" type="number" min="1"  value={goalData.upcoming?.days || 1} style={{ width: "4em", fontSize: "1em", padding: "0.2em", borderRadius: "0.3em", border: "1px solid #ccc" }}  onChange={e => handleUpdateGoalData("days", e.target.value)} />
                   </div>
                   <Button onClick={() => setEditGoal(false)}>Done</Button>
                 </span>
               </div>}
             <div onClick={() => setEditGoal(true)}>
-              <Progressbar height='1.5em' completed={90} customLabel={`CURRENT GOAL => ${handleOvercomeDays()}/${goalData.current?.days}`} bgColor='green' labelSize='.6em'/>
-              <label htmlFor="">Next goal in {handleDaysUntilUpcomingGoal()}</label>
+              <Progressbar height='1.5em' width='10em' completed={90} customLabel={`CURRENT GOAL => ${handleOvercomeDays()}/${goalData.current?.days}`} bgColor='green' labelSize='.6em'/>
+              <label htmlFor="">{ handleDaysUntilUpcomingGoal() ? `Next goal in ${handleDaysUntilUpcomingGoal()}` : "Add Next goal" }</label>
               <ArrowForwardIos />
             </div>
             
