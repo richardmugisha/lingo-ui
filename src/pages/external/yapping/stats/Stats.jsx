@@ -118,9 +118,9 @@ const TrendLine = ({ data }) => (
         if (i === 0) return null
         const prev = data[i - 1]
         const x1 = ((i - 1) / (data.length - 1)) * 280 + 10
-        const y1 = 90 - (prev.count / 300) * 80
+        const y1 = 90 - (prev.count * 80) // Removed division since counts are small
         const x2 = (i / (data.length - 1)) * 280 + 10
-        const y2 = 90 - (point.count / 300) * 80
+        const y2 = 90 - (point.count * 80) // Removed division since counts are small
         return (
           <line
             key={i}
@@ -136,7 +136,7 @@ const TrendLine = ({ data }) => (
       {/* Draw points */}
       {data.map((point, i) => {
         const x = (i / (data.length - 1)) * 280 + 10
-        const y = 90 - (point.count / 300) * 80
+        const y = 90 - (point.count * 80) // Removed division since counts are small
         return (
           <circle key={i} cx={x || 2} cy={y || 2} r={3} fill="#22c55e" />
         )
