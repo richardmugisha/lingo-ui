@@ -195,7 +195,7 @@ const TrendChart = ({ data, goalData }) => {
   }
 
   return (
-    <ResponsiveContainer width={300} height={100}>
+    <ResponsiveContainer width={300} height={125}>
       <LineChart
         data={completeData}
         margin={{ top: 0, right: 10, bottom: 0, left: 0 }}
