@@ -94,7 +94,7 @@ const ContributionTableau = ({ data }) => (
   </div>
 )
 
-function ContributionsGrid({ data }) {
+function ContributionsGrid({ data, goalData }) {
     const rawGrid = generatePastYearDates();
     const filledGrid = mergeContributionData(rawGrid, data);
     const weeks = groupByWeeks(filledGrid);
@@ -110,7 +110,7 @@ function ContributionsGrid({ data }) {
                 style={{
                   backgroundColor: getColor(day.count),
                 }}
-                title={`${day.date}: ${day.count} contributions`}
+                title={`${day.date}: ${Math.round(day.count * goalData.current.wordsPerDay)} words`}
               />
             ))}
           </div>
@@ -203,11 +203,33 @@ const Stats = () => {
             .then(data => {
                 setData(data || []);
                 if (statYr == new Date().getFullYear()) {
-                    setTrendData(data || [])
+                    setTrendData(data || []);
+
+                    // --- Streak check logic ---
+                    if (data && data.length > 0 && goalData?.streak) {
+                        // Find the last contribution date with count > 0
+                        const lastContribution = [...data].reverse().find(d => d.count > 0);
+                        if (lastContribution) {
+                            const lastDate = new Date(lastContribution.date);
+                            const now = new Date();
+                            const diffMs = now - lastDate;
+                            const diffHrs = diffMs / (1000 * 60 * 60);
+
+                            if (diffHrs > 48 && goalData.streak.value !== 0) {
+                                // Reset streak and patch
+                                const newGoal = {
+                                    ...goalData,
+                                    streak: { ...goalData.streak, value: 0 }
+                                };
+                                setGoalData(newGoal);
+                                patchUserWritingGoal(userID, newGoal);
+                            }
+                        }
+                    }
+                    // --- end streak check ---
                 }
             })
-
-    }, [statYr])
+    }, [statYr, userID, goalData]);
 
     useEffect(() => {
         fetchUserGoal(userID)
@@ -343,7 +365,7 @@ const Stats = () => {
         <section>
           <h3>Contributions</h3>
           <div className="stats-section" >
-              <ContributionsGrid data={data} />
+              <ContributionsGrid data={data} goalData={goalData} />
               <div className='contribution-yrs'>
                   {statYr !== new Date().getFullYear() && <button onClick={() => setStatYr(statYr + 1)}>{statYr+1}</button>}
                   <button className='selected'>{statYr}</button>
