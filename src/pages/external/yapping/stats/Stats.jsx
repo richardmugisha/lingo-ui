@@ -22,7 +22,7 @@ import {
   YAxis,
   Tooltip,
   ReferenceLine,
-  ResponsiveContainer,
+  ResponsiveContainer
 } from 'recharts'
 
 // Placeholder data
@@ -122,32 +122,62 @@ function ContributionsGrid({ data }) {
 
 // Simple trend line (placeholder, replace with chart lib for real)
 
+
+const CustomDot = ({ cx, cy, payload }) => {
+  const color = payload.count >= 1 ? 'green' : 'red'
+  return <circle cx={cx} cy={cy} r={2.7} fill={color} stroke="white" strokeWidth={1.5} />
+}
+
+// This transforms the dataset into 2-point segments with slope info
+const getSegmentedData = (data) => {
+  const segments = []
+  for (let i = 1; i < data.length; i++) {
+    const prev = data[i - 1]
+    const curr = data[i]
+    const slopeUp = curr.count >= prev.count
+    segments.push({
+      id: i,
+      data: [prev, curr],
+      stroke: slopeUp ? 'green' : 'red',
+    })
+  }
+  return segments
+}
+
 const TrendChart = ({ data }) => {
+  const segments = getSegmentedData(data)
+
   return (
     <ResponsiveContainer width={300} height={100}>
       <LineChart
-        data={data}
         margin={{ top: 0, right: 10, bottom: 0, left: 0 }}
       >
-        {/* Optional grid */}
         <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-
-        {/* X axis (hidden or not) */}
         <XAxis dataKey="date" hide />
-
-        {/* Y axis scaled from 0 to 1.5 */}
         <YAxis domain={[0, 1.5]} hide />
-
-        {/* Median line at 1.0 */}
         <ReferenceLine y={1} stroke="#22c55e" strokeWidth={2} />
 
-        {/* User trend */}
+        {/* Segmented trend lines */}
+        {segments.map((segment) => (
+          <Line
+            key={segment.id}
+            type="linear"
+            data={segment.data}
+            dataKey="count"
+            stroke={segment.stroke}
+            strokeWidth={2}
+            dot={false}
+            isAnimationActive={false}
+          />
+        ))}
+
+        {/* Dots */}
         <Line
-          type="monotone"
+          type="linear"
+          data={data}
           dataKey="count"
-          stroke="#16a34a"
-          strokeWidth={2}
-          dot={{ r: 3, stroke: "#fff", strokeWidth: 1 }}
+          stroke="transparent"
+          dot={<CustomDot />}
           isAnimationActive={false}
         />
 
@@ -156,6 +186,7 @@ const TrendChart = ({ data }) => {
     </ResponsiveContainer>
   )
 }
+
 
 
 
