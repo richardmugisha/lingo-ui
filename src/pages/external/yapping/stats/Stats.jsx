@@ -14,6 +14,17 @@ import {
 
 import { fetchUserContribution, fetchUserGoal, patchUserWritingGoal } from "../../../../api/http"
 
+import {
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ReferenceLine,
+  ResponsiveContainer,
+} from 'recharts'
+
 // Placeholder data
 const streak = 7 // days
 const contributionData = [
@@ -110,40 +121,43 @@ function ContributionsGrid({ data }) {
   
 
 // Simple trend line (placeholder, replace with chart lib for real)
-const TrendLine = ({ data }) => (
-  <div className="trend-line-container">
-    <svg width={300} height={100}>
-      {/* Draw line */}
-      {data.map((point, i) => {
-        if (i === 0) return null
-        const prev = data[i - 1]
-        const x1 = ((i - 1) / (data.length - 1)) * 280 + 10
-        const y1 = 90 - (prev.count * 80) // Removed division since counts are small
-        const x2 = (i / (data.length - 1)) * 280 + 10
-        const y2 = 90 - (point.count * 80) // Removed division since counts are small
-        return (
-          <line
-            key={i}
-            x1={x1}
-            y1={y1}
-            x2={x2}
-            y2={y2}
-            stroke="#22c55e"
-            strokeWidth={2}
-          />
-        )
-      })}
-      {/* Draw points */}
-      {data.map((point, i) => {
-        const x = (i / (data.length - 1)) * 280 + 10
-        const y = 90 - (point.count * 80) // Removed division since counts are small
-        return (
-          <circle key={i} cx={x || 2} cy={y || 2} r={3} fill="#22c55e" />
-        )
-      })}
-    </svg>
-  </div>
-)
+
+const TrendChart = ({ data }) => {
+  return (
+    <ResponsiveContainer width={300} height={100}>
+      <LineChart
+        data={data}
+        margin={{ top: 0, right: 10, bottom: 0, left: 0 }}
+      >
+        {/* Optional grid */}
+        <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+
+        {/* X axis (hidden or not) */}
+        <XAxis dataKey="date" hide />
+
+        {/* Y axis scaled from 0 to 1.5 */}
+        <YAxis domain={[0, 1.5]} hide />
+
+        {/* Median line at 1.0 */}
+        <ReferenceLine y={1} stroke="#22c55e" strokeWidth={2} />
+
+        {/* User trend */}
+        <Line
+          type="monotone"
+          dataKey="count"
+          stroke="#16a34a"
+          strokeWidth={2}
+          dot={{ r: 3, stroke: "#fff", strokeWidth: 1 }}
+          isAnimationActive={false}
+        />
+
+        <Tooltip />
+      </LineChart>
+    </ResponsiveContainer>
+  )
+}
+
+
 
 const Stats = () => {
     const [statYr, setStatYr] = useState(new Date().getFullYear())
@@ -310,7 +324,7 @@ const Stats = () => {
         </section>
         <section>
           <h3>Trend</h3>
-          <TrendLine data={trendData} />
+          <TrendChart data={trendData} />
         </section>
     </div> :
     <></>
