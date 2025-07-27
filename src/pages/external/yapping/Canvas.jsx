@@ -1,26 +1,60 @@
-
-
-import React from 'react'
+import React, { useEffect, useRef, useCallback } from 'react'
 import "./Canvas.css"
 
-const Canvas = ({ storySettings, setStorySettings}) => {
+const Canvas = React.memo(({ defaultValue, typeSettings, setStorySettings }) => {
+  const timeoutRef = useRef(null);
 
-  const handleTab = e => {
+  const handleTab = useCallback((e) => {
     if (e.key !== "Tab") return;
     e.preventDefault();
-    setStorySettings(prev => prev.rebuild({scene: {...prev.scene, text: prev.scene.text + "\t"}}))
-  }
+    setStorySettings(prev =>
+      prev.rebuild({
+        scene: {
+          ...prev.scene,
+          text: prev.scene.text + "\t"
+        }
+      })
+    );
+  }, [setStorySettings]);
+
+  const handleChange = useCallback((e) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    const value = e.target.value;
+
+    timeoutRef.current = setTimeout(() => {
+      console.log("fianlly")
+      setStorySettings(prev =>
+        prev.rebuild({
+          scene: {
+            ...prev.scene,
+            text: value
+          }
+        })
+      );
+      timeoutRef.current = null;
+    }, 1000);
+  }, [setStorySettings]);
+
+  useEffect(() => {
+    // Just logging mount for debug purposes
+    console.log("Canvas mounted");
+    return () => {
+      // Clean up timer if unmounting
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   return (
-    <textarea className="story--canvas"
-        name="" id=""
-        placeholder="Type your story here"
-        value={storySettings.scene?.text}
-        style={storySettings.typeSettings}
-        onKeyDown={handleTab}
-        onChange={e => setStorySettings(prev => prev.rebuild({scene: {...storySettings.scene, text: e.target.value}}))}
-    ></textarea>
-  )
-}
+    <textarea
+      className="story--canvas"
+      placeholder="Type your story here"
+      defaultValue={defaultValue}
+      style={typeSettings}
+      onKeyDown={handleTab}
+      onChange={handleChange}
+    />
+  );
+});
 
-export default Canvas
+export default Canvas;

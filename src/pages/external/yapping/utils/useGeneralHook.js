@@ -22,6 +22,13 @@ const useGeneralHook = (
 
   const [userId] = useState(JSON.parse(localStorage.getItem('user')).userId);
   const [winSound] = useState(new Audio("/sounds/win.wav"))
+  const [lastChecked, setLastChecked ] = useState(null)
+
+  useEffect(() => {
+    if (!storySettings.scene) return;
+    const sents = storySettings.scene.text.split(".")
+    setLastChecked(sents.length - 1)
+  }, [storySettings.scene?.text?.length > 0 && !lastChecked])
 
 
   useEffect(() => {
@@ -75,17 +82,21 @@ const useGeneralHook = (
       useEffect(() => {
         const text = storySettings?.scene?.text;
         if (!text || storySettings.mode === 'practice') return;
+        if (text?.length) {
+          const sents = storySettings.scene.text.split(".")
+          setLastChecked(sents.length - 1)
+        }
 
-        const lastChar = text.slice(-1)
-        if (![".", "!", "?"].includes(lastChar)) return;
+        // const lastChar = text.slice(-1)
+        // if (![".", "!", "?"].includes(lastChar)) return;
 
         // split on sentence boundaries and pull the last one
-        const sentences = text.match(/[^.!?]+[.!?]+["']?\s*/g);
+        const sentences = text?.split(".")
         if (!sentences) return;
-
-        const lastSentence = sentences[sentences.length - 1].trim();
+        console.log(lastChecked, sentences.length)
+        const lastSentence = sentences.slice(lastChecked).join(".").trim();
+        console.log(lastSentence)
         if (!lastSentence) return;
-
         const words = storySettings.suggestedWords.map(w => w.word);
         const { blanked, usedExpressions } = handleBlanksGen(lastSentence, words)
 
@@ -100,7 +111,7 @@ const useGeneralHook = (
         //   partApproval({ ...currSentence, blanked})
         //   setStorySettings(prev => prev.rebuild({words: [...prev.words, ...usedExpressions]}))
         // }
-      }, [storySettings.scene?.text]);
+      }, [storySettings.scene?.text?.split(".")?.length]);
     
       const partApproval = (currSentence) => {
 

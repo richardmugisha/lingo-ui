@@ -195,7 +195,7 @@ const Story = (props) => {
                 //   // onMouseUp={() => handlePartSelection()}
                 //   readOnly={info.exists && info.type === 'warning'}
                 // />
-                <Canvas storySettings={storySettings} setStorySettings={setStorySettings} />
+                <Canvas key={storySettings.scene?._id} defaultValue = {storySettings.scene?.text} typeSettings={storySettings.typeSettings} setStorySettings={setStorySettings} />
                 
               }
             </article>
