@@ -21,6 +21,7 @@ const Header = () => {
             <ul className={`nav-right ${menuShow && 'show'}`}>
               <li onClick={() => navigate('/portal/network/options')}>🎮</li>
               <li>Add</li>
+              <li onClick={() => navigate('/portal/personal/guru')}>Erudite</li>
               <li onClick={() => navigate('/portal/more')}>More</li>
             </ul>
             <span style={{cursor: 'pointer'}} className='menu' onClick={() => setMenuShow(!menuShow)}>{menuShow ? <MenuCancel /> :  <Menu />}</span>

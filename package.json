@@ -27,6 +27,7 @@
     "react-router-dom": "^6.24.0",
     "react-scripts": "5.0.1",
     "react-spinner-material": "^1.4.0",
+    "react-syntax-highlighter": "^15.6.1",
     "recharts": "^3.1.0",
     "redux-logger": "^3.0.6",
     "simple-peer": "^9.11.1",

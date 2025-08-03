@@ -4,7 +4,7 @@ import OptionModal from "./modals/OptionModal";
 // import { useState, useEffect } from "react";
 
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-
+import Page from "../external/guru/Page";
 const Personal = () => {
     // const navigate = useNavigate()
     // useEffect(() => {
@@ -22,6 +22,7 @@ const Personal = () => {
       <Route path='/chats' element={<Home page="chats"/>} />
       <Route path='/live-chat' element={<Home page="live-chat"/>} />
       <Route path='/fyp' element={<Home page="fyp"/>} />
+      <Route path='/guru' element={<Page />} />
       <Route path='*' element={<OptionModal />} />
     </Routes>
 

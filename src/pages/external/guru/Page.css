@@ -1,0 +1,80 @@
+
+.guru-page {
+    display: flex;
+    flex-direction: row;
+    width: 100dvw;
+    height: 100%;
+}
+
+.guru-sidebar {
+    height: 100%;
+    border-right: 1px solid #e0e0e0;
+}
+
+.guru-chat {
+    height: 100%;
+    flex: 1;
+}
+
+.guru-sidebar-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.guru-sidebar-header h1 {
+    font-size: 2em;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.guru-sidebar-header .controls {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    font-size: 2em;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.guru-sidebar-header .controls span {
+    cursor: pointer;
+    border: 1px solid #e0e0e0;
+    padding: 0 .5em;
+}
+
+.guru-sidebar-header .controls span:hover {
+    background-color: #e0e0e0;
+}
+
+.guru-sidebar-body {
+    display: flex;
+    gap: .3em;
+    align-items: flex-start;
+    padding-left: 1em;
+}
+
+.guru-sidebar-body p {
+    border: 1px solid #e0e0e0;
+    border-right: none;
+    padding: .5em 1em;
+    cursor: pointer;
+}
+
+.guru-sidebar-body p:hover {
+    background: linear-gradient(90deg, #e0e0e0 40%, #f5f5f5 60%);
+    background-size: 200% 100%;
+    animation: guru-wave 1.2s linear;
+}
+
+@keyframes guru-wave {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: 0 0;
+    }
+}
