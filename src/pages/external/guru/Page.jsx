@@ -4,11 +4,14 @@ import Chat from './components/chat/Chat'
 import './Page.css'
 
 const Page = () => {
-    const [messages, setMessages] = useState([])
+    const [currentChat, setCurrentChat] = useState(null)
   return (
     <div className='guru-page'>
-      <Sidebar messages={messages} setMessages={setMessages}/>
-      <Chat messages={messages} setMessages={setMessages}/>
+      <Sidebar currentChat={currentChat} setCurrentChat={setCurrentChat}/>
+      {
+        currentChat &&
+          <Chat currentChat={currentChat} setCurrentChat={setCurrentChat}/>
+      }
     </div>
   )
 }

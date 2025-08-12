@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Typography, Paper } from '@mui/material';
 import MessageList from './components/MessageList';
 import ChatInput from './components/ChatInput';
-import { liveChat } from '../../../../../api/http';
+import { chatWithAI } from '../../../../../api/http';
 
 const defaultAiMessage = `Here's a sample response with **rich formatting**:
 
@@ -29,7 +29,7 @@ function example() {
 
 You can ask me anything and I'll respond with properly formatted text!`
 
-const Chat = ({ messages, setMessages }) => {
+const Chat = ({ currentChat, setCurrentChat }) => {
 //   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [{ username, userId: userID}] = useState(JSON.parse(localStorage.getItem("user")))
@@ -41,19 +41,24 @@ const Chat = ({ messages, setMessages }) => {
       timestamp: new Date().toISOString()
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setCurrentChat(prev => ({
+      ...prev,
+      messages: [...(prev?.messages || []), userMessage]
+    }));
+
     setIsLoading(true);
 
-    liveChat({ userID, chat: content})
-    .then(({ reply }) => {
-        const aiResponse = {
-            role: 'assistant',
-            content: reply,
-            timestamp: new Date().toISOString()
-          };
-    
-          setMessages(prev => [...prev, aiResponse]);
-          setIsLoading(false);
+    chatWithAI({ userID, userMessage: content})
+    .then(([res, err]) => {
+      if (err) {
+        console.error("Error chatting with AI:", err);
+      } else {
+        setCurrentChat(prev => ({
+          ...prev,
+          messages: [...(prev?.messages || []), res]
+        }));
+      }
+      setIsLoading(false);
     })
   };
 
@@ -86,7 +91,7 @@ const Chat = ({ messages, setMessages }) => {
       </Paper>
 
       {/* Messages */}
-      <MessageList messages={messages} isLoading={isLoading} />
+      <MessageList messages={currentChat.messages || []} isLoading={isLoading} />
 
       {/* Input */}
       <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />

@@ -4,12 +4,13 @@ import useControls from './useControls'
 import useAI from './useAI';
 import { useData } from '../../useData';
 
-const Sidebar = ({ messages, setMessages }) => {
-    const { lineUp, handleEnterTopic, resolveTopic, data, topicChain } = useData()
+const Sidebar = ({ currentChat, setCurrentChat }) => {
+    const { getSubtopics, data, topicChain, handleCreateChat, handleNavigateToChat } = useData(setCurrentChat)
     const { width, handleIncreaseWidth, handleDecreaseWidth, toggleFullScreen } = useControls(topicChain);
-    const { title, summary } = useAI(messages)
+    const { title, summary } = {} //useAI(currentChat)
 
-    console.log(topicChain, messages)
+    // console.log(topicChain, currentChat)
+    console.log(data.structure || {}, "Structure Data")
     return (
         <div className='guru-sidebar' style={{ width: `${width * 100}dvw` }}>
             <div className='guru-sidebar-header'>
@@ -22,27 +23,39 @@ const Sidebar = ({ messages, setMessages }) => {
                 )}
             </div>
             <div className="guru-sidebar-body">
-                <div>
-                    { Object.keys(data).map(subtopic => <p style={{backgroundColor: topicChain.includes(subtopic) ? "#86A8B8": ""}} onClick={() => handleEnterTopic(subtopic, 0)}>{subtopic}</p>) }
-                    <br />
-                    <p>{title || "New Chat"}</p>
-                </div>
-                {   
-                    topicChain.map((topic, idx) => (
-                        <div>{ 
-                            resolveTopic(topic, idx + 1)?.map(subtopic => <p style={{backgroundColor: topicChain.includes(subtopic) ? "#86A8B8": ""}} onClick={() => handleEnterTopic(subtopic, idx + 1)}>{subtopic}</p>) 
-                            }
-                            <br />
-                            <p>New Chat</p>
-                        </div>
+                { topicChain.map((topic, idx) => (
+                    <div>{ 
+                        getSubtopics(topic, idx)?.map(subtopic => 
+                            <p key={subtopic}
+                                style={{backgroundColor: currentChat?._id === subtopic ? "green" : topicChain.includes(subtopic) ? "#86A8B8": ""}} 
+                                onClick={() => handleNavigateToChat(subtopic, idx)}
+                            >{subtopic}</p>) 
+                        }
+                        <br />
+                        {
+                            (getSubtopics(topic, idx)?.length > 0 || idx == 0) && 
+                            <>
+                                <p onClick={() => handleCreateChat(idx)}>{"New Chat"}</p>
+                                <p onClick={() => handleCreateChat()}>{"Dig deep"}</p>
+                            </>
+                        }
+                    </div>
                     ))
                 }
-                {/* {
-                    lineUp.map(item => <p onClick={() => handleEnterTopic(item)}>{item}</p>)
-                } */}
             </div>
         </div>
     )
 }
 
 export default Sidebar
+
+{/* <div>
+                    { Object.keys(data.structure || {}).map(subtopic => 
+                        <p key={subtopic}
+                            style={{backgroundColor: currentChat?._id === subtopic ? "green" : topicChain.includes(subtopic) ? "#86A8B8": ""}} 
+                            onClick={() => handleEnterTopic(subtopic, 0)}
+                        >{data[subtopic]?.title || "Untitled"}</p>) }
+                    <br />
+                    <p onClick={handleCreateChat}>{"New Chat"}</p>
+                    <p onClick={handleCreateChat}>{"Dig deep"}</p>
+                </div> */}
