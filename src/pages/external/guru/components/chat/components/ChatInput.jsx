@@ -32,7 +32,7 @@ const ChatInput = ({ focus, onSendMessage, disabled = false }) => {
         p: 2,
         borderTop: 1,
         borderColor: 'divider',
-        backgroundColor: 'background.paper',
+        backgroundColor: '#2c2d2d',
         position: 'relative',
         zIndex: 1
       }}
@@ -54,15 +54,16 @@ const ChatInput = ({ focus, onSendMessage, disabled = false }) => {
           sx={{
             '& .MuiOutlinedInput-root': {
               borderRadius: 2,
-              backgroundColor: 'background.paper',
+              backgroundColor: '#2c2d2d',
+              color: '#FFFFFF',
               '&:hover': {
                 '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'primary.main'
+                  borderColor: '#363737'
                 }
               },
               '&.Mui-focused': {
                 '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'primary.main',
+                  borderColor: '#3d3d3d',
                   borderWidth: 2
                 }
               }

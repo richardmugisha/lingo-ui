@@ -8,9 +8,11 @@ const ChatMessage = ({ message, isUser = false }) => {
     <Box
       sx={{
         display: 'flex',
-        justifyContent: isUser ? 'flex-end' : 'flex-start',
+        // justifyContent: isUser ? 'flex-end' : '',
+        textAlign: "justify",
         mb: 2,
-        gap: 1
+        gap: 1,
+        ml: isUser ? "auto" : 0,
       }}
     >
       {!isUser && (
@@ -30,7 +32,10 @@ const ChatMessage = ({ message, isUser = false }) => {
         sx={{
           p: 2,
           maxWidth: '70%',
-          backgroundColor: isUser ? 'primary.light' : 'background.paper',
+          backgroundColor: isUser ? '#3f3f3f' : '#2c2d2d',
+          color: '#fff',
+          border: 'none',
+          boxShadow: 'none',
           borderRadius: 2,
           position: 'relative'
         }}
@@ -40,13 +45,13 @@ const ChatMessage = ({ message, isUser = false }) => {
         <Typography
           variant="caption"
           sx={{
-            color: 'text.secondary',
+            color: '#fff',
             mt: 1,
             display: 'block',
             textAlign: isUser ? 'right' : 'left'
           }}
         >
-          {new Date(message.timestamp).toLocaleTimeString()}
+          {/* {new Date(message.timestamp).toLocaleTimeString()} */}
         </Typography>
       </Paper>
       
