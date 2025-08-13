@@ -9,3 +9,12 @@ export const updateStructure = async (userID, newStructure) => {
         return [null, error];
     }
 }
+
+export const updateChat = async ({id, title, summary, messages}) => {
+    try {
+        const response = await AxiosWrapper.put(`${httpEndpoint}/guru/chats/${id}`, { title, summary, messages})
+        return [response.data, null];
+    } catch (error) {
+        return [null, error]
+    }
+}

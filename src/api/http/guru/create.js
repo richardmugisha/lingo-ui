@@ -19,9 +19,18 @@ export const createChat = async (userID) => {
     }
 }
 
-export const chatWithAI = async ({userID, title, summary, messages, userMessage}) => {
+export const chatWithAI = async ({userID, chatID, title, summary, messages, userMessage}) => {
     try {
-        const response = await AxiosWrapper.post(`${httpEndpoint}/guru/chat`, { userID, title, summary, messages, userMessage });
+        const response = await AxiosWrapper.post(`${httpEndpoint}/guru/chat`, { userID, chatID, title, summary, messages, userMessage });
+        return [response.data, null];
+    } catch (error) {
+        return [null, error];
+    }
+}
+
+export const createTitle = async (messages) => {
+    try {
+        const response = await AxiosWrapper.post(`${httpEndpoint}/guru/chats/title`, { messages });
         return [response.data, null];
     } catch (error) {
         return [null, error];

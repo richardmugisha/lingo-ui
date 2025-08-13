@@ -52,9 +52,15 @@
 
 .guru-sidebar-body {
     display: flex;
+    justify-content: center;
     gap: .3em;
     align-items: flex-start;
     padding-left: 1em;
+}
+
+.guru-sidebar-body > div {
+    max-width: 200px;
+    width: fit-content;
 }
 
 .guru-sidebar-body p {
@@ -62,6 +68,7 @@
     border-right: none;
     padding: .5em 1em;
     cursor: pointer;
+    width: 200px;
 }
 
 .guru-sidebar-body p:hover {

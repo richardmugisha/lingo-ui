@@ -1,106 +1,9 @@
 import { useEffect, useState } from "react";
-import { fetchStructure, createStructure, createChat, updateStructure } from "../../../api/http";
+import { fetchStructure, fetchChat, createStructure, createChat, updateStructure, updateChat } from "../../../api/http";
 
 import {set, get} from "lodash"
-import chat from "../../../api/http/live-chat/chat";
 
-const defaultData = {
-    "Philosophy": {
-      content: "Study of fundamental questions about existence, knowledge, values, and reason.",
-      subtopics: {
-        "Ancient Philosophy": {
-          content: "Philosophical thoughts from ancient civilizations like Greece, India, and China.",
-          subtopics: {
-            "Plato": {
-              content: "Focused on ideal forms, justice, and the philosopher-king.",
-              subtopics: {}
-            },
-            "Aristotle": {
-              content: "Pioneered logic, virtue ethics, and metaphysics.",
-              subtopics: {}
-            }
-          }
-        },
-        "Modern Philosophy": {
-          content: "Developments in philosophical thinking during the 17th to 19th centuries.",
-          subtopics: {
-            "Rationalism": {
-              content: "Reason as the primary source of knowledge (Descartes, Spinoza).",
-              subtopics: {}
-            },
-            "Empiricism": {
-              content: "Knowledge comes from sensory experience (Locke, Hume).",
-              subtopics: {}
-            }
-          }
-        }
-      }
-    },
-  
-    "Computer Science": {
-      content: "The study of algorithms, computation, and information systems.",
-      subtopics: {
-        "Programming": {
-          content: "The act of writing and maintaining code to instruct computers.",
-          subtopics: {
-            "Python": {
-              content: "High-level language known for readability and versatility.",
-              subtopics: {}
-            },
-            "JavaScript": {
-              content: "Mainly used for web development; event-driven and async-friendly.",
-              subtopics: {}
-            }
-          }
-        },
-        "Operating Systems": {
-          content: "Software that manages hardware and software resources.",
-          subtopics: {
-            "Processes & Threads": {
-              content: "Mechanisms for multitasking and concurrency.",
-              subtopics: {}
-            },
-            "Memory Management": {
-              content: "How OS allocates and tracks memory usage.",
-              subtopics: {}
-            }
-          }
-        }
-      }
-    },
-  
-    "Mathematics": {
-      content: "The abstract study of numbers, patterns, space, and change.",
-      subtopics: {
-        "Algebra": {
-          content: "Solving equations and manipulating symbols.",
-          subtopics: {
-            "Linear Equations": {
-              content: "Equations involving linear terms.",
-              subtopics: {}
-            }
-          }
-        },
-        "Calculus": {
-          content: "Study of change through derivatives and integrals.",
-          subtopics: {
-            "Differentiation": {
-              content: "Finding rates of change and slopes.",
-              subtopics: {}
-            },
-            "Integration": {
-              content: "Calculating area under curves.",
-              subtopics: {}
-            }
-          }
-        }
-      }
-    }
-  };
-  
-  
-    
-export const useData = (setCurrentChat) => {
+  export const useData = (currentChat, setCurrentChat) => {
     const [data, setData] = useState({structure: {}, chats: {}});
     const [topicChain, setTopicChain] = useState(["structure"])
     const [userID ] = useState(JSON.parse(localStorage.getItem("user"))?.userId);
@@ -131,37 +34,25 @@ export const useData = (setCurrentChat) => {
             }
         }
 
-        getStrucutre().then((structureObj) => {
+        getStrucutre().then(async (structureObj) => {
             console.log("Structure Object:", structureObj);
             if (structureObj) {
                 setData(prev => ({...prev, structure: structureObj.structure}));
-                // setLineUp(Object.keys(structureObj.structure));
+                handleLoadChats(Object.keys(structureObj.structure) || []);
             }
         });
     }, [])
 
-    // const resolveTopic = (chosenTopic, rightLimit) => {
-    //     let cursive = data.subtopics || data
-    //     const topics = topicChain.slice(0, rightLimit)
-    //     for (const topic of topics) {
-    //         cursive = cursive[topic]?.subtopics || cursive[topic]
-    //     }
-    //     if (cursive) {
-    //         const c = cursive[chosenTopic]?.subtopics || cursive
-    //         const newLineUp = Object.keys(c)
-    //         console.log(newLineUp)
-    //         return newLineUp
-    //     }
-    // }
-
-    // const handleEnterTopic = (chosenTopic, rightLimit) => {
-    //     const newLineUp = resolveTopic(chosenTopic, rightLimit)
-    //     const newChain = topicChain.slice(0, rightLimit) 
-    //     console.log(newChain)
-    //     setTopicChain(prev => [...newChain, chosenTopic])
-    //     if (!newLineUp?.length) return
-    //     setLineUp(newLineUp)
-    // }
+    const handleLoadChats = async (chatsIDs) => {
+      for (const chatID of chatsIDs) {
+        const [chat, error] = await fetchChat(chatID);
+        if (error) {
+          console.error("Error fetching chat:", error.message);
+          continue;
+        }
+        setData(prev => ({...prev, chats: {...prev.chats, [chatID]: chat}}));
+      }
+    }
 
     const CreateChat = async() => {
         try {
@@ -174,9 +65,7 @@ export const useData = (setCurrentChat) => {
               
               return column => {
                   const newChain = column ? resolveTopicChain(response._id, column) : resolveTopicChain(response._id, topicChain.length);
-                  // console.log("New Chain:", newChain.slice(0, -1));
                   const topicFam = get(data, newChain.slice(0, -1).join("."));
-                  // console.log("Topic Family:", topicFam);
 
                   setTopicChain(newChain);
                   const dataCopy = {...data};
@@ -192,9 +81,22 @@ export const useData = (setCurrentChat) => {
         }
     }
 
+    const handleFetchChat = async (chatID) => {
+        try {
+            const [response, error] = await fetchChat(chatID);
+            if (error) {
+                console.error("Error fetching chat:", error.message);
+                return;
+            }
+            setData(prev => ({...prev, chats: {...prev.chats, [chatID]: response}}));
+            return response
+        } catch (error) {
+            console.error("Error in handleFetchChat:", error.message);
+        }
+    }
+
 
     const handleUpdateStructure = (structure) => {
-      console.log(structure, "Structure Data")
         if (structure && Object.keys(structure).length > 0) {
             updateStructure(userID, structure)
                 .then(([response, error]) => {
@@ -222,13 +124,29 @@ export const useData = (setCurrentChat) => {
         handle(column + 1);
     }
 
-    const handleNavigateToChat = (chatID, column) => {
+    const handleNavigateToChat = async (chatID, column) => {
         const newChain = resolveTopicChain(chatID, column + 1);
         setTopicChain(newChain);
         const topicFam = get(data, newChain.slice(0, -1).join("."));
-        setCurrentChat(topicFam[chatID]);
+        const chat = data.chats[topicFam[chatID]] || await handleFetchChat(chatID)
+        setCurrentChat(chat);
+        const subtopics = Object.keys(topicFam) || [];
+        handleLoadChats(subtopics);
         console.log("Navigated to chat:", chatID, "with chain:", newChain);
     }
+
+    useEffect(() => {
+      if (!currentChat) return;
+      updateChat({id: currentChat._id, title: currentChat.title, summary: currentChat.summary, messages: currentChat.messages})
+      .then(([res, err]) => {
+        if (res) return console.log(res)
+        if (err) return console.error("Error updating chat:", err.message);
+        })
+      .catch(err => console.error("Error updating chat:", err.message));
+        
+      setData(prev => ({...prev, chats: {...prev.chats, [currentChat._id]: currentChat}}));
+      
+    }, [currentChat?.title, currentChat?.summary, currentChat?.messages?.length])
 
     return { data, setData, topicChain, handleCreateChat, resolveTopicChain, getSubtopics, handleNavigateToChat};
 }

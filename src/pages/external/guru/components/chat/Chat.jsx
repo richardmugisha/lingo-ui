@@ -48,14 +48,16 @@ const Chat = ({ currentChat, setCurrentChat }) => {
 
     setIsLoading(true);
 
-    chatWithAI({ userID, userMessage: content})
+    chatWithAI({ userID, chatID: currentChat._id, userMessage: content, title: currentChat.title, summary: currentChat.summary, messages: currentChat.messages})
     .then(([res, err]) => {
       if (err) {
         console.error("Error chatting with AI:", err);
       } else {
         setCurrentChat(prev => ({
           ...prev,
-          messages: [...(prev?.messages || []), res]
+          title: res.title || currentChat.title,
+          summary: res.summary || currentChat.summary,
+          messages: [...(prev?.messages || []), res.messageObj]
         }));
       }
       setIsLoading(false);
@@ -73,7 +75,7 @@ const Chat = ({ currentChat, setCurrentChat }) => {
       }}
     >
       {/* Header */}
-      <Paper
+      {/* <Paper
         elevation={1}
         sx={{
           p: 2,
@@ -88,13 +90,13 @@ const Chat = ({ currentChat, setCurrentChat }) => {
         <Typography variant="body2" color="text.secondary">
           Ask me anything and I'll respond with rich, formatted text
         </Typography>
-      </Paper>
+      </Paper> */}
 
       {/* Messages */}
       <MessageList messages={currentChat.messages || []} isLoading={isLoading} />
 
       {/* Input */}
-      <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
+      <ChatInput focus={!currentChat?.messages.length || currentChat?.messages.slice(-1)?.[0]?.role == "assistant"} onSendMessage={handleSendMessage} disabled={isLoading} />
     </Box>
   );
 };

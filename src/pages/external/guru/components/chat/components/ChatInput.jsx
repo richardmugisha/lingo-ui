@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Box, TextField, IconButton } from '@mui/material';
 import { Send } from '@mui/icons-material';
 
-const ChatInput = ({ onSendMessage, disabled = false }) => {
+const ChatInput = ({ focus, onSendMessage, disabled = false }) => {
   const [message, setMessage] = useState('');
+  const inputRef = useRef(null);
+  useEffect(() => {
+    if (focus && inputRef.current) {
+      // For MUI TextField, focus the input element
+      inputRef.current?.focus()
+    }
+  }, [focus]);
 
   const handleSend = () => {
     if (message.trim() && !disabled) {
@@ -43,6 +50,7 @@ const ChatInput = ({ onSendMessage, disabled = false }) => {
           variant="outlined"
           size="small"
           autoFocus
+          inputRef={inputRef}
           sx={{
             '& .MuiOutlinedInput-root': {
               borderRadius: 2,

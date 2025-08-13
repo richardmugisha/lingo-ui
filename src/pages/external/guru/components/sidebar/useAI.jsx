@@ -1,35 +1,23 @@
-import { useEffect, useState } from "react"
-import { liveChat } from "../../../../../api/http"
+import { useEffect } from "react"
+import { createTitle } from "../../../../../api/http"
 
-export default  (messages) => {
-    const [{ username, userId: userID}] = useState(JSON.parse(localStorage.getItem("user")))
-    const [ title, setTitle ] = useState("")
-    const [ summary, setSummary ] = useState("")
-
+export default (currentChat, setCurrentChat) => {
     useEffect(() => {
-        liveChat({ 
-            userID, 
-            chat: `Hi. Unrelated matter. I want to find a concise and meaningful title for this chat.
-                    The chat: ${messages.map(msg => msg.role + ": " + msg.content + "\n")}
-                    Your output should just be the title like:
-                    Unraveling the potential of A
-                `
-        }).then(({ reply }) => setTitle(reply))
-        
-    }, [messages.length == 4])
+        if ([4, 10].includes(currentChat?.messages?.length)) {
+            createTitle(currentChat.messages).
+            then(([res, err]) => {
+                if (res) setCurrentChat(prev => ({...prev, title: res.title}))
+            })
+        }
+    }, [currentChat?.messages?.length])
 
-    useEffect(() => {
-        liveChat({
-            userID,
-            chat: `Update the summary of this chat. The summary should be an exhaustive summary with highlights.
-            Previous summary of previous chat: ${summary || "No summary yet"}
+    // useEffect(() => {
+    //     if (!currentChat) return;
+    //     createSummary(currentChat.summary, currentChat.messages).
+    //     then(([res, err]) => {
+    //         if (res) setCurrentChat(prev => ({...prev, summary: res.summary}))
+    //     })
 
-            Last few back-and-forths: ${messages.slice(-6).map(msg => msg.role + ": " + msg.content + "\n")}
-            
-            `
-        }).then(({ reply }) => setSummary(reply))
+    // }, [currentChat?.messages?.length > 0 && currentChat?.messages?.length % 6 === 0])
 
-    }, [messages.length > 0 && messages.length % 6 == 0])
-
-    return { title, summary }
 }

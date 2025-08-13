@@ -9,3 +9,12 @@ export const fetchStructure = async (userID) => {
         return [null, error];
     }
 }
+
+export const fetchChat = async (chatID) => {
+    try {
+        const response = await AxiosWrapper.get(`${httpEndpoint}/guru/chats/${chatID}`);
+        return [response.data, null];
+    } catch (error) {
+        return [null, error];
+    }
+}

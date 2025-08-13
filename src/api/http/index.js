@@ -28,9 +28,9 @@ export { default as createStory, createChapter, createScene } from "./story/crea
 export { patchStory, patchChapter, patchEditDetails, patchDeleteDetails, patchTypeSettings, patchChapterLog, patchUserContribution, patchUserWritingGoal } from "./story/update"
 export { fetchChapter, fetchStories, fetchStory, fetchScene, fetchUserContribution, fetchUserGoal } from "./story/fetch"
 
-export { fetchStructure } from "./guru/fetch"
-export { createStructure, createChat, chatWithAI } from "./guru/create"
-export { updateStructure } from "./guru/update"
+export { fetchStructure, fetchChat } from "./guru/fetch"
+export { createStructure, createChat, chatWithAI, createTitle } from "./guru/create"
+export { updateStructure, updateChat } from "./guru/update"
 
 export { default as prepareEpisode } from "./script/prepareEpisode"
  

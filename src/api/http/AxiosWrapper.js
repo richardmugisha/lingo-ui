@@ -63,6 +63,10 @@ class AxiosWrapper {
     return this._request('patch', url, data, config);
   }
 
+  put(url, data, config) {
+    return this._request('put', url, data, config);
+  }
+
   delete(url, config) {
     return this._request('delete', url, config);
   }
