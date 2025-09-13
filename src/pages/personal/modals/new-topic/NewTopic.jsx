@@ -66,9 +66,9 @@ export default () => {
 
   const handleSubmitTopics = () => {
     //parent, language, creator, topics
-    console.log('clicked')
-    saveTopics(topic._id, selectedLanguage.value || "english", topics)
-      .then(data => console.log("success"))
+    console.log('clicked', topic._id, typeof topic._id, selectedLanguage.value || "english", topics)
+    saveTopics(topic._id || null, selectedLanguage.value || "english", [...topics, ...(value ? [value] : [])])
+      .then(data => console.log("success", data))
       .catch(e => console.log(e))
   }
   

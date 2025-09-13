@@ -8,50 +8,51 @@ import { push } from '../../../../features/personal/topic/topicSlice';
 import { useNavigate } from 'react-router-dom';
 
 import usePageRefreshHandle from '../../../../utils/usePageRefreshHandle';
+import { httpEndpoint } from '../../../../../serverConfig';
 
 const CardAddManual = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const handleRefresh = usePageRefreshHandle()
 
-  const { _id: topicId, topicName } = useSelector(state => state.topic.openTopic)
-
   const [userId ] = useState(JSON.parse(localStorage.getItem('user')).userId)
 
-  useEffect(() => {
-    handleRefresh(topicId)
-  }, [topicId])  
+  // const { _id: topicId, topicName } = useSelector(state => state.topic.topic)
+
+  // useEffect(() => {
+  //   handleRefresh(topicId)
+  // }, [topicId])  
+
+  const retrieveTopic = () => {
+        if (topic?.name) return
+        if (handleRefresh()) return
+        const newTopic = localStorage.getItem('new-topic--to-create')
+        if (!newTopic) return {}
+        const { name, language } = JSON.parse(newTopic);
+        return {_id: '', language, name}
+    }
   
+  const topic = useSelector(state => state.topic)
+
+  useEffect(() => {
+    retrieveTopic()
+  }, [])
+
   const [status, setStatus] = useState('preSubmit');
   const [readytosubmit, setReadytosubmit] = useState(false);
   const formTemplate = {
-    'root word': '',
-    addedVariations: {
-      noun: false, verb: false, adverb: false, adjective: false, 'phrasal verb': false, proverb: false, idiom: false
-    },
-    selectedVariationType: '',
-    langStyles: ['formal', 'informal', 'colloquial', 'slang', 'jargon'],
-    variations: []
+    types: ["noun", "verb", "adverb", "adjective", 'phrasal verb', "proverb", "idiom"],
+    languageStyles: ['formal', 'informal', 'colloquial', 'slang', 'jargon'],
   }
-  const [ formContent, setFormContent ] = useState({...formTemplate})
+  const [ formContent, setFormContent ] = useState({})
 
-  const [variation, setVariation] = useState('')
-  const [meaning, setMeaning] = useState(''); // set current value
-  const [langStyle, setLangStyle] = useState('');
-  const [example, setExample] = useState('');
-  const [wordReferenceInExample, setWordReferenceInExample] = useState('')
-  const [synonym, setSynonym] = useState('');
-  const [antonym, setAntonym] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
 
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!checkAllFilled()) return
-    addNewMeaning('submitting')
-    
-    if (readytosubmit) return submitting()
-    setReadytosubmit(true);
+    submitting()
   }
 
   useEffect(() => {
@@ -65,28 +66,17 @@ const CardAddManual = () => {
   }, [status])
 
   const submitting = () => {
-    const { httpEndpoint } = { httpEndpoint }
     if (status === 'submitting') return
-    setStatus('submitting'); //console.log('sub')
-    postingData(`${ httpEndpoint }/${topicName}`, { userId, topicId, topicLang, mode: 'manual', content: {'root word': formContent['root word'], variations: formContent.variations}} )
+    setStatus('submitting');
+    postingData(`${ httpEndpoint }/words/create-new-word/${topic._id}`, { language: topic.language, ...formContent} )
       .then((data) => {
-        afterSubmitReset();
-        setReadytosubmit(false)
-        //console.log(data.topic._id)
-        dispatch(push(data.topic))
-        dispatch(id(data.topic._id))
-        //console.log(data.topic._id)
+        setFormContent({})
+        console.log(data.word._id)
       })
       .catch(e => {
-        //console.log(e.message)
+        console.log(e.message)
         setStatus('error'); setErrorMsg("Oops... Couldn't submit your card! Try again")})
   }
-
-  const afterSubmitReset = () => {setFormContent({...formTemplate}); setReadytosubmit(false); setVariation(''); setMeaning(''); setExample(''); setWordReferenceInExample(''); setSynonym(''); setAntonym('')};
-
-  useEffect(() => {
-    if (readytosubmit) return submitting()
-  }, [readytosubmit])
 
   const postingData = async(url, requestBody) => {
       try {
@@ -102,39 +92,14 @@ const CardAddManual = () => {
       }
   }
 
-  const addVariationHandle = (variationType, picked) => {
-    if (picked) return
-    const firstVariation = !Object.values(formContent.addedVariations).some(value => value === true) ;
-    //console.log(firstVariation)
-    if ( firstVariation || checkAllFilled()) {
-      if (!firstVariation) {
-        addNewMeaning()
-        setVariation('')
-      }
-  
-      setFormContent(prev => ({...prev, selectedVariationType: variationType, addedVariations: {...prev.addedVariations, [variationType]: true}}))
-    }
-  }
-
   useEffect(() => {
-    if (example && example.includes(variation)) setWordReferenceInExample(variation)
-    else setWordReferenceInExample('')
-  }, [example])
-
-  const addNewMeaning = (tryingToSubmit) => {
-    if (!checkAllFilled()) return
-    const variationItem = {
-      variationType: formContent.selectedVariationType,
-      variationWord: variation,
-      'language style': langStyle,
-      meaning, example, wordReferenceInExample, synonym, antonym
-    }
-    if(!tryingToSubmit) {setMeaning(''); setExample(''); setWordReferenceInExample(''); setSynonym(''); setAntonym(''); setLangStyle('')}
-    setFormContent(prev => ({...prev, langStyles: formTemplate.langStyles, variations: [...prev.variations, variationItem]}))
-  }
+    // if (example && example.includes(variation)) setWordReferenceInExample(variation)
+    // else setWordReferenceInExample('')
+    //! Todo
+  }, [formContent.example])
 
   const checkAllFilled = () => {
-    if (meaning && langStyle && example && synonym && antonym) return true;
+    if (formContent.meaning && formContent.languageStyle && formContent.example && formContent.synonym && formContent.antonym) return true;
     setStatus('error');
     setErrorMsg('Fill the blanks first!'); 
     return false
@@ -156,63 +121,48 @@ const CardAddManual = () => {
           <hr />
           <section>
             <div>
-                <label htmlFor="root word">root word</label>
-                <input className = "" type="text" placeholder="fill with the root word" value={formContent['root word']} onChange={e => {setFormContent((prev) => ({ ...prev, 'root word': e.target.value}))}} />
-            </div>
-
-            <div>
-                <label htmlFor="">Pick a variation of the root word</label>
+                <label htmlFor="">Pick the type of word</label>
                 <div className='labels'>
-                  {Object.entries(formContent.addedVariations).map(([key, value], i) => <label key={i} style={{color: value == true ? 'red': 'black'}} onClick={() => addVariationHandle(key, value)}>{key}</label>)}
+                  {formTemplate.types.map((type, i) => <label key={i} style={{color: type == formContent.type ? 'red': 'black'}} onClick={() => setFormContent({...formContent, type})}>{type}</label>)}
                 </div>  
             </div>
           </section>
           <hr />
           <hr />
           <section className='variation'>
-            {formContent.selectedVariationType && 
+            {formContent.type && 
             <div>
-                <label htmlFor="">The {formContent.selectedVariationType}</label>
-                <input type="text" value={variation} placeholder={`enter the ${formContent.selectedVariationType}`} onChange={e => setVariation(e.target.value)}/>
+                <label htmlFor="">The {formContent.type}</label>
+                <input type="text" value={formContent.word} placeholder={`enter the ${formContent.type}`} onChange={e => setFormContent({...formContent, word: e.target.value})}/>
             </div>}
 
             <div>
                 <label htmlFor="">meaning</label>
-                <input type="text" value={meaning} placeholder="enter the meaning" onChange={e => setMeaning(e.target.value)}/>
+                <input type="text" value={formContent.meaning} placeholder="enter the meaning" onChange={e => setFormContent({...formContent, meaning: e.target.value})}/>
             </div>
 
             <div>
                 <label htmlFor="">Select the language style</label>
                 <div className='labels'>
-                  {formContent.langStyles.map((style, i) => <label key={i} onClick={() => {setLangStyle(style); setFormContent(prev => ({...prev, langStyles: [style]}))}}>{style}</label>)}
+                  {formTemplate.languageStyles.map((style, i) => <label key={i} style={{color: style == formContent.languageStyle ? 'red': 'black'}} onClick={() => {setFormContent({...formContent, languageStyle: style})}}>{style}</label>)}
                 </div>
             </div>
 
             <div>
                 <label htmlFor="">example</label>
-                <input className = "" type="text" placeholder="example" value={example} onChange={e => setExample(e.target.value)}/>
+                <input className = "" type="text" placeholder="example" value={formContent.example} onChange={e => setFormContent({...formContent, example: e.target.value})}/>
             </div>
-
-            {!example.includes(variation) && <div>
-                <label htmlFor="">reference</label>
-                <input className = "" type="text" placeholder="reference of the word in the example" value={wordReferenceInExample} onChange={e => setWordReferenceInExample(e.target.value)}/>
-            </div>}
 
             <div>
                 <label htmlFor="">synonym</label>
-                <input className = "" type="text" value={synonym} placeholder="synonym" onChange={e => setSynonym(e.target.value)}/>
+                <input className = "" type="text" value={formContent.synonym} placeholder="synonym" onChange={e => setFormContent({...formContent, synonym: e.target.value})}/>
             </div>
 
             <div>
                 <label htmlFor="">antonym</label>
-                <input className = "" type="text" value={antonym} placeholder="antonym" onChange={e => setAntonym(e.target.value)}/>
+                <input className = "" type="text" value={formContent.antonym} placeholder="antonym" onChange={e => setFormContent({...formContent, antonym: e.target.value})}/>
             </div>
           </section>
-          <hr />
-          {/* <div>
-            <label className='variations' onClick={addNewMeaning}>Add new meaning</label>
-          </div> */}
-          <section><p>Pick a new variation when done</p></section>
       </form>
     
     </div>

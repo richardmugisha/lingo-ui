@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 const languages = [{value: 'english', label: 'english'}, {value: 'french', label: 'french'} , {value: 'spanish', label: 'spanish'}]
 
 export const LanguageSelect = ({ selectedLanguage, setSelectedLanguage }) => 
-      <MuiAutoComplete label='Language' options={languages} selectedValue={selectedLanguage} setSelectedValue={setSelectedLanguage} nullOption={{label: '', value: ''}}/>
+      <MuiAutoComplete label='Language' options={languages} selectedValue={selectedLanguage} setSelectedValue={setSelectedLanguage} onInputChange={setSelectedLanguage} nullOption={{label: '', value: ''}}/>
 
 const Filters = ({ useFilters, myCardsOnly, selectedLanguage, setMyCardsOnly, setSelectedLanguage, page, words, topicChain, stories, scripts }) => {
   return (
