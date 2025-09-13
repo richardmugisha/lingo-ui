@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import usePageRefreshHandle from '../../../../utils/usePageRefreshHandle';
 import { httpEndpoint } from '../../../../../serverConfig';
 
+import handleBlanksGen from '../../../external/yapping/utils/handleBlanks';
+
 const CardAddManual = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -93,9 +95,8 @@ const CardAddManual = () => {
   }
 
   useEffect(() => {
-    // if (example && example.includes(variation)) setWordReferenceInExample(variation)
-    // else setWordReferenceInExample('')
-    //! Todo
+    if (!formContent.example) return
+    setFormContent({...formContent, blanked: handleBlanksGen(formContent.example, [formContent.word])?.blanked } )
   }, [formContent.example])
 
   const checkAllFilled = () => {
