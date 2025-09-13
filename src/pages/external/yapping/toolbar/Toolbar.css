@@ -2,6 +2,7 @@
 .story-toolbar {
     background-color: lightblue;
     padding: 1em;
+    padding-right: 0;
     display: flex;
     gap: 1em;
 }
@@ -21,4 +22,15 @@
 .story-toolbar select:focus {
     border-color: #3399ff;
     background: #e6f2ff;
+}
+
+.story-toolbar--arrow {
+    position: fixed;
+    right: 0;
+}
+
+.story-toolbar.hide {
+    height: 0;
+    padding: 0;
+    overflow-y: hidden;
 }

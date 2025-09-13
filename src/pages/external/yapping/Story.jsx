@@ -60,15 +60,6 @@ const Story = (props) => {
         // setSelectedIndices([index]);
       }
     } else {
-      // Toggle selection/deselection for single click
-      // setSelectedIndices(prev => {
-        // if (prev.includes(index)) {
-        //   // Deselect if already selected
-        //   return prev.filter(i => i !== index);
-        // } else {
-        //   // Select only this index
-        //   return [index];
-        // }
         console.log(storySettings.selectedIndices)
         const newList = storySettings.selectedIndices.includes(index) ? [] : [index] 
         setStorySettings(prev => prev.rebuild({selectedIndices: newList}))
@@ -145,7 +136,28 @@ const Story = (props) => {
             </p>
             <article className="draft-story">
               {
-                // storySettings.details?.map((currSentence, thisIndex) => (
+                
+              }
+              
+              {
+                storySettings.state.mode === "create" &&
+                <Canvas key={storySettings.scene?._id} defaultValue = {storySettings.scene?.text} typeSettings={storySettings.typeSettings} setStorySettings={setStorySettings} />
+                
+              }
+            </article>
+            {/* <FinishButton /> */}
+          </>
+        }
+        
+    </div>
+  )
+}
+
+export default Story
+
+
+const trash1 = () => {
+  // storySettings.details?.map((currSentence, thisIndex) => (
                 //   <span className={`draft-sentence ${["\n", "\t"].includes(currSentence.sentence) && !storySettings.operation && "whitespace"}`} key={thisIndex} 
                 //         style={{opacity: thisIndex > storySettings.sentenceIndex ? .1: 1, background: storySettings.selectedIndices.includes(thisIndex) ? "grey": "", 
                 //           display: handleConditionToHide(thisIndex) ? "flex" : "",
@@ -179,10 +191,10 @@ const Story = (props) => {
                 //     }
                 //   </span>
                 // ))
-              }
-              
-              {
-                storySettings.state.mode === "create" &&// selectedWords.length > 0 &&
+}
+
+const trash2 = () => {
+  // selectedWords.length > 0 &&
                 // <input type="text" className="draft-sentence"
                 //   placeholder={storySettings.details.length ? "": "Type your story here using the provided words"} name="" id="" autoFocus
                 //   value={storySettings.state.mode === 'create' ? storySettings.state.sentenceInProgress?.sentence: attempt.join(' ') }
@@ -195,18 +207,4 @@ const Story = (props) => {
                 //   // onMouseUp={() => handlePartSelection()}
                 //   readOnly={info.exists && info.type === 'warning'}
                 // />
-                <Canvas key={storySettings.scene?._id} defaultValue = {storySettings.scene?.text} typeSettings={storySettings.typeSettings} setStorySettings={setStorySettings} />
-                
-              }
-            </article>
-            {/* <FinishButton /> */}
-          </>
-        }
-        
-    </div>
-  )
 }
-
-export default Story
-
-

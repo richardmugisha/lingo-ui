@@ -1,13 +1,14 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import "./Toolbar.css";
 import { Button } from '@mui/material';
-import { Add, Remove } from '@mui/icons-material';
+import { Add, Remove, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 
 const STANDARD_SIZES = [12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48];
 const MIN_SIZE = 8;
 const MAX_SIZE = 72;
 
 const Toolbar = ({ storySettings, setStorySettings }) => {
+  const [show, setShow] = useState(true)
   // Log true post‑update fontSize for sanity
   useEffect(() => {
     console.log('fontSize →', storySettings.typeSettings.fontSize);
@@ -37,7 +38,7 @@ const Toolbar = ({ storySettings, setStorySettings }) => {
   }, [fontSize]);
 
   return (
-    <article className="story-toolbar">
+    <article className={`story-toolbar ${ show ? 'show' : 'hide' }`}>
       {/* font-family */}
       <select
         value={storySettings.typeSettings?.fontFamily || "Roboto, sans-serif"}
@@ -116,6 +117,9 @@ const Toolbar = ({ storySettings, setStorySettings }) => {
         <option value={3}>1.5x</option>
         <option value={3.5}>Double</option>
       </select>
+      <span className="story-toolbar--arrow">
+        <Button startIcon={show ? <ArrowUpward /> : <ArrowDownward />} onClick={() => setShow(!show)}/> 
+      </span>
     </article>
   );
 };
