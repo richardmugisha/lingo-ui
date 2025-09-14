@@ -15,8 +15,11 @@
     flex-direction: column;
     justify-content: space-between;
     /* font-size: x-large; */
-    cursor: pointer;
     user-select: none;
+}
+
+.topic-card:hover * {
+  opacity: 1;
 }
 
 .topic--meta {
@@ -28,9 +31,39 @@
 
   .topic--meta > div {
     color: #86A8B8;
+    font-size: small;
+    opacity: .2;
+    /* font-weight: bold; */
+  }
+
+  .topic--name {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    cursor: pointer;
+    color: #86A8B8;
     font-weight: bold;
   }
 
   .topic--meta > div:first-child {
     text-transform: uppercase;
   }
+
+.topic-card .menu-div {
+  display: flex;
+  align-items: flex-start;
+}
+
+.topic-card .controls {
+  display: flex;
+  gap: 1em;
+  font-size: small;
+}
+
+.topic-card .controls > * {
+  border: 1px solid #86a8b815;
+  border-radius: .2em;
+  padding: .1em;
+  cursor: pointer;
+}

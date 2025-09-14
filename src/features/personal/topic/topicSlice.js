@@ -27,9 +27,13 @@ const topicSlice = createSlice({
         push: (state, action) => {
             const newTopic = action.payload
             state.topicList = [...state.subTopics.filter(topic => topic._id !== newTopic._id), newTopic]
+        },
+        update: (state, action) => {
+            const updatedTopic = action.payload
+            state.subTopics = state.subTopics.map(topic => topic._id === updatedTopic._id ? updatedTopic : topic)
         }
     }
 })
 
 export default topicSlice.reducer;
-export const { chooseTopic, storeSubTopics, storeScripts, storeStories, removeTopics, push } = topicSlice.actions
+export const { chooseTopic, storeSubTopics, storeScripts, storeStories, removeTopics, push, update } = topicSlice.actions

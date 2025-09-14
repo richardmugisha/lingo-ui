@@ -10,3 +10,12 @@ export default async (topicLearnChunk) => {
         throw error
       }
 }
+
+export const updateTopic = async (update) => {
+    try {
+        const res = await AxiosWrapper.patch(`${ httpEndpoint }/topics/${update._id}`, update)
+        return res.data
+    } catch (error) {
+        throw error
+    }
+}

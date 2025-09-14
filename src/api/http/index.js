@@ -5,7 +5,7 @@ export { default as deleteTopics } from "./topic/delete";
 export { default as fetchManyTopics } from "./topic/fetchAll";
 export { default as fetchOneTopic } from "./topic/fetchOne";
 export { default as apiBatchRequest } from "./batchRequest";
-export { default as masteryUpdate } from "./topic/update"
+export { default as masteryUpdate, updateTopic } from "./topic/update"
 export { default as fetchSuggestions } from "./topic/fetchSuggestions"
 export { default as saveTopics } from "./topic/saveTopics"
 export { default as searchTopics } from "./topic/searchTopics"

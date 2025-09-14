@@ -3,7 +3,7 @@ import Spinner from 'react-spinner-material';
 import './Personal.css';
 import Filters from '../filters/Filters';
 import { useSelector, useDispatch } from 'react-redux';
-import { chooseTopic, storeSubTopics, removeTopics, storeStories, storeScripts } from '../../features/personal/topic/topicSlice';
+import { chooseTopic, storeSubTopics, removeTopics, storeStories, storeScripts, update } from '../../features/personal/topic/topicSlice';
 import { setInfo } from '../../features/system/systemSlice'
 import { updateLearning } from './modals/guided-learning/utils/useLearning';
 import { Button } from '@mui/material';
@@ -34,6 +34,10 @@ export default ({ page }) => {
   const [topicChain, setTopicChain] = useState([])
 
   const [userLearning, setUserLearning] = useState({})
+
+  const handleTopicUpdate = (topic) => {
+    dispatch(update(topic))
+  }
 
   useEffect(() => {
     error && dispatch(setInfo({ type: 'danger', message: error, timestamp: Date.now() }));
@@ -224,14 +228,17 @@ export default ({ page }) => {
               <TopicCard 
                   key={topic._id}
                   topic={topic} userId={userId} 
-                  onDoubleClick={() => topic.creator === userId &&
-                    setPersonalSelectedItem(personalSelectedItem.includes(topic._id)
-                      ? personalSelectedItem.filter((topicID) => topicID !== topic._id)
-                      : [...personalSelectedItem, topic._id]
-                    )
-                  }
+                  // onDoubleClick={() => topic.creator === userId &&
+                  //   setPersonalSelectedItem(personalSelectedItem.includes(topic._id)
+                  //     ? personalSelectedItem.filter((topicID) => topicID !== topic._id)
+                  //     : [...personalSelectedItem, topic._id]
+                  //   )
+                  // }
+                  setPersonalSelectedItem={setPersonalSelectedItem}
+                  personalSelectedItem={personalSelectedItem}
                   onClick={() => onTopicClickHandle(topic)}
-                  style={{ backgroundColor: personalSelectedItem.includes(topic._id) ? '#2225' : '#C0D7DA' }}
+                  handleTopicUpdate={handleTopicUpdate}
+                  // style={{ backgroundColor: personalSelectedItem.includes(topic._id) ? '#2225' : '#C0D7DA' }}
               />
             )) :
             page === "words" && words?.length ? words.map((wObj, index) => <WordCard key={index} wObj={wObj} /> ) :
