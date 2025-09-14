@@ -1,36 +1,95 @@
-const handleBlanksGen = (sentence, expressions) => {
-    const removePunctuation = str => str.replace(/[.,/#!$%^&*;:{}=\-_`~()?"']/g, "");
-    const toCleanWords = str => removePunctuation(str).toLowerCase().trim().split(" ");
-  
-    const originalChunks = sentence.trim().split(" ");
-    const cleanChunks = originalChunks.map(chunk => removePunctuation(chunk.toLowerCase()));
-    const usedExpressions = {};
-  
-    const blankedChunks = originalChunks.map((originalChunk, index) => {
-      const cleanChunk = cleanChunks[index];
-  
-      for (const rawExpr of expressions) {
-        const expression = removePunctuation(rawExpr).toLowerCase();
-  
-        for (const word of expression.split(" ")) {
-          const threshold = Math.max(word.length / 2, 5);
-          // console.log(word, sentence, cleanChunk || "sub-holder", cleanChunk.slice(0, threshold).includes(word.slice(0, threshold)))
-          if (cleanChunk.slice(0, threshold).includes(word.slice(0, threshold))) {
-            usedExpressions[rawExpr] = (usedExpressions[rawExpr] || 0 ) + 1
-            return '-'.repeat(5); // You can adjust blank length if needed
-          }
-        }
-        
-      }
-  
-      return originalChunk; // Return untouched original chunk
-    });
-  
-    return {
-      blanked: blankedChunks.join(" "),
-      usedExpressions: Object.keys(usedExpressions).filter(k => usedExpressions[k] >= k.split(" ").length / 2)
-    };
-  };
 
+// class to handle checking the matching between a sentence and one or multiple expressions
+class SentenceExpressionMatchProcessor {
+    THRESHOLD = 70/100
+    PERFECT_SCORE = 90/100
+    DASH_COUNT = 5
+
+    constructor(sentence, expressions) {
+      this.sentence = sentence
+      this.expressions = expressions
+      this.usedExpressions = []
+    }
+
+    removePunctuation (str) {
+      return str.replace(/[.,/#!$%^&*;:{}=\-_`~()?"']/g, "")
+    }
+
+    handleProcess() {
+      for (const expression of this.expressions) {
+          const cleanExpr = this.removePunctuation(expression).toLowerCase()
+          const matchedSlice = this.handleExpressionMatch(cleanExpr, this.sentence)
+          if (matchedSlice) {
+            this.sentence = this.sentence.replace(matchedSlice, '-'.repeat(this.DASH_COUNT))
+            this.usedExpressions.push(expression)
+          }
+      }
+    }
+
+
+    handleExpressionMatch (expression, sentence) {
+      const count = sentence.split(" ").length - (expression.split(" ").length / 2)
+      const bestSlice = { slice: "", score: 0}
+      for (let i = 0; i < count; i++) {
+          const slice = sentence.split(" ").slice(i, i + expression.split(" ").length).join(" ")
+          const score = this.handleExpressionMatchProcess(expression, slice)
+          if (score >= this.PERFECT_SCORE) return slice
+          
+          if (bestSlice.score < score) {
+            bestSlice.slice = slice;
+            bestSlice.score = score
+          }
+      }
+      if (bestSlice.score >= this.THRESHOLD) return bestSlice.slice
+
+    }
+
+    handleExpressionMatchProcess (expression, sentence) {
+
+      const matches = expression.split(" ").map( word => ({word, match: this.handleWordMatch(word, sentence)}))
+
+      const score = matches.reduce((acc, curr) => acc + curr.match, 0)
+
+      return score / expression.length
+    }
+
+    handleWordMatch(word, sentenceChunk) {
+        const offset = word.length > 0 ? word.length - 1 : 0
+        const augmentedSentenceChunk = '*'.repeat(offset) + sentenceChunk + '*'.repeat(offset)
+        // console.log(augmentedSentenceChunk)
+        const count = augmentedSentenceChunk.length - word.length
+        let wordMatch = 0
+
+        for (let i = 0; i < count; i++) {
+          const slice = augmentedSentenceChunk.slice(i, i + word.length)
+          const matches = this.checkMatch(slice, word)
+          wordMatch = Math.max(wordMatch, matches)
+          if (wordMatch == word.length) return wordMatch
+        }
+
+        return wordMatch
+    
+      }
+
+    checkMatch (slice, word) {
+          let matches = 0
+          slice.split('').forEach((ch, idx) => {
+            matches += word[idx] === ch
+          })
+
+          return matches
+    }
+}
+
+const handleBlanksGen = (sentence, expressions) => {
+  const processor = new SentenceExpressionMatchProcessor(sentence, expressions) 
+
+  processor.handleProcess()
+
+  return {
+    blanked: processor.sentence,
+    usedExpressions: processor.usedExpressions
+  }
+}
 
 export default handleBlanksGen
