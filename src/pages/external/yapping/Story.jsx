@@ -13,6 +13,7 @@ const Story = (props) => {
     info, FinishButton
   } = useStory(props)
 
+
   const [selectedIndices, setSelectedIndices] = useState([])
   const [shiftKeySelected, setShiftKeySelected] = useState(false)
 
