@@ -100,6 +100,8 @@ const useGeneralHook = (
         const words = storySettings.suggestedWords.map(w => w.word);
         const { blanked, usedExpressions } = handleBlanksGen(lastSentence, words)
 
+        usedExpressions.length > 0 & winSound.play()
+
         // part approval
 
         setStorySettings(prev => prev.rebuild({words: [...prev.words, ...usedExpressions]}))
