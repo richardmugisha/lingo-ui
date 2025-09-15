@@ -8,16 +8,28 @@
 }
 
 .story-catalog .story--span {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
     width: 10em;
     height: 15em;
     overflow: hidden;
     padding: 1em !important;
+    display: flex;
+    flex-direction: column;
 }
 
 .story .title {
     margin: 1em;
+}
+
+.story-catalog .story--span div {
+    display: flex;
+    justify-content: space-around;
+    font-size: xx-small;
+}
+
+.story-catalog .story--span p {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+    flex: 1;
 }

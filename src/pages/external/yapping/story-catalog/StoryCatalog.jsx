@@ -1,15 +1,16 @@
 
 import './StoryCatalog.css'
 import { Button } from "@mui/material"
-import { Add as AddIcon, Summarize } from '@mui/icons-material';
+import { Add as AddIcon, Summarize, Delete, CheckBox, CheckBoxOutlineBlank } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 
-import { fetchAllStories, prepareEpisode, fetchStories } from '../../../../api/http';
+import { fetchAllStories, prepareEpisode, fetchStories, deleteStories } from '../../../../api/http';
 import Stats from '../stats/Stats';
 
 
 const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
   const [scriptID, setScriptID] = useState(null)
+  const [deleteList, setDeleteList] = useState([])
 
   const resetStory = () => {
       setStorySettings( prev => prev.rebuild({ 
@@ -54,12 +55,24 @@ const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
     setScriptID(script._id)
     setStories(script.episodes)
   }
+
+  const handleDeleteStories = () => {
+    deleteStories(deleteList)
+      .then(data => {
+        setDeleteList([])
+        setStories(prev => prev.filter(story => !deleteList.includes(story._id)))
+      })
+      .catch(console.log)
+  }
   
   return (
     <div className='side side-wide story-catalog'>
       {stories?.length ?
         <>
           <h1>Story Catalog </h1>
+          <header>
+            { deleteList.length > 0 && <Button variant="outlined" color="error" startIcon={<Delete />} onClick={handleDeleteStories}> Confirm </Button> }
+          </header>
           <div className='story-catalog'>
               {stories?.map((story, i) => (
                   <span
@@ -76,19 +89,30 @@ const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
                       //       }
                       //     )))
                       // }
-                      onClick={() => {
-                        setStorySettings(prev => prev.rebuild({
-                          mode: "create",
-                          step: "create",
-                          outline: story.outline,
-                          _id: story._id,
-                          details: story.details,
-                          ...story
-                        }))
-                      }}
+                      
                       className="story--span"
                   >
-                  {story.script?.title || story.title}
+                    <div>
+                      { deleteList.length > 0 ?
+                            deleteList.includes(story._id) ? 
+                                  <CheckBox onClick={() => setDeleteList(prev => prev.filter(id => id !== story._id))}/> : 
+                                  <CheckBoxOutlineBlank onClick={() => setDeleteList([...deleteList, story._id])}/>
+                            : <span></span>
+                      }
+                      { deleteList.length < 1 && <Delete onClick={() => setDeleteList([story._id])}/> }
+                    </div>
+                    <p
+                        onClick={() => {
+                          setStorySettings(prev => prev.rebuild({
+                            mode: "create",
+                            step: "create",
+                            outline: story.outline,
+                            _id: story._id,
+                            details: story.details,
+                            ...story
+                          }))
+                        }}
+                    >{story.script?.title || story.title}</p>
                   </span>
               ))}
               <span className="story--span" onClick={resetStory}>+</span>
