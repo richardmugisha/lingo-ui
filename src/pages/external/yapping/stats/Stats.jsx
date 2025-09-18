@@ -165,7 +165,7 @@ function ContributionsGrid({ data, goalData }) {
 // Simple trend line (placeholder, replace with chart lib for real)
 
 
-const TrendChart = ({ data, goalData }) => {
+const TrendChart = ({ data, goalData, span }) => {
   // Create a map of existing dates to their counts for quick lookup
   const dataMap = new Map();
   data.forEach(point => {
@@ -174,23 +174,22 @@ const TrendChart = ({ data, goalData }) => {
   });
 
   // Get the start date (first date in data) and today's date
-  const startDate = new Date(data[0].date);
   const today = new Date();
-  
-  // Generate all dates from start to today
+  let startDate = new Date(data[0].date);
+  // Set startDate to span days before today
+  startDate = new Date(today);
+  startDate.setDate(today.getDate() - span + 1);
+
+  // Generate all dates from startDate to today
   const completeData = [];
   const currentDate = new Date(startDate);
-  
   while (currentDate <= today) {
     const dateStr = currentDate.toISOString().split('T')[0];
     const count = dataMap.has(dateStr) ? dataMap.get(dateStr) : 0;
-    
     completeData.push({
       date: new Date(currentDate).toISOString(),
       count: count
     });
-    
-    // Move to next day
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
@@ -250,6 +249,7 @@ const Stats = () => {
     const [goalData, setGoalData ] = useState({})
     const [trendData, setTrendData] = useState([])
     const [editGoal, setEditGoal] = useState(false)
+    const [span, setSpan] = useState(7)
     const { userId: userID } = JSON.parse(localStorage.getItem("user"))
 
     useEffect(() => {
@@ -375,73 +375,94 @@ const Stats = () => {
   return (
     trendData?.length > 0 ?
     <div className="stats-container">
-        <section>
-            <div>
-              <h3>Streak </h3>
-              <span> {goalData?.streak?.value} 🔥</span>
+      <section>
+        <div>
+          <h3>Streak </h3>
+          <span> {goalData?.streak?.value} 🔥</span>
+        </div>
+        {editGoal &&
+          <div className='goal-editor'>
+          <span>
+            <h3>Current Goal</h3>
+            <p>{goalData.current.days} days</p>
+            <p>{goalData.current.wordsPerDay} words per day</p>
+          </span>
+          <hr />
+          <span>
+            <h3>Next Goal</h3>
+            {goalData.upcoming &&
+            <>
+            <p>Starts on {new Date(goalData.upcoming.startDate).toDateString()}</p>
+            <p>Will last  {goalData.upcoming.days} days</p>
+            <p>{goalData.upcoming.wordsPerDay} words per day</p>
+            <p>Get ready in {handleDaysUntilUpcomingGoal()} days</p>
+            </>}
+          </span>
+          <hr />
+          <span>
+            <h3>Edit next goal</h3>
+            <input type="date" style={{ fontSize: "1em", padding: "0.2em", borderRadius: "0.3em", border: "1px solid #ccc" }} onChange={e => handleUpdateGoalData("startDate", e.target.value)} />
+            <div style={{ marginTop: "0.5em" }}>
+            <label htmlFor="goal-duration" style={{ marginRight: "0.5em" }}>Words Per Day:</label>
+            <input id="goal-duration" type="number" min="1" value={goalData.upcoming?.wordsPerDay || 300}  style={{ width: "4em", fontSize: "1em", padding: "0.2em", borderRadius: "0.3em", border: "1px solid #ccc" }}  onChange={e => handleUpdateGoalData("wordsPerDay", e.target.value)} />
             </div>
-            {editGoal &&
-              <div className='goal-editor'>
-                <span>
-                  <h3>Current Goal</h3>
-                  <p>{goalData.current.days} days</p>
-                  <p>{goalData.current.wordsPerDay} words per day</p>
-                </span>
-                <hr />
-                <span>
-                  <h3>Next Goal</h3>
-                  {goalData.upcoming &&
-                  <>
-                    <p>Starts on {new Date(goalData.upcoming.startDate).toDateString()}</p>
-                    <p>Will last  {goalData.upcoming.days} days</p>
-                    <p>{goalData.upcoming.wordsPerDay} words per day</p>
-                    <p>Get ready in {handleDaysUntilUpcomingGoal()} days</p>
-                  </>}
-                </span>
-                <hr />
-                <span>
-                  <h3>Edit next goal</h3>
-                  <input type="date" style={{ fontSize: "1em", padding: "0.2em", borderRadius: "0.3em", border: "1px solid #ccc" }} onChange={e => handleUpdateGoalData("startDate", e.target.value)} />
-                  <div style={{ marginTop: "0.5em" }}>
-                    <label htmlFor="goal-duration" style={{ marginRight: "0.5em" }}>Words Per Day:</label>
-                    <input id="goal-duration" type="number" min="1" value={goalData.upcoming?.wordsPerDay || 300}  style={{ width: "4em", fontSize: "1em", padding: "0.2em", borderRadius: "0.3em", border: "1px solid #ccc" }}  onChange={e => handleUpdateGoalData("wordsPerDay", e.target.value)} />
-                  </div>
-                  <div style={{ marginTop: "0.5em" }}>
-                    <label htmlFor="goal-duration" style={{ marginRight: "0.5em" }}>Goal duration (days):</label>
-                    <input id="goal-duration" type="number" min="1"  value={goalData.upcoming?.days || 1} style={{ width: "4em", fontSize: "1em", padding: "0.2em", borderRadius: "0.3em", border: "1px solid #ccc" }}  onChange={e => handleUpdateGoalData("days", e.target.value)} />
-                  </div>
-                  <Button onClick={() => setEditGoal(false)}>Done</Button>
-                </span>
-              </div>}
-            <div onClick={() => setEditGoal(true)}>
-              <Progressbar height='1.5em' width='10em' completed={90} customLabel={`CURRENT GOAL => ${handleOvercomeDays()}/${goalData.current?.days}`} bgColor='green' labelSize='.6em'/>
-              <label htmlFor="">{ handleDaysUntilUpcomingGoal() ? `Next goal in ${handleDaysUntilUpcomingGoal()}` : "Add Next goal" }</label>
-              <ArrowForwardIos />
+            <div style={{ marginTop: "0.5em" }}>
+            <label htmlFor="goal-duration" style={{ marginRight: "0.5em" }}>Goal duration (days):</label>
+            <input id="goal-duration" type="number" min="1"  value={goalData.upcoming?.days || 1} style={{ width: "4em", fontSize: "1em", padding: "0.2em", borderRadius: "0.3em", border: "1px solid #ccc" }}  onChange={e => handleUpdateGoalData("days", e.target.value)} />
             </div>
-            
-        </section>
-        <section>
-          <h3>Contributions</h3>
-          <div className="months-labels"></div>
-          <div className="stats-section" >
-              <div className="days-labels"></div>
-              <ContributionsGrid data={data} goalData={goalData} />
-              <div className='contribution-yrs'>
-                  {statYr !== new Date().getFullYear() && <button onClick={() => setStatYr(statYr + 1)}>{statYr+1}</button>}
-                  <button className='selected'>{statYr}</button>
-                  {[1,2].map(offset => (
-                      <button key={statYr - offset} onClick={() => setStatYr(statYr - offset)}>{statYr - offset}</button>
-                  ))}
-              </div>
+            <Button onClick={() => setEditGoal(false)}>Done</Button>
+          </span>
+          </div>}
+        <div onClick={() => setEditGoal(true)}>
+          <Progressbar height='1.5em' width='10em' completed={90} customLabel={`CURRENT GOAL => ${handleOvercomeDays()}/${goalData.current?.days}`} bgColor='green' labelSize='.6em'/>
+          <label htmlFor="">{ handleDaysUntilUpcomingGoal() ? `Next goal in ${handleDaysUntilUpcomingGoal()}` : "Add Next goal" }</label>
+          <ArrowForwardIos />
+        </div>
+        
+      </section>
+      <section>
+        <h3>Contributions</h3>
+        <div className="months-labels"></div>
+        <div className="stats-section" >
+          <div className="days-labels"></div>
+          <ContributionsGrid data={data} goalData={goalData} />
+          <div className='contribution-yrs'>
+            {statYr !== new Date().getFullYear() && <button onClick={() => setStatYr(statYr + 1)}>{statYr+1}</button>}
+            <button className='selected'>{statYr}</button>
+            {[1,2].map(offset => (
+              <button key={statYr - offset} onClick={() => setStatYr(statYr - offset)}>{statYr - offset}</button>
+            ))}
           </div>
-        </section>
-        <section>
-          <h3>Trend</h3>
-          <TrendChart data={trendData} goalData={goalData}/>
-        </section>
+        </div>
+      </section>
+      <section>
+        <h3>Trend</h3>
+        <Button
+        variant={span == 7 ? "outlined" : ""}
+        style={{ marginRight: "0.5em", fontSize: ".5em" }}
+        onClick={() => setSpan(7)}
+        >
+        This week
+        </Button>
+        <Button
+        variant={span == 30 ? "outlined" : ""}
+        style={{ marginRight: "0.5em", fontSize: ".5em" }}
+        onClick={() => setSpan(30)}
+        >
+        This month
+        </Button>
+        <Button
+        variant={span == 180 ? "outlined" : ""}
+        style={{ fontSize: ".5em"}}
+        onClick={() => setSpan(180)}
+        >
+        Last 6 months
+        </Button>
+        <TrendChart data={trendData} goalData={goalData} span={span}/>
+      </section>
     </div> :
     <></>
-  )
+    )
 }
 
 export default Stats
