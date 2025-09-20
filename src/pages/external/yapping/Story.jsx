@@ -3,6 +3,7 @@ import { Button } from '@mui/material';
 import useStory from './utils/useStory';
 import { useState, useEffect } from 'react';
 import Canvas from './Canvas';
+import Cover from './sidebar/components/scene-cover/Cover';
 
 const Story = (props) => {
   const {
@@ -135,17 +136,18 @@ const Story = (props) => {
                 )
               }
             </p>
-            <article className="draft-story">
-              {
-                
-              }
-              
-              {
-                storySettings.state.mode === "create" &&
-                <Canvas key={storySettings.scene?._id} defaultValue = {storySettings.scene?.text} typeSettings={storySettings.typeSettings} setStorySettings={setStorySettings} />
-                
-              }
-            </article>
+            <section className='scene-container'>
+              <Cover scene={storySettings.scene}/>
+              <article className="draft-story">
+                {
+                  
+                }
+                {
+                  storySettings.state.mode === "create" &&
+                  <Canvas key={storySettings.scene?._id} defaultValue = {storySettings.scene?.text} typeSettings={storySettings.typeSettings} setStorySettings={setStorySettings} />
+                }
+              </article>
+            </section>
             {/* <FinishButton /> */}
           </>
         }

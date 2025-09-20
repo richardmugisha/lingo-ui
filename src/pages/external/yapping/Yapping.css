@@ -237,8 +237,15 @@ h1 { font-size: xx-large;}
     }
   }
 
+.story .scene-container {
+    flex: 1 1 auto;
+    gap: .5em;
+    display: flex;
+}
+
 .story article.draft-story {
     width: min(800px, 90vw); /* Define container width */
+    height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
     flex: 1 1 auto;

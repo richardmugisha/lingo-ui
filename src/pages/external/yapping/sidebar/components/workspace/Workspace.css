@@ -1,5 +1,6 @@
 .workspace {
     height: 85dvh !important;
+    width: 400px;
 }
 
 .word-pool .right-word {
@@ -60,6 +61,7 @@
     display: flex;
     align-items: center;
     font-size: 1.2em;
+    text-wrap: nowrap;
 }
 
 .sidebar .workspace input.metadata.story-title {

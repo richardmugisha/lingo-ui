@@ -29,3 +29,20 @@ export const createScene = async () => {
         console.log(error.message)
     }
 }
+
+export const createCover = async (id, formData) => {
+    try {
+        const response = await AxiosWrapper.post(
+            `${httpEndpoint}/story/scene/cover/${id}`, 
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
