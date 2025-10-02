@@ -1,35 +1,20 @@
 .story-catalog {
-    display: flex;
-    width: 95dvw;
+    width: 99dvw;
     height: 85dvh;
-    gap: 3em;
-    padding: 3em;
-    justify-content: center;
+    padding: 1.5em;
 }
 
-.story-catalog .story--span {
-    width: 10em;
-    height: 15em;
-    overflow: hidden;
-    padding: 1em !important;
-    display: flex;
-    flex-direction: column;
+.covers {
+    column-count: 4;
+    column-gap: 1rem;
+    row-gap: 1em;
+    margin-top: 1em;
+    border-radius: 2em;
 }
 
-.story .title {
-    margin: 1em;
-}
-
-.story-catalog .story--span div {
-    display: flex;
-    justify-content: space-around;
-    font-size: xx-small;
-}
-
-.story-catalog .story--span p {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    align-items: center;
-    flex: 1;
+.invitation {
+    font-size: large;
+    padding: 3em 35em;
+    line-height: 2em;
+    text-align: center;
 }

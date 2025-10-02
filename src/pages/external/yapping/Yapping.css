@@ -47,7 +47,7 @@
 }
 
 .Yapping--info {
-    position: absolute;
+    /* position: absolute; */
     min-width: 500px;
     z-index: 2;
     left: 50%;
@@ -57,7 +57,7 @@
 }
 
 .Yapping--summary {
-    position: absolute;
+    /* position: absolute; */
     z-index: 2;
     left: 50%;
     transform: translateX(-50%);

@@ -1,6 +1,6 @@
 class StorySetup {
-    constructor({ title, summary, author, step, mode, details, sentenceIndex, sentenceInProgress, words, suggestedWords, acts, characters, _id, outline, selectedIndices, operation, editableText, typeSettings, chapters, scene }) {
-        this.metadata = { _id, title, summary, author, characters, outline, typeSettings: typeSettings || {}, chapters: chapters || [] };
+    constructor({ title, summary, imageUrl, author, step, mode, details, sentenceIndex, sentenceInProgress, words, suggestedWords, acts, characters, _id, outline, selectedIndices, operation, editableText, typeSettings, chapters, scene }) {
+        this.metadata = { _id, title, summary, imageUrl, author, characters, outline, typeSettings: typeSettings || {}, chapters: chapters || [] };
         this.state = { 
             step: step || "onboarding", 
             mode: mode || "create", 
@@ -17,6 +17,7 @@ class StorySetup {
         };
     }
     get _id() { return this.metadata._id }
+    get imageUrl() { return this.metadata.imageUrl }
     get outline() { return this.metadata.outline }
     get title() { return this.metadata.title}
     get summary() { return this.metadata.summary}

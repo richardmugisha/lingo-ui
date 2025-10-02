@@ -1,11 +1,13 @@
 
 import './StoryCatalog.css'
 import { Button } from "@mui/material"
-import { Add as AddIcon, Summarize, Delete, CheckBox, CheckBoxOutlineBlank } from '@mui/icons-material';
+import { Add as AddIcon, Summarize, Delete, CheckBox, CheckBoxOutlineBlank } from '@mui/icons-material'
+import ClearIcon from '@mui/icons-material/Clear';;
 import { useEffect, useState } from 'react';
 
 import { fetchAllStories, prepareEpisode, fetchStories, deleteStories } from '../../../../api/http';
 import Stats from '../stats/Stats';
+import Cover from './cover/Cover';
 
 
 const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
@@ -64,63 +66,28 @@ const StoryCatalog = ({ topicId, setStorySettings, gameInfo }) => {
       })
       .catch(console.log)
   }
-  
+
+ 
+
   return (
-    <div className='side side-wide story-catalog'>
+    <div className='story-catalog'>
       {stories?.length ?
         <>
-          <h1>Story Catalog </h1>
+          {/* <h1>Story Catalog </h1> */}
           <header>
             { deleteList.length > 0 && <Button variant="outlined" color="error" startIcon={<Delete />} onClick={handleDeleteStories}> Confirm </Button> }
+            <Button startIcon={<AddIcon/>} onClick={resetStory}>New Story</Button>
           </header>
-          <div className='story-catalog'>
-              {stories?.map((story, i) => (
-                  <span
-                      key={i}
-                      // onClick={() => gameInfo?.type === "story" ||
-                      //   (story.script ? 
-                      //     readScript(story.script)
-                      //     : false) ||
-                      //     (!story.script?.episodes && (!story?.ready ? report('not ready', i, story): true) && setStorySettings( prev => prev.rebuild(
-                      //       {
-                      //         ...story,
-                      //         mode: "practice",
-                      //         step: (gameInfo?.type || "story") === "story" ? "practice" : "temporary step",
-                      //       }
-                      //     )))
-                      // }
-                      
-                      className="story--span"
-                  >
-                    <div>
-                      { deleteList.length > 0 ?
-                            deleteList.includes(story._id) ? 
-                                  <CheckBox onClick={() => setDeleteList(prev => prev.filter(id => id !== story._id))}/> : 
-                                  <CheckBoxOutlineBlank onClick={() => setDeleteList([...deleteList, story._id])}/>
-                            : <span></span>
-                      }
-                      { deleteList.length < 1 && <Delete onClick={() => setDeleteList([story._id])}/> }
-                    </div>
-                    <p
-                        onClick={() => {
-                          setStorySettings(prev => prev.rebuild({
-                            mode: "create",
-                            step: "create",
-                            outline: story.outline,
-                            _id: story._id,
-                            details: story.details,
-                            ...story
-                          }))
-                        }}
-                    >{story.script?.title || story.title}</p>
-                  </span>
-              ))}
-              <span className="story--span" onClick={resetStory}>+</span>
+          <div className='covers'>
+              {stories?.map((story, i) =>  <Cover story={story} deleteList={deleteList} setDeleteList={setDeleteList} setStorySettings={setStorySettings}/>)}
           </div>
+          <p className='invitation'>
+            These stories have been created and developed by our growing community of writers and readers. Each book represents a unique voice, perspective, and imagination, brought together to form a diverse collection. From intimate character portraits to dramatic journeys, these works are the result of shared creativity and collaboration. As our community continues to expand, so does the richness and variety of the stories we tell—each one an invitation to explore new worlds, ideas, and emotions.
+          </p>
         </> :
         <>
           <p>No {pluralize(gameInfo?.type || "story")} yet!</p>
-          <span className="story--span" onClick={resetStory}>+</span>
+          <p>Add a new story</p>
         </> 
       }
       <Stats />

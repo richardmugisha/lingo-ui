@@ -46,3 +46,21 @@ export const createCover = async (id, formData) => {
         throw error;
     }
 }
+
+export const createStoryCover = async (id, formData) => {
+    try {
+        const response = await AxiosWrapper.post(
+            `${httpEndpoint}/story/cover/${id}`, 
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.log(error.message)
+        throw error;
+    }
+}

@@ -93,9 +93,7 @@ const useGeneralHook = (
         // split on sentence boundaries and pull the last one
         const sentences = text?.split(".")
         if (!sentences) return;
-        console.log(lastChecked, sentences.length)
         const lastSentence = sentences.slice(lastChecked).join(".").trim();
-        console.log(lastSentence)
         if (!lastSentence) return;
         const words = storySettings.suggestedWords.map(w => w.word);
         const { blanked, usedExpressions } = handleBlanksGen(lastSentence, words)

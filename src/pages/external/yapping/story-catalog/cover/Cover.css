@@ -1,0 +1,87 @@
+
+.cover {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+    border-radius: 1em;
+    width: 450px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 1em 1em #121a1e;
+}
+
+.cover img {
+    width: 100%;
+    height: auto;
+    min-height: 300px;
+    border-radius: 1em;
+}
+
+.cover:hover {
+    box-shadow: 0 0 .5em;
+}
+
+.active {
+    box-shadow: 0 0 3em #345C70;
+    z-index: 5;
+    transition: transform 1s;
+    transform: scale(3);
+}
+.cover > div:first-child {
+    display: flex;
+    gap: 1em;
+    align-items: center;
+}
+
+
+.cover div {
+    display: flex;
+    justify-content: space-around;
+    font-size: xx-small;
+}
+
+.cover p {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+    flex: 1;
+    font-weight: bold;
+    font-size: xx-large;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50%;
+    color: #c8d5e4;
+    -webkit-text-stroke: 1px rgb(36, 42, 44);
+}
+
+.cover .controls {
+    position: absolute;
+    top: 1em;
+    right: 4em;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+.cover .controls button {
+    background-color: transparent;
+    border: 1px solid #345C70;
+    color: #345C70;
+    padding: .5em 1.5em;
+    border-radius: 1.5em 0 0 1.5em ;
+    cursor: pointer;
+}
+
+.controls button:hover {
+    box-shadow: 0 0 1em;
+}
+
+.cover .extra {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+}

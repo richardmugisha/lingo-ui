@@ -251,6 +251,7 @@ const Stats = () => {
     const [editGoal, setEditGoal] = useState(false)
     const [span, setSpan] = useState(7)
     const { userId: userID } = JSON.parse(localStorage.getItem("user"))
+    const [hideStats, setHideStats] = useState(false)
 
     useEffect(() => {
         fetchUserContribution(userID, statYr)
@@ -373,9 +374,10 @@ const Stats = () => {
   };
 
   return (
-    trendData?.length > 0 ?
+    (trendData?.length > 0 && !hideStats) ?
     <div className="stats-container">
       <section>
+        <ArrowForward onClick={e => setHideStats(!hideStats)}/> 
         <div>
           <h3>Streak </h3>
           <span> {goalData?.streak?.value} 🔥</span>
