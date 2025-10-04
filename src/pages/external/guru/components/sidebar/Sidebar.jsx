@@ -29,7 +29,7 @@ const Sidebar = ({ currentChat, setCurrentChat }) => {
                     <div style={(width == "210px" && idx !== topicChain.length - 2) ? { display: "none" } : {}} key={topic + idx}>{ 
                         getSubtopics(topic, idx)?.map((subtopic, idxx) => 
                             <p key={subtopic + data.chats?.[subtopic]?.title || "Untitled"}
-                                style={{backgroundColor: topicChain.includes(subtopic) ? "#86A8B8": "", border: currentChat?._id === subtopic ? "2px solid green" : ""}} 
+                                style={{borderBottom: topicChain.includes(subtopic) ? "1px solid": "none"}} 
                                 onClick={() => handleNavigateToChat(subtopic, idx)}
                             >{data.chats?.[subtopic]?.title || "Untitled" + idx + "" + idxx}</p>) 
                         }

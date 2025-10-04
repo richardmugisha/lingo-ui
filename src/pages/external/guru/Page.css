@@ -5,17 +5,18 @@
     width: 100dvw;
     height: 100%;
     color: #FFFFFF;
+    gap: 6em;
 }
 
 .guru-sidebar {
     height: 100%;
-    border-right: 1px solid #e0e0e0;
+    /* border-right: 1px solid #e0e0e0; */
 }
 
 .guru-chat {
     height: 100%;
     flex: 1;
-    background-color: #343541;
+    /* background-color: #343541; */
 }
 
 .guru-sidebar-header {
@@ -24,7 +25,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    border-bottom: 1px solid #e0e0e0;
+    /* border-bottom: 1px solid #e0e0e0; */
 }
 
 .guru-sidebar-header h1 {
@@ -55,7 +56,7 @@
 .guru-sidebar-body {
     display: flex;
     justify-content: center;
-    gap: .3em;
+    /* gap: .3em; */
     align-items: flex-start;
     padding-left: 1em;
 }
@@ -66,9 +67,9 @@
 }
 
 .guru-sidebar-body p {
-    border: 1px solid #e0e0e0;
-    border-right: none;
-    padding: .5em 1em;
+    /* border: 1px solid #e0e0e0; */
+    text-align: left;
+    padding: 1em 1em;
     cursor: pointer;
     width: 200px;
 }

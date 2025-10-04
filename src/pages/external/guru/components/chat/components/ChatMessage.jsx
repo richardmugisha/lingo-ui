@@ -4,6 +4,7 @@ import { Person, SmartToy } from '@mui/icons-material';
 import RichTextRenderer from './TextRender';
 
 const ChatMessage = ({ message, isUser = false }) => {
+  console.log(message)
   return (
     <Box
       sx={{
@@ -32,7 +33,8 @@ const ChatMessage = ({ message, isUser = false }) => {
         sx={{
           p: 2,
           maxWidth: '70%',
-          backgroundColor: isUser ? '#3f3f3f' : '#2c2d2d',
+          backgroundColor: isUser ? '#3f3f3f' : 'transparent',
+          // backgroundColor: isUser ? '#3f3f3f' : '#2c2d2d',
           color: '#fff',
           border: 'none',
           boxShadow: 'none',

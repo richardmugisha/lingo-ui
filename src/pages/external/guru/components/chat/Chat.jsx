@@ -71,7 +71,7 @@ const Chat = ({ currentChat, setCurrentChat }) => {
         display: 'flex',
         flex: 1,
         flexDirection: 'column',
-        bgcolor: '#2c2d2d'
+        // bgcolor: '#2c2d2d'
       }}
     >
       {/* Header */}
