@@ -4,30 +4,37 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  background: linear-gradient(to bottom left, 
+    rgb(7, 9, 14) 0%, 
+    rgb(15, 12, 20) 50%, 
+    rgb(25, 12, 8) 90%, 
+    rgb(35, 14, 2) 100%
+);
 }
- 
+
 .custom-button-1 {
     padding: .5em 1em;
+    text-decoration: none;
     margin: .5em;
     cursor: pointer;
     border-radius: .5em;
     color: #345C70;
     font-size: x-large;
-    background-color: #779DAF;
+    /* background-color: #779DAF; */
     display: flex; justify-content: center; align-items: center;
     border: 1px groove #72a0b76f;
-    box-shadow: 0 0 5em rgba(255, 255, 255, 0.3);
+    /* box-shadow: 0 0 5em rgba(255, 255, 255, 0.3); */
 }
 
 .custom-button-1:hover {
   color: lightblue;
-  box-shadow: 0 0 10px rgb(210, 231, 241);
+  /* box-shadow: 0 0 10px rgb(210, 231, 241); */
 }
 
 main {
   /* box-shadow: 0 -3px 0 #b0c3c4; */
   /* background-color: #E0F5F8; */
-  background-color: #202123;
+  /* background-color: #202123; */
   flex: 1;
   display: flex;
   overflow: auto;

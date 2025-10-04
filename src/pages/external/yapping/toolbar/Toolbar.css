@@ -1,6 +1,6 @@
 
 .story-toolbar {
-    background-color: lightblue;
+    /* background-color: lightblue; */
     padding: 1em;
     padding-right: 0;
     display: flex;
@@ -9,9 +9,10 @@
 
 .story-toolbar select {
     padding: 0.4em 1em;
-    border: 1px solid #b3c6e0;
+    border: 1px solid rgb(35, 14, 2);
     border-radius: 0.5em;
-    background: #f8fbff;
+    background: transparent;
+    color: white;
     font-size: 1em;
     font-family: inherit;
     margin-right: 1em;
@@ -20,8 +21,8 @@
 }
 
 .story-toolbar select:focus {
-    border-color: #3399ff;
-    background: #e6f2ff;
+    border-color: rgb(119, 47, 5);
+    /* background: #e6f2ff; */
 }
 
 .story-toolbar--arrow {

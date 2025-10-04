@@ -38,7 +38,7 @@
 }
 
 .categories * {
-    background: #86A8B8;
+    /* background: #86A8B8; */
     padding: .5em 1em;
     cursor: pointer;
     border: none;
@@ -54,7 +54,9 @@
 }
 
 .categories .selected {
-    background-color: grey;
+    /* background-color: grey; */
+    text-decoration: underline;
+    text-underline-offset: .7em;
 }
 
 @media (max-width: 700px) {

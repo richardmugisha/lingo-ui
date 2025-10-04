@@ -57,7 +57,7 @@ button {
     border-radius: 5px;
     padding: .2em .5em;
     font-size: 27px;
-    background-color: #86A8B8;
+    /* background-color: #86A8B8; */
     color: #E0F5F8;
     margin-left: 20px;
 }
@@ -137,7 +137,7 @@ button {
 .filter-btn {
   cursor: pointer;
   padding: .5em 1em;
-  background-color: #C0D7DA;
+  /* background-color: #C0D7DA; */
 }
 
 .filter-btn:hover {
@@ -154,6 +154,7 @@ button {
     column-gap: calc(1em + 1vw);
     margin: 1em;
     padding: 0.5em 1em;
+    color: #a7c2d0;
     box-shadow: 0 10px 10px rgb(0, 0, 0, 0.2);
 }
   
